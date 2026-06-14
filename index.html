@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v1.6" />
+<meta name="version" content="v1.7" />
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -236,6 +236,14 @@
   .lb-prev{inset-inline-start:16px}.lb-next{inset-inline-end:16px}
   .lb-count{position:fixed;inset-block-end:22px;inset-inline:0;text-align:center;color:rgba(255,255,255,.82);font-size:14px;letter-spacing:2px}
   .ver{opacity:.55}
+  .ap-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .ap-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .ap-row img{width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex:none}
+  .ap-name{flex:1;font-size:13px;color:var(--ink-2);min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ap-badge{font-size:11px;font-weight:700;color:#fff;background:var(--ink);padding:3px 9px;border-radius:6px}
+  .ap-row button{width:32px;height:32px;border:1px solid var(--line-2);background:var(--mist);border-radius:7px;cursor:pointer;font-size:16px;line-height:1;color:var(--ink);flex:none;display:grid;place-items:center;padding:0;font-family:inherit}
+  .ap-row button:hover:not(:disabled){border-color:var(--ink)}
+  .ap-row button:disabled{opacity:.3;cursor:default}
 </style>
 </head>
 <body>
@@ -389,7 +397,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی و توسعه: <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.6</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.7</span></div>
     </div>
   </div>
 </footer>
@@ -416,7 +424,7 @@
       <div class="step" id="stepPanel">
         <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
-        <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر را همزمان انتخاب کنید.</p></div>
+        <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
         <button class="btn btn-solid" onclick="addProductUI(this)">افزودن محصول</button>
         <div class="block-label" style="margin-top:24px">محصولات موجود</div>
         <div class="prod-admin-list" id="prodAdminList"></div>
@@ -523,6 +531,7 @@ async function doLogin(){
 async function doLogout(){
   try{ await JB.logout(); }catch(e){}
   isAdminFlag=false;
+  clearPending();
   await refreshAuth();
   closeAuth();
   toast('از حساب خارج شدید.');
@@ -544,6 +553,37 @@ function renderAdminList(){
   }).join('');
 }
 
+/* ===== pending photos (reorderable before upload) ===== */
+let pendingFiles=[];
+const urlCache=new WeakMap();
+function fileURL(f){ if(!urlCache.has(f)) urlCache.set(f,URL.createObjectURL(f)); return urlCache.get(f); }
+function onPickPhotos(input){
+  pendingFiles=pendingFiles.concat(Array.from(input.files));
+  input.value='';            // let them add more in another pick
+  renderPreview();
+}
+function renderPreview(){
+  const box=document.getElementById('apPreview'); if(!box) return;
+  box.innerHTML=pendingFiles.map((f,i)=>{
+    const first=i===0, last=i===pendingFiles.length-1;
+    const label= first ? '<span class="ap-badge">کاور</span>' : '<span class="ap-name">'+esc(f.name)+'</span>';
+    return '<div class="ap-row">'
+      + '<img src="'+fileURL(f)+'" alt="">'
+      + label
+      + '<button type="button" onclick="movePhoto('+i+',-1)" '+(first?'disabled':'')+' aria-label="بالا">↑</button>'
+      + '<button type="button" onclick="movePhoto('+i+',1)" '+(last?'disabled':'')+' aria-label="پایین">↓</button>'
+      + '<button type="button" onclick="removePhoto('+i+')" aria-label="حذف">×</button>'
+      + '</div>';
+  }).join('');
+}
+function movePhoto(i,d){
+  const j=i+d; if(j<0||j>=pendingFiles.length) return;
+  const t=pendingFiles[i]; pendingFiles[i]=pendingFiles[j]; pendingFiles[j]=t;
+  renderPreview();
+}
+function removePhoto(i){ pendingFiles.splice(i,1); renderPreview(); }
+function clearPending(){ pendingFiles=[]; renderPreview(); }
+
 /* resize big photos before upload (keeps storage light) */
 function resizeFile(file,max){
   return new Promise(resolve=>{
@@ -561,14 +601,14 @@ function resizeFile(file,max){
 
 async function addProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
-  const picked=Array.from(document.getElementById('apPhoto').files);
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
   if(btn){ btn.disabled=true; btn.textContent='در حال افزودن…'; }
   try{
     const files=[];
-    for(const f of picked){ files.push(await resizeFile(f,1400)); }
+    for(const f of pendingFiles){ files.push(await resizeFile(f,1400)); }   // order preserved → first = cover
     await JB.addProduct({ title, description, files });
     document.getElementById('apTitle').value=''; document.getElementById('apDesc').value=''; document.getElementById('apPhoto').value='';
+    clearPending();
     toast('محصول با موفقیت افزوده شد.');
     await loadProducts(); renderAdminList();
   }catch(e){ toast('خطا در افزودن محصول. دوباره تلاش کنید.'); }
@@ -624,15 +664,19 @@ addEventListener('keydown',e=>{
   }
 });
 
-/* ===== hidden admin trigger: tap footer logo 3× ===== */
+/* ===== hidden admin trigger: press & hold the footer logo (~0.6s) ===== */
 (function(){
   const logo=document.getElementById('footLogo'); if(!logo) return;
-  let n=0, t=null;
-  logo.addEventListener('click',()=>{
-    n++; clearTimeout(t);
-    if(n>=3){ n=0; openAuth(); }
-    else t=setTimeout(()=>{ n=0; }, 1200);
-  });
+  logo.style.webkitTouchCallout='none'; logo.style.userSelect='none';
+  let timer=null;
+  const start=()=>{ clearTimeout(timer); timer=setTimeout(openAuth,600); };
+  const cancel=()=>{ clearTimeout(timer); timer=null; };
+  logo.addEventListener('pointerdown',start);
+  logo.addEventListener('pointerup',cancel);
+  logo.addEventListener('pointerleave',cancel);
+  logo.addEventListener('pointermove',cancel);
+  logo.addEventListener('pointercancel',cancel);
+  logo.addEventListener('contextmenu',e=>e.preventDefault());
 })();
 
 /* ===== boot ===== */

@@ -1,6 +1,6 @@
 // ============================================================
 //  jamebaf-supabase.js  —  drop-in browser client
-//  Version: v1.6
+//  Version: v1.7
 //  Public site + email/password admin accounts. No SMS, no
 //  visitor accounts, no bookmarks. Products support MULTIPLE
 //  photos each (stored in the products.images column).
