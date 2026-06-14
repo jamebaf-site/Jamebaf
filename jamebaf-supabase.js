@@ -1,6 +1,6 @@
 // ============================================================
 //  jamebaf-supabase.js  —  drop-in browser client
-//  Version: v1.7
+//  Version: v1.9
 //  Public site + email/password admin accounts. No SMS, no
 //  visitor accounts, no bookmarks. Products support MULTIPLE
 //  photos each (stored in the products.images column).
@@ -58,8 +58,13 @@ const JB = {
     const list = files ? Array.from(files) : [];
     const urls = [];
     for (const file of list) {
-      const path = `${crypto.randomUUID()}-${file.name}`;
-      const { error: upErr } = await sb.storage.from(PHOTO_BUCKET).upload(path, file);
+      // clean, ASCII-only key — the original filename may contain spaces or
+      // non-Latin characters that Storage rejects, which breaks the upload.
+      const ext = ((file.name && file.name.split(".").pop()) || "jpg")
+        .replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || "jpg";
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await sb.storage.from(PHOTO_BUCKET)
+        .upload(path, file, { contentType: file.type || "image/jpeg" });
       if (upErr) throw upErr;
       urls.push(sb.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl);
     }
@@ -69,7 +74,13 @@ const JB = {
       image_url: urls[0] ?? null,   // cover photo (first one)
       images: urls                  // every photo
     });
-    if (error) throw error;
+    if (error) {
+      const m = (error.message || "").toLowerCase();
+      if (m.includes("images") && (m.includes("column") || m.includes("schema"))) {
+        throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
+      }
+      throw error;
+    }
   },
 
   async deleteProduct(id) {

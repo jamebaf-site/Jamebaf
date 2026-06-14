@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v1.8" />
+<meta name="version" content="v1.9" />
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -47,7 +47,6 @@
   .auth-btn{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;color:var(--ink);background:none;border:1px solid var(--line-2);padding:9px 16px;border-radius:8px;transition:.2s}
   .auth-btn:hover{border-color:var(--ink);background:var(--ink);color:#fff}
   .auth-btn svg{width:17px;height:17px}
-  .avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:14px;background:var(--ink);color:#fff;flex:none}
   .menu-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--ink);padding:6px}
   .menu-toggle svg{width:26px;height:26px}
 
@@ -92,11 +91,6 @@
   .pcard .pimg{width:100%;height:160px;object-fit:cover;border-radius:9px;border:1px solid var(--line);margin-bottom:18px}
   .pcard h3{font-size:20px;font-weight:600;letter-spacing:0;margin-bottom:9px}
   .pcard p{color:var(--soft);font-size:15px;margin:0;line-height:1.75}
-  .save-btn{position:absolute;inset-block-start:14px;inset-inline-start:14px;width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--soft);transition:.2s;z-index:2}
-  .save-btn:hover{border-color:var(--ink);color:var(--ink)}
-  .save-btn.on{background:var(--ink);border-color:var(--ink);color:#fff}
-  .save-btn.on svg{fill:currentColor}
-  .save-btn svg{width:17px;height:17px}
   .admin-del{margin-top:16px;background:none;border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:7px;cursor:pointer;transition:.2s}
   .admin-del:hover{border-color:var(--ink);color:var(--ink)}
 
@@ -117,13 +111,6 @@
   .info-row .v a{transition:.2s;border-bottom:1px solid transparent}
   .info-row .v a:hover{border-bottom-color:var(--ink)}
 
-  .cform .field{margin-bottom:18px}
-  .cform label{display:block;font-size:13.5px;font-weight:600;color:var(--ink-2);margin-bottom:8px}
-  .cform input,.cform textarea{width:100%;font-family:inherit;font-size:16px;color:var(--ink);padding:13px 15px;border:1px solid var(--line-2);border-radius:8px;background:#fff;transition:.2s}
-  .cform input:focus,.cform textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,18,14,.08)}
-  .cform textarea{resize:vertical;min-height:120px;line-height:1.7}
-  .cform .btn{width:100%;justify-content:center}
-  .phone-input{direction:ltr;text-align:left;letter-spacing:.5px}
 
   footer{background:var(--ink);color:rgba(255,255,255,.72);padding:64px 0 40px}
   .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;flex-wrap:wrap;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.12)}
@@ -165,30 +152,13 @@
   .field input[type=file]{padding:10px;font-size:14px;cursor:pointer}
   .field input[type=file]::-webkit-file-upload-button,.field input[type=file]::file-selector-button{font-family:inherit;border:1px solid var(--line-2);background:var(--mist);padding:8px 12px;border-radius:7px;margin-inline-end:12px;cursor:pointer;color:var(--ink);font-weight:600}
   .modal-body .btn{width:100%;justify-content:center;margin-top:4px}
-  .phone-input{direction:ltr;text-align:left;letter-spacing:1px;font-weight:600}
-  .code-input{direction:ltr;text-align:center;letter-spacing:14px;font-size:24px;font-weight:600}
   .hint{font-size:13px;color:var(--soft);text-align:center;margin:16px 0 0;line-height:2}
-  .linkbtn{color:var(--ink);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;font-size:13px;border-bottom:1px solid var(--line-2)}
-  .linkbtn:hover{border-bottom-color:var(--ink)}
   .step{display:none}.step.active{display:block}
-  .profile-top{display:flex;align-items:center;gap:14px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--line)}
-  .profile-top .avatar{width:52px;height:52px;font-size:21px}
-  .profile-top .nm{font-weight:600;font-size:18px}
-  .profile-top .ph{color:var(--soft);font-size:14px;direction:ltr;text-align:right}
-  .btn.ghost-btn{background:none;border:1px solid var(--line-2);color:var(--ink);margin-top:10px;width:100%;justify-content:center}
-  .btn.ghost-btn:hover{border-color:var(--ink)}
   .logout{width:100%;justify-content:center;background:none;border:1px solid var(--line-2);color:var(--ink);margin-top:10px}
   .logout:hover{border-color:var(--ink)}
 
   .block-label{font-size:12px;font-weight:700;letter-spacing:1px;color:var(--soft);margin:6px 0 12px;display:flex;align-items:center;gap:10px}
   .block-label::after{content:"";flex:1;height:1px;background:var(--line)}
-  .saved-list{display:flex;flex-direction:column;gap:10px;max-height:230px;overflow-y:auto;margin-bottom:22px}
-  .saved-item{display:flex;align-items:center;gap:12px;padding:9px 10px;border:1px solid var(--line);border-radius:10px}
-  .saved-item .th{width:46px;height:46px;border-radius:8px;object-fit:cover;flex:none;border:1px solid var(--line);display:grid;place-items:center;color:var(--ink)}
-  .saved-item .th svg{width:22px;height:22px;stroke-width:1.4}
-  .saved-item .st{font-size:14.5px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .saved-item .rm{background:none;border:none;color:var(--soft);cursor:pointer;font-size:20px;line-height:1;padding:0 4px}
-  .saved-item .rm:hover{color:var(--ink)}
   .empty-note{font-size:13.5px;color:var(--soft);text-align:center;padding:14px 0;border:1px dashed var(--line-2);border-radius:10px;margin-bottom:22px}
   .prod-admin-list{display:flex;flex-direction:column;gap:8px;max-height:210px;overflow-y:auto;margin-bottom:8px}
   .pa-item{display:flex;align-items:center;gap:12px;padding:8px 10px;border:1px solid var(--line);border-radius:9px}
@@ -390,7 +360,7 @@
   <div class="wrap">
     <div class="foot-top">
       <div class="foot-brand">
-        <img src="logo-white.png" alt="جامه باف" id="footLogo" />
+        <img src="logo-white.png" alt="جامه باف" />
         <div class="nm">جامه باف</div>
         <div class="tg">اصالت در هر تار و پود</div>
       </div>
@@ -400,7 +370,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی و توسعه: <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.8</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.9</span></div>
     </div>
   </div>
 </footer>
@@ -614,7 +584,7 @@ async function addProductUI(btn){
     clearPending();
     toast('محصول با موفقیت افزوده شد.');
     await loadProducts(); renderAdminList();
-  }catch(e){ toast('خطا در افزودن محصول. دوباره تلاش کنید.'); }
+  }catch(e){ console.error('addProduct failed:', e); toast('خطا: '+((e&&e.message)?e.message:'افزودن محصول ناموفق بود')); }
   finally{ if(btn){ btn.disabled=false; btn.textContent='افزودن محصول'; } }
 }
 async function delProductUI(id){
