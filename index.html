@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v1.7" />
+<meta name="version" content="v1.8" />
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -236,6 +236,9 @@
   .lb-prev{inset-inline-start:16px}.lb-next{inset-inline-end:16px}
   .lb-count{position:fixed;inset-block-end:22px;inset-inline:0;text-align:center;color:rgba(255,255,255,.82);font-size:14px;letter-spacing:2px}
   .ver{opacity:.55}
+  .keytrig{display:inline-flex;vertical-align:middle;cursor:pointer;color:rgba(255,255,255,.5);padding:3px;margin-inline-end:5px;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+  .keytrig:hover{color:#fff}
+  .keytrig svg{width:15px;height:15px}
   .ap-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
   .ap-row{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:10px;background:#fff}
   .ap-row img{width:48px;height:48px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex:none}
@@ -396,8 +399,8 @@
       </nav>
     </div>
     <div class="foot-bottom">
-      <div class="creator">طراحی و توسعه: <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.7</span></div>
+      <div class="creator">طراحی و توسعه: <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.8</span></div>
     </div>
   </div>
 </footer>
@@ -664,19 +667,17 @@ addEventListener('keydown',e=>{
   }
 });
 
-/* ===== hidden admin trigger: press & hold the footer logo (~0.6s) ===== */
+/* ===== admin trigger: tap the key (next to the credit) 3× ===== */
 (function(){
-  const logo=document.getElementById('footLogo'); if(!logo) return;
-  logo.style.webkitTouchCallout='none'; logo.style.userSelect='none';
-  let timer=null;
-  const start=()=>{ clearTimeout(timer); timer=setTimeout(openAuth,600); };
-  const cancel=()=>{ clearTimeout(timer); timer=null; };
-  logo.addEventListener('pointerdown',start);
-  logo.addEventListener('pointerup',cancel);
-  logo.addEventListener('pointerleave',cancel);
-  logo.addEventListener('pointermove',cancel);
-  logo.addEventListener('pointercancel',cancel);
-  logo.addEventListener('contextmenu',e=>e.preventDefault());
+  const k=document.getElementById('keyTrig'); if(!k) return;
+  let n=0, t=null;
+  const hit=()=>{
+    n++; clearTimeout(t);
+    if(n>=3){ n=0; openAuth(); }
+    else t=setTimeout(()=>{ n=0; }, 1500);
+  };
+  k.addEventListener('click',hit);
+  k.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); hit(); } });
 })();
 
 /* ===== boot ===== */
