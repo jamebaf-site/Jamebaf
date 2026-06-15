@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v3.5" />
+<meta name="version" content="v3.4" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -254,35 +254,6 @@
   .pcount{position:absolute;inset-block-start:14px;inset-inline-start:14px;background:rgba(20,18,14,.78);color:#fff;font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;display:inline-flex;align-items:center;gap:5px;z-index:2}
   .pcount svg{width:13px;height:13px}
 </style>
-
-<style id="sew-style">
-  :root{
-    --sew-camel:rgba(176,134,72,.32);   /* raw panel — right */
-    --sew-sage:rgba(108,140,122,.32);   /* raw panel — left  */
-    --sew-thread:#9D4427; --sew-hi:#CE7A4F; --sew-lo:#5C2513;
-  }
-  #sew{position:absolute;top:0;left:0;width:100%;z-index:40;pointer-events:none;overflow:visible}
-  #sew *{pointer-events:none}
-  /* raw, unsewn fabric wash (two different colours), revealed BELOW the needle */
-  .sew-tint{position:absolute;top:0;left:0;width:100%;
-    background:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.018) 0 1px, transparent 1px 3px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0 1px, transparent 1px 3px),
-      linear-gradient(90deg, var(--sew-camel) 0 50%, var(--sew-sage) 50% 100%);
-    clip-path:inset(100% 0 0 0);will-change:clip-path}
-  /* faint seam path shown AHEAD of the needle (where it will sew) */
-  .sew-guide{position:absolute;top:0;left:0;width:100%;clip-path:inset(100% 0 0 0);will-change:clip-path}
-  /* pressed crease at the exact sewing point */
-  .sew-edge{position:absolute;top:0;left:0;width:100%;height:64px;transform:translateY(-64px);
-    will-change:transform;
-    background:linear-gradient(to bottom, transparent 0,
-      rgba(20,16,12,.10) 46%, rgba(20,16,12,.16) 50%, rgba(255,255,255,.22) 53%, transparent 100%)}
-  /* finished seam of stitches, revealed ABOVE the needle */
-  .sew-stitches{position:absolute;top:0;left:0;width:100%;clip-path:inset(0 0 100% 0);will-change:clip-path}
-  .sew-string{position:absolute;left:50%;transform:translateX(-50%)}
-  .sew-needle{position:absolute;top:0;left:50%;transform:translate(-50%,-300px);will-change:transform}
-</style>
-
 </head>
 <body>
 
@@ -870,126 +841,6 @@ addEventListener('keydown',e=>{
   try{ isAdminFlag = await JB.isAdmin(); }catch(e){ isAdminFlag=false; }
   await refreshAuth();
   if(location.hash==='#admin') openAuth();
-})();
-</script>
-
-<!-- ===== NEEDLE & THREAD SEWING OVERLAY (non-destructive) ===== -->
-<div id="sew" aria-hidden="true">
-  <div class="sew-tint" id="sewTint"></div>
-  <svg class="sew-guide" id="sewGuide" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"></svg>
-  <div class="sew-edge" id="sewEdge"></div>
-  <svg class="sew-stitches" id="sewStitches" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"></svg>
-  <svg class="sew-string" id="sewTop" width="70" height="140" viewBox="0 0 70 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <path d="M35 0 C35 16 14 20 21 38 C28 56 50 56 43 76 C37 94 19 96 28 116 C34 128 35 132 35 140" stroke="var(--sew-lo)" stroke-width="4.2" stroke-linecap="round" opacity=".5"/>
-  <path d="M35 0 C35 16 14 20 21 38 C28 56 50 56 43 76 C37 94 19 96 28 116 C34 128 35 132 35 140" stroke="var(--sew-thread)" stroke-width="3" stroke-linecap="round"/>
-  <path d="M35 0 C35 16 14 20 21 38 C28 56 50 56 43 76 C37 94 19 96 28 116 C34 128 35 132 35 140" stroke="var(--sew-hi)" stroke-width="1" stroke-linecap="round" opacity=".7"/>
-</svg>
-  <svg class="sew-string" id="sewBottom" width="70" height="140" viewBox="0 0 70 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <path d="M35 0 C35 8 35 11 30 20 C22 38 44 40 49 60 C55 80 31 80 24 98 C17 116 35 122 35 140" stroke="var(--sew-lo)" stroke-width="4.2" stroke-linecap="round" opacity=".5"/>
-  <path d="M35 0 C35 8 35 11 30 20 C22 38 44 40 49 60 C55 80 31 80 24 98 C17 116 35 122 35 140" stroke="var(--sew-thread)" stroke-width="3" stroke-linecap="round"/>
-</svg>
-  <svg class="sew-needle" id="sewNeedle" width="40" height="210" viewBox="0 0 40 210" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs>
-    <linearGradient id="sewSteel" x1="15" y1="0" x2="25" y2="0" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#9c9a95"/><stop offset=".32" stop-color="#efeeea"/>
-      <stop offset=".5" stop-color="#ffffff"/><stop offset=".62" stop-color="#cbc9c4"/>
-      <stop offset="1" stop-color="#86847f"/>
-    </linearGradient>
-    <filter id="sewSoft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter>
-  </defs>
-  <ellipse cx="25" cy="150" rx="6" ry="62" fill="rgba(20,16,12,.20)" filter="url(#sewSoft)"/>
-  <path d="M20 4 C20 22 12 30 18 46 C21 54 20 58 20 64" stroke="var(--sew-lo)" stroke-width="3.4" stroke-linecap="round" opacity=".5"/>
-  <path d="M20 4 C20 22 12 30 18 46 C21 54 20 58 20 64" stroke="var(--sew-thread)" stroke-width="2.3" stroke-linecap="round"/>
-  <path d="M20 64 L16 84 L17 196 L20 210 L23 196 L24 84 Z" fill="url(#sewSteel)" stroke="#6f6d68" stroke-width=".5"/>
-  <path d="M19 90 L19 188" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round" opacity=".75"/>
-  <ellipse cx="20" cy="76" rx="2.6" ry="7" fill="#cdcbc6" stroke="#5f5d58" stroke-width="1.5"/>
-  <path d="M18 72 C19 75 19 77 18 80 M22 72 C21 75 21 77 22 80" stroke="var(--sew-thread)" stroke-width="1.4" stroke-linecap="round"/>
-</svg>
-</div>
-<script>
-(function(){
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var sew=document.getElementById('sew'),
-      tint=document.getElementById('sewTint'),
-      guide=document.getElementById('sewGuide'),
-      edge=document.getElementById('sewEdge'),
-      stitches=document.getElementById('sewStitches'),
-      sTop=document.getElementById('sewTop'),
-      sBottom=document.getElementById('sewBottom'),
-      needle=document.getElementById('sewNeedle');
-  var docH=0, top=96, bottom=0, target=0, cur=0, tilt=0;
-  var EYE=76;
-
-  function buildSeam(){
-    if(!docH) return;
-    // running stitches (above the needle)
-    var s='', i=0, step=30;
-    for(var y=top; y<bottom; y+=step, i++){
-      var jx=(Math.sin(i*1.7)*0.9);
-      var len=12+Math.sin(i*0.9)*1.6;
-      var lean=Math.sin(i*2.3)*1.1;
-      var x1='calc(50% + '+jx.toFixed(2)+'px)';
-      var x2='calc(50% + '+(jx+lean).toFixed(2)+'px)';
-      var yy=(y+len);
-      s+='<line x1="'+x1+'" y1="'+(y+1.2).toFixed(1)+'" x2="'+x2+'" y2="'+(yy+1.2).toFixed(1)+'" stroke="var(--sew-lo)" stroke-width="4.2" stroke-linecap="round" opacity=".32"/>';
-      s+='<line x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+yy.toFixed(1)+'" stroke="var(--sew-thread)" stroke-width="3" stroke-linecap="round"/>';
-      s+='<line x1="'+x1+'" y1="'+y+'" x2="'+x2+'" y2="'+yy.toFixed(1)+'" stroke="var(--sew-hi)" stroke-width="1" stroke-linecap="round" opacity=".6"/>';
-    }
-    stitches.setAttribute('viewBox','0 0 100 '+docH);
-    stitches.style.height=docH+'px';
-    stitches.innerHTML=s;
-    // faint dashed guide (ahead of the needle)
-    var g='<line x1="50%" y1="'+top+'" x2="50%" y2="'+bottom+'" stroke="var(--sew-thread)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="2 9" opacity=".28"/>';
-    guide.setAttribute('viewBox','0 0 100 '+docH);
-    guide.style.height=docH+'px';
-    guide.innerHTML=g;
-  }
-
-  function measure(){
-    var h=Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
-    if(h===docH) { onScroll(); return; }
-    docH=h; bottom=docH-130;
-    sew.style.height=docH+'px';
-    tint.style.height=docH+'px';
-    sTop.style.top=(top-30)+'px';
-    sBottom.style.top=bottom+'px';
-    buildSeam(); onScroll(); apply(true);
-  }
-
-  function onScroll(){
-    var max=document.documentElement.scrollHeight-window.innerHeight;
-    target= max>0 ? Math.min(1,Math.max(0,window.scrollY/max)) : 0;
-  }
-
-  function apply(force){
-    var prev=cur;
-    cur += (target-cur)*(reduce?1:0.10);
-    if(Math.abs(target-cur)<0.0002) cur=target;
-    tilt += ((Math.max(-4,Math.min(4,(cur-prev)*1600))) - tilt)*0.2;
-
-    var y= top + cur*(bottom-top);              // needle position in document
-    tint.style.clipPath='inset('+y+'px 0 0 0)';            // raw wash below needle
-    guide.style.clipPath='inset('+y+'px 0 0 0)';           // guide ahead
-    stitches.style.clipPath='inset(0 0 '+(docH-y)+'px 0)'; // stitches above
-    edge.style.transform='translateY('+(y-32)+'px)';
-    needle.style.transform='translate(-50%, '+(y-EYE)+'px) rotate('+tilt.toFixed(2)+'deg)';
-
-    if(!reduce && Math.abs(target-cur)>=0.0002) requestAnimationFrame(function(){apply();});
-    else if(force) requestAnimationFrame(function(){apply();});
-  }
-
-  var ticking=false;
-  window.addEventListener('scroll',function(){ onScroll();
-    if(!ticking){ ticking=true; requestAnimationFrame(function(){ ticking=false; apply(); }); }
-  },{passive:true});
-  window.addEventListener('resize',measure,{passive:true});
-  window.addEventListener('load',measure);
-  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(measure);
-  // products load async from Supabase -> page height changes; re-measure on any layout change
-  if('ResizeObserver' in window){ new ResizeObserver(measure).observe(document.body); }
-  var n=0, iv=setInterval(function(){ measure(); if(++n>12) clearInterval(iv); },500);
-
-  measure();
 })();
 </script>
 </body>
