@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v1.9" />
+<meta name="version" content="v2.0" />
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -195,9 +195,6 @@
     .reveal{opacity:1;transform:none}
   }
   .ltr-input{direction:ltr;text-align:left;letter-spacing:.3px}
-  .pthumbs{display:flex;gap:6px;flex-wrap:wrap;margin:-8px 0 16px}
-  .pthumb{width:38px;height:38px;border-radius:7px;object-fit:cover;border:1px solid var(--line);cursor:pointer;transition:.15s}
-  .pthumb:hover{border-color:var(--ink)}
   .lightbox{position:fixed;inset:0;z-index:200;background:rgba(20,18,14,.92);display:none;align-items:center;justify-content:center;padding:24px}
   .lightbox.show{display:flex}
   .lightbox img#lbImg{max-width:92vw;max-height:82vh;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
@@ -217,6 +214,12 @@
   .ap-row button{width:32px;height:32px;border:1px solid var(--line-2);background:var(--mist);border-radius:7px;cursor:pointer;font-size:16px;line-height:1;color:var(--ink);flex:none;display:grid;place-items:center;padding:0;font-family:inherit}
   .ap-row button:hover:not(:disabled){border-color:var(--ink)}
   .ap-row button:disabled{opacity:.3;cursor:default}
+  .usage{font-size:12.5px;color:var(--soft);margin-bottom:16px}
+  .usage .bar{height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:6px}
+  .usage .bar i{display:block;height:100%;background:var(--ink);transition:width .3s}
+  .usage.full{color:#b00020}.usage.full .bar i{background:#b00020}
+  .pcount{position:absolute;inset-block-start:14px;inset-inline-start:14px;background:rgba(20,18,14,.78);color:#fff;font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;display:inline-flex;align-items:center;gap:5px;z-index:2}
+  .pcount svg{width:13px;height:13px}
 </style>
 </head>
 <body>
@@ -370,7 +373,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی و توسعه: <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v1.9</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v2.0</span></div>
     </div>
   </div>
 </footer>
@@ -395,10 +398,13 @@
         <p class="hint">این بخش ویژه مدیران سایت است.</p>
       </div>
       <div class="step" id="stepPanel">
+        <div class="usage" id="apUsage"></div>
+        <div class="block-label" id="apHeading">افزودن محصول</div>
         <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
         <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
-        <button class="btn btn-solid" onclick="addProductUI(this)">افزودن محصول</button>
+        <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
+        <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
         <div class="block-label" style="margin-top:24px">محصولات موجود</div>
         <div class="prod-admin-list" id="prodAdminList"></div>
         <button class="btn logout" onclick="doLogout()">خروج از حساب</button>
@@ -447,11 +453,11 @@ async function loadProducts(){
 function cardMedia(pr){
   const imgs=imgsOf(pr);
   if(!imgs.length) return '<div class="ic">'+BOX+'</div>';
-  let html='<img class="pimg" src="'+esc(imgs[0])+'" alt="'+esc(pr.title)+'" loading="lazy" style="cursor:zoom-in" onclick="openLightbox(\''+pr.id+'\',0)">';
-  if(imgs.length>1){
-    html+='<div class="pthumbs">'+imgs.map((u,i)=>'<img class="pthumb" src="'+esc(u)+'" alt="" loading="lazy" onclick="openLightbox(\''+pr.id+'\','+i+')">').join('')+'</div>';
-  }
-  return html;
+  const badge = imgs.length>1
+    ? '<span class="pcount"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>'+faNum(imgs.length)+'</span>'
+    : '';
+  // only the cover is loaded on the card; the rest load when the gallery opens
+  return badge+'<img class="pimg" src="'+esc(imgs[0])+'" alt="'+esc(pr.title)+'" loading="lazy" style="cursor:zoom-in" onclick="openLightbox(\''+pr.id+'\',0)">';
 }
 function renderProducts(){
   const grid=document.getElementById('pgrid'); if(!grid) return;
@@ -513,7 +519,29 @@ async function doLogout(){
 async function openPanel(){
   setModalHead('پنل مدیریت','افزودن و مدیریت محصولات');
   showStep('stepPanel');
+  cancelEdit();          // start clean in "add" mode
   renderAdminList();
+  refreshUsage();
+}
+
+/* ===== storage usage + 900 MB cap ===== */
+const MAX_STORAGE = 900*1024*1024;   // hard cap (free plan ceiling is 1 GB)
+let storageBytes = 0;
+function mb(b){ return faNum(Math.round(b/1048576)); }
+async function refreshUsage(){
+  const el=document.getElementById('apUsage'); if(el) el.textContent='در حال محاسبه ظرفیت…';
+  try{ const u=await JB.storageUsage(); storageBytes=u.bytes; }
+  catch(e){ storageBytes=0; }
+  renderUsage();
+}
+function renderUsage(){
+  const el=document.getElementById('apUsage'); if(!el) return;
+  const pct=Math.min(100, Math.round(storageBytes/MAX_STORAGE*100));
+  const full=storageBytes>=MAX_STORAGE;
+  el.className='usage'+(full?' full':'');
+  el.innerHTML='ذخیره‌سازی: '+mb(storageBytes)+' از '+mb(MAX_STORAGE)+' مگابایت'
+    +'<div class="bar"><i style="width:'+pct+'%"></i></div>'
+    +(full?'<div style="margin-top:6px">ظرفیت پر است. برای افزودن تصویر، ابتدا چند محصول را حذف کنید.</div>':'');
 }
 function renderAdminList(){
   const box=document.getElementById('prodAdminList');
@@ -522,26 +550,32 @@ function renderAdminList(){
     const imgs=imgsOf(pr);
     const th = imgs.length ? '<img class="th" src="'+esc(imgs[0])+'" alt="">' : '<div class="th">'+BOX+'</div>';
     const cnt = imgs.length>1 ? ' <span style="color:var(--soft);font-weight:500">('+faNum(imgs.length)+' تصویر)</span>' : '';
-    return '<div class="pa-item">'+th+'<div class="t">'+esc(pr.title)+cnt+'</div><button onclick="delProductUI(\''+pr.id+'\')">حذف</button></div>';
+    return '<div class="pa-item">'+th+'<div class="t">'+esc(pr.title)+cnt+'</div>'
+      +'<button onclick="startEdit(\''+pr.id+'\')">ویرایش</button>'
+      +'<button onclick="delProductUI(\''+pr.id+'\')">حذف</button></div>';
   }).join('');
 }
 
-/* ===== pending photos (reorderable before upload) ===== */
-let pendingFiles=[];
+/* ===== reorderable photos (new files + existing URLs) — add & edit ===== */
+let pendingItems=[];        // { kind:'file', file } | { kind:'url', url }
+let editingId=null;
+let originalImages=[];
 const urlCache=new WeakMap();
 function fileURL(f){ if(!urlCache.has(f)) urlCache.set(f,URL.createObjectURL(f)); return urlCache.get(f); }
+function itemSrc(it){ return it.kind==='file' ? fileURL(it.file) : it.url; }
 function onPickPhotos(input){
-  pendingFiles=pendingFiles.concat(Array.from(input.files));
+  for(const f of Array.from(input.files)) pendingItems.push({kind:'file', file:f});
   input.value='';            // let them add more in another pick
   renderPreview();
 }
 function renderPreview(){
   const box=document.getElementById('apPreview'); if(!box) return;
-  box.innerHTML=pendingFiles.map((f,i)=>{
-    const first=i===0, last=i===pendingFiles.length-1;
-    const label= first ? '<span class="ap-badge">کاور</span>' : '<span class="ap-name">'+esc(f.name)+'</span>';
+  box.innerHTML=pendingItems.map((it,i)=>{
+    const first=i===0, last=i===pendingItems.length-1;
+    const label= first ? '<span class="ap-badge">کاور</span>'
+                       : '<span class="ap-name">'+(it.kind==='file'?esc(it.file.name):'تصویر فعلی')+'</span>';
     return '<div class="ap-row">'
-      + '<img src="'+fileURL(f)+'" alt="">'
+      + '<img src="'+itemSrc(it)+'" alt="">'
       + label
       + '<button type="button" onclick="movePhoto('+i+',-1)" '+(first?'disabled':'')+' aria-label="بالا">↑</button>'
       + '<button type="button" onclick="movePhoto('+i+',1)" '+(last?'disabled':'')+' aria-label="پایین">↓</button>'
@@ -550,12 +584,33 @@ function renderPreview(){
   }).join('');
 }
 function movePhoto(i,d){
-  const j=i+d; if(j<0||j>=pendingFiles.length) return;
-  const t=pendingFiles[i]; pendingFiles[i]=pendingFiles[j]; pendingFiles[j]=t;
+  const j=i+d; if(j<0||j>=pendingItems.length) return;
+  const t=pendingItems[i]; pendingItems[i]=pendingItems[j]; pendingItems[j]=t;
   renderPreview();
 }
-function removePhoto(i){ pendingFiles.splice(i,1); renderPreview(); }
-function clearPending(){ pendingFiles=[]; renderPreview(); }
+function removePhoto(i){ pendingItems.splice(i,1); renderPreview(); }
+function clearPending(){
+  pendingItems=[]; editingId=null; originalImages=[];
+  const a=document.getElementById('apTitle'),b=document.getElementById('apDesc'),p=document.getElementById('apPhoto');
+  if(a)a.value=''; if(b)b.value=''; if(p)p.value='';
+  const h=document.getElementById('apHeading'),s=document.getElementById('apSave'),c=document.getElementById('apCancel');
+  if(h)h.textContent='افزودن محصول'; if(s)s.textContent='افزودن محصول'; if(c)c.style.display='none';
+  renderPreview();
+}
+function cancelEdit(){ clearPending(); }
+function startEdit(id){
+  const pr=productCache.find(p=>p.id===id); if(!pr) return;
+  editingId=id;
+  originalImages=imgsOf(pr).slice();
+  pendingItems=originalImages.map(u=>({kind:'url', url:u}));
+  document.getElementById('apTitle').value=pr.title||'';
+  document.getElementById('apDesc').value=pr.description||'';
+  document.getElementById('apHeading').textContent='ویرایش محصول';
+  document.getElementById('apSave').textContent='ذخیره تغییرات';
+  document.getElementById('apCancel').style.display='flex';
+  renderPreview();
+  const m=document.querySelector('.modal'); if(m) m.scrollTo({top:0,behavior:'smooth'});
+}
 
 /* resize big photos before upload (keeps storage light) */
 function resizeFile(file,max){
@@ -566,26 +621,44 @@ function resizeFile(file,max){
       if(w>max||h>max){ if(w>h){h=Math.round(h*max/w);w=max;}else{w=Math.round(w*max/h);h=max;} }
       const c=document.createElement('canvas'); c.width=w;c.height=h;
       c.getContext('2d').drawImage(img,0,0,w,h);
-      c.toBlob(b=>{ resolve(b?new File([b],(file.name.replace(/\.\w+$/,'')||'photo')+'.jpg',{type:'image/jpeg'}):file); },'image/jpeg',0.85);
+      c.toBlob(b=>{ resolve(b?new File([b],(file.name.replace(/\.\w+$/,'')||'photo')+'.jpg',{type:'image/jpeg'}):file); },'image/jpeg',0.8);
     }; img.onerror=()=>resolve(file); img.src=fr.result; };
     fr.onerror=()=>resolve(file); fr.readAsDataURL(file);
   });
 }
 
-async function addProductUI(btn){
+async function saveProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
-  if(btn){ btn.disabled=true; btn.textContent='در حال افزودن…'; }
+  const label=editingId?'ذخیره تغییرات':'افزودن محصول';
+  if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
   try{
-    const files=[];
-    for(const f of pendingFiles){ files.push(await resizeFile(f,1400)); }   // order preserved → first = cover
-    await JB.addProduct({ title, description, files });
-    document.getElementById('apTitle').value=''; document.getElementById('apDesc').value=''; document.getElementById('apPhoto').value='';
+    // resize NEW files first so we know their real size
+    const newItems=[]; let newBytes=0;
+    for(const it of pendingItems){
+      if(it.kind==='file'){ const r=await resizeFile(it.file,1100); newItems.push({it,file:r}); newBytes+=r.size; }
+    }
+    // enforce the 900 MB cap
+    if(storageBytes + newBytes > MAX_STORAGE){
+      toast('ظرفیت ذخیره‌سازی پر است (۹۰۰ مگابایت). برخی محصول‌ها را حذف کنید.');
+      return;
+    }
+    // upload the new files, then build the final ordered list
+    const uploaded=new Map();
+    for(const n of newItems){ const [url]=await JB.uploadPhotos([n.file]); uploaded.set(n.it,url); }
+    const images=pendingItems.map(it=> it.kind==='url' ? it.url : uploaded.get(it));
+    if(editingId){
+      const removedUrls=originalImages.filter(u=>!images.includes(u));
+      await JB.updateProduct(editingId,{ title, description, images, removedUrls });
+      toast('تغییرات ذخیره شد.');
+    }else{
+      await JB.createProduct({ title, description, images });
+      toast('محصول با موفقیت افزوده شد.');
+    }
     clearPending();
-    toast('محصول با موفقیت افزوده شد.');
-    await loadProducts(); renderAdminList();
-  }catch(e){ console.error('addProduct failed:', e); toast('خطا: '+((e&&e.message)?e.message:'افزودن محصول ناموفق بود')); }
-  finally{ if(btn){ btn.disabled=false; btn.textContent='افزودن محصول'; } }
+    await loadProducts(); renderAdminList(); refreshUsage();
+  }catch(e){ console.error('save failed:', e); toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق بود')); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent=label; } }
 }
 async function delProductUI(id){
   try{

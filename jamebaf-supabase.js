@@ -1,9 +1,10 @@
 // ============================================================
 //  jamebaf-supabase.js  —  drop-in browser client
-//  Version: v1.9
-//  Public site + email/password admin accounts. No SMS, no
-//  visitor accounts, no bookmarks. Products support MULTIPLE
-//  photos each (stored in the products.images column).
+//  Version: v2.0
+//  Public catalog + email/password admin. No SMS, no visitor
+//  accounts. Products support MULTIPLE photos (products.images).
+//  Photos are uploaded with a 1-year cache header to minimise
+//  repeated egress (bandwidth) on the free plan.
 //
 //  Load in index.html before your own script:
 //  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,6 +18,16 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const PHOTO_BUCKET = "product-photos";
 const PUBLIC_PREFIX = SUPABASE_URL + "/storage/v1/object/public/" + PHOTO_BUCKET + "/";
+const ONE_YEAR = "31536000"; // cache-control seconds → fewer repeat downloads
+
+function urlToPath(u){
+  return (typeof u === "string" && u.startsWith(PUBLIC_PREFIX))
+    ? decodeURIComponent(u.slice(PUBLIC_PREFIX.length)) : null;
+}
+function missingImagesColumn(error){
+  const m = (error && error.message || "").toLowerCase();
+  return m.includes("images") && (m.includes("column") || m.includes("schema"));
+}
 
 const JB = {
   // ---- ADMIN AUTH (email + password) ----
@@ -25,15 +36,11 @@ const JB = {
     if (error) throw error;
     return data.user;
   },
-
   async logout() { await sb.auth.signOut(); },
-
   async currentUser() {
     const { data } = await sb.auth.getUser();
     return data.user ?? null;
   },
-
-  // True only for accounts you've flagged is_admin = true in the dashboard.
   async isAdmin() {
     const user = await this.currentUser();
     if (!user) return false;
@@ -41,8 +48,7 @@ const JB = {
     return !!data?.is_admin;
   },
 
-  // ---- PRODUCTS (anyone can read, even logged out) ----
-  // Each product is normalised to always have an `images` array.
+  // ---- PRODUCTS (anyone can read) ----
   async listProducts() {
     const { data } = await sb.from("products")
       .select("*").order("created_at", { ascending: false });
@@ -53,49 +59,69 @@ const JB = {
     });
   },
 
-  // ---- ADMIN ONLY: add a product with one OR many photos ----
-  async addProduct({ title, description, files }) {
-    const list = files ? Array.from(files) : [];
+  // ---- STORAGE: total bytes used (for the cap + usage bar) ----
+  async storageUsage() {
+    let bytes = 0, count = 0, offset = 0;
+    const limit = 100;
+    for (;;) {
+      const { data, error } = await sb.storage.from(PHOTO_BUCKET)
+        .list("", { limit, offset, sortBy: { column: "name", order: "asc" } });
+      if (error || !data || !data.length) break;
+      for (const o of data) { bytes += (o.metadata && o.metadata.size) ? o.metadata.size : 0; count++; }
+      if (data.length < limit) break;
+      offset += limit;
+    }
+    return { bytes, count };
+  },
+
+  // ---- ADMIN: upload helper (returns public URLs, in order) ----
+  async uploadPhotos(files) {
     const urls = [];
-    for (const file of list) {
-      // clean, ASCII-only key — the original filename may contain spaces or
-      // non-Latin characters that Storage rejects, which breaks the upload.
+    for (const file of Array.from(files || [])) {
       const ext = ((file.name && file.name.split(".").pop()) || "jpg")
         .replace(/[^a-zA-Z0-9]/g, "").toLowerCase() || "jpg";
       const path = `${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await sb.storage.from(PHOTO_BUCKET)
-        .upload(path, file, { contentType: file.type || "image/jpeg" });
-      if (upErr) throw upErr;
+      const { error } = await sb.storage.from(PHOTO_BUCKET)
+        .upload(path, file, { contentType: file.type || "image/jpeg", cacheControl: ONE_YEAR });
+      if (error) throw error;
       urls.push(sb.storage.from(PHOTO_BUCKET).getPublicUrl(path).data.publicUrl);
     }
+    return urls;
+  },
+
+  // ---- ADMIN: create with already-uploaded image URLs ----
+  async createProduct({ title, description, images }) {
+    const imgs = images || [];
     const { error } = await sb.from("products").insert({
-      title,
-      description,
-      image_url: urls[0] ?? null,   // cover photo (first one)
-      images: urls                  // every photo
+      title, description, image_url: imgs[0] ?? null, images: imgs
     });
     if (error) {
-      const m = (error.message || "").toLowerCase();
-      if (m.includes("images") && (m.includes("column") || m.includes("schema"))) {
-        throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
-      }
+      if (missingImagesColumn(error)) throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
       throw error;
     }
   },
 
-  async deleteProduct(id) {
-    // best-effort: remove this product's photos from storage first
-    try {
-      const { data: row } = await sb.from("products")
-        .select("images,image_url").eq("id", id).single();
-      const urls = (row?.images?.length ? row.images : (row?.image_url ? [row.image_url] : []));
-      const paths = urls
-        .map(u => (typeof u === "string" && u.startsWith(PUBLIC_PREFIX))
-          ? decodeURIComponent(u.slice(PUBLIC_PREFIX.length)) : null)
-        .filter(Boolean);
-      if (paths.length) await sb.storage.from(PHOTO_BUCKET).remove(paths);
-    } catch (e) { /* ignore cleanup errors, still delete the row */ }
+  // ---- ADMIN: edit a product; removedUrls get cleaned from storage ----
+  async updateProduct(id, { title, description, images, removedUrls }) {
+    const imgs = images || [];
+    const { error } = await sb.from("products").update({
+      title, description, image_url: imgs[0] ?? null, images: imgs
+    }).eq("id", id);
+    if (error) {
+      if (missingImagesColumn(error)) throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
+      throw error;
+    }
+    const paths = (removedUrls || []).map(urlToPath).filter(Boolean);
+    if (paths.length) { try { await sb.storage.from(PHOTO_BUCKET).remove(paths); } catch (e) {} }
+  },
 
+  async deleteProduct(id) {
+    try {
+      const { data: row } = await sb.from("products").select("images,image_url").eq("id", id).single();
+      const urls = (row?.images?.length ? row.images : (row?.image_url ? [row.image_url] : []));
+      const paths = urls.map(urlToPath).filter(Boolean);
+      if (paths.length) await sb.storage.from(PHOTO_BUCKET).remove(paths);
+    } catch (e) { /* still delete the row */ }
     const { error } = await sb.from("products").delete().eq("id", id);
     if (error) throw error;
   },
