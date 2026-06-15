@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v2.4" />
+<meta name="version" content="v2.5" />
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -91,6 +91,7 @@
   .pcard .pimg{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
   .pcard .ic{width:100%;aspect-ratio:1/1;display:grid;place-items:center;color:var(--soft)}
   .pcard .ic svg{width:34px;height:34px;stroke-width:1.4}
+  .pcap{padding:11px 12px;font-size:14px;font-weight:600;color:var(--ink);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
   .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:48px}
   .why .ic{width:30px;height:30px;color:var(--ink);margin-bottom:18px}
@@ -195,24 +196,27 @@
     .reveal{opacity:1;transform:none}
   }
   .ltr-input{direction:ltr;text-align:left;letter-spacing:.3px}
-  .lightbox{position:fixed;inset:0;z-index:200;background:rgba(20,18,14,.92);display:none;align-items:center;justify-content:center;padding:24px}
+  .lightbox{position:fixed;inset:0;z-index:200;background:rgba(20,18,14,.9);display:none;align-items:center;justify-content:center;padding:20px}
   .lightbox.show{display:flex}
-  .lightbox img#lbImg{max-width:92vw;max-height:68vh;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);opacity:0;transition:opacity .18s}
-  .lightbox img#lbImg.ready{opacity:1}
-  .lb-spin{position:fixed;top:50%;left:50%;width:42px;height:42px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;display:none;transform:translate(-50%,-50%);animation:lbspin .7s linear infinite}
+  .lb-card{width:min(94vw,500px);max-height:90vh;background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 90px -30px rgba(0,0,0,.7)}
+  .lb-imgwrap{position:relative;background:var(--mist);display:flex;align-items:center;justify-content:center;min-height:220px}
+  .lb-imgwrap img#lbImg{max-width:100%;max-height:60vh;object-fit:contain;display:block;opacity:0;transition:opacity .18s}
+  .lb-imgwrap img#lbImg.ready{opacity:1}
+  .lb-spin{position:absolute;top:50%;left:50%;width:38px;height:38px;border-radius:50%;border:3px solid rgba(0,0,0,.12);border-top-color:var(--ink);display:none;transform:translate(-50%,-50%);animation:lbspin .7s linear infinite}
   .lightbox.loading .lb-spin{display:block}
   @keyframes lbspin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-  .lb-close{position:fixed;inset-block-start:18px;inset-inline-end:18px;width:44px;height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.35);color:#fff;font-size:24px;line-height:1;cursor:pointer}
-  .lb-nav{position:fixed;inset-block-start:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;font-size:22px;cursor:pointer;display:grid;place-items:center}
-  .lb-prev{inset-inline-start:16px}.lb-next{inset-inline-end:16px}
-  .lb-count{position:fixed;inset-block-end:22px;inset-inline:0;text-align:center;color:rgba(255,255,255,.82);font-size:14px;letter-spacing:2px}
-  .lb-info{position:fixed;inset-block-end:0;inset-inline:0;padding:48px 20px 26px;text-align:center;background:linear-gradient(to top,rgba(20,18,14,.94),rgba(20,18,14,.55) 60%,rgba(20,18,14,0));color:#fff;pointer-events:none}
-  .lb-info h3{font-size:19px;font-weight:700;margin:0 0 7px}
-  .lb-info p{font-size:14px;line-height:1.75;color:rgba(255,255,255,.86);margin:0 auto;max-width:620px;max-height:22vh;overflow:auto;pointer-events:auto}
-  .lb-info .cnt{font-size:12px;color:rgba(255,255,255,.6);margin-top:9px;letter-spacing:2px}
-  .lb-actions{display:flex;gap:10px;justify-content:center;margin-top:14px;pointer-events:auto}
-  .lb-actions button{font-family:inherit;font-size:13px;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.1);color:#fff}
-  .lb-actions button:hover{background:rgba(255,255,255,.2)}
+  .lb-close{position:fixed;inset-block-start:16px;inset-inline-end:16px;width:42px;height:42px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;font-size:23px;line-height:1;cursor:pointer;z-index:210}
+  .lb-nav{position:absolute;inset-block-start:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:1px solid rgba(0,0,0,.06);background:rgba(255,255,255,.92);color:var(--ink);font-size:17px;cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .lb-prev{inset-inline-start:12px}.lb-next{inset-inline-end:12px}
+  .lb-info{padding:20px 22px;text-align:right}
+  .lb-info h3{font-size:19px;font-weight:700;margin:0 0 8px;color:var(--ink)}
+  .lb-info p{font-size:14.5px;line-height:1.85;color:var(--soft);margin:0;max-height:24vh;overflow:auto}
+  .lb-info .cnt{font-size:12px;color:var(--soft);margin-top:12px;letter-spacing:1px;text-align:center}
+  .lb-actions{display:flex;gap:10px;margin-top:16px}
+  .lb-actions button{flex:1;font-family:inherit;font-size:13px;font-weight:600;padding:11px;border-radius:9px;cursor:pointer;border:1px solid var(--line-2);background:var(--mist);color:var(--ink);transition:.2s}
+  .lb-actions button:hover{border-color:var(--ink)}
+  .lb-actions .del{color:#b00020;border-color:#e6b8be}
+  .lb-actions .del:hover{border-color:#b00020}
   .ver{opacity:.55}
   .keytrig{display:inline-flex;vertical-align:middle;cursor:pointer;color:rgba(255,255,255,.5);padding:3px;margin-inline-end:5px;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
   .keytrig:hover{color:#fff}
@@ -384,7 +388,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی و توسعه: <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v2.4</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v2.5</span></div>
     </div>
   </div>
 </footer>
@@ -426,11 +430,15 @@
 
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
   <button class="lb-close" onclick="closeLightbox()" aria-label="بستن">×</button>
-  <button class="lb-nav lb-prev" onclick="lbNav(-1)" aria-label="قبلی">❮</button>
-  <div class="lb-spin" id="lbSpin"></div>
-  <img id="lbImg" src="" alt="" decoding="async" fetchpriority="high" />
-  <button class="lb-nav lb-next" onclick="lbNav(1)" aria-label="بعدی">❯</button>
-  <div class="lb-info" id="lbInfo"></div>
+  <div class="lb-card">
+    <div class="lb-imgwrap">
+      <div class="lb-spin" id="lbSpin"></div>
+      <img id="lbImg" src="" alt="" decoding="async" fetchpriority="high" />
+      <button class="lb-nav lb-prev" onclick="lbNav(-1)" aria-label="قبلی">❮</button>
+      <button class="lb-nav lb-next" onclick="lbNav(1)" aria-label="بعدی">❯</button>
+    </div>
+    <div class="lb-info" id="lbInfo"></div>
+  </div>
 </div>
 
 <div class="toast-wrap" id="toastWrap"></div>
@@ -483,6 +491,7 @@ function renderProducts(){
   grid.innerHTML=productCache.map(pr=>(
     '<div class="pcard reveal in" onclick="openLightbox(\''+pr.id+'\',0)">'
     +cardMedia(pr)
+    +'<div class="pcap">'+esc(pr.title)+'</div>'
     +'</div>'
   )).join('');
 }
@@ -742,7 +751,7 @@ function renderLb(){
   if(isAdminFlag && lbProduct){
     html+='<div class="lb-actions">'
       +'<button onclick="editFromDetail(\''+lbProduct.id+'\')">ویرایش</button>'
-      +'<button onclick="deleteFromDetail(\''+lbProduct.id+'\')">حذف</button>'
+      +'<button class="del" onclick="deleteFromDetail(\''+lbProduct.id+'\')">حذف</button>'
       +'</div>';
   }
   document.getElementById('lbInfo').innerHTML=html;
