@@ -5,7 +5,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v2.9" />
+<meta name="version" content="v3.0" />
+<script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -30,6 +31,14 @@
   ::selection{background:var(--ink);color:#fff}
   :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
   .ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+  .intro{position:fixed;inset:0;z-index:300;background:var(--paper);display:grid;place-items:center;transition:opacity .6s ease}
+  .intro.hide{opacity:0;pointer-events:none}
+  .introSeen .intro{display:none}
+  .intro-logo{position:relative;width:150px;animation:introIn 1s cubic-bezier(.2,.7,.2,1) both}
+  .intro-logo img{width:150px;display:block}
+  .intro-shine{position:absolute;inset:0;-webkit-mask:url(logo-dark.png) center/contain no-repeat;mask:url(logo-dark.png) center/contain no-repeat;background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.85) 50%,transparent 62%);background-size:260% 100%;background-position:165% 0;animation:introShine 1.15s ease .55s 1 forwards}
+  @keyframes introIn{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:none}}
+  @keyframes introShine{from{background-position:165% 0}to{background-position:-165% 0}}
 
   .eyebrow{display:flex;align-items:center;gap:12px;font-size:12.5px;font-weight:600;letter-spacing:3px;color:var(--soft);margin-bottom:22px}
   .eyebrow::before{content:"";width:30px;height:1px;background:var(--line-2)}
@@ -52,7 +61,7 @@
   .menu-toggle{display:none;background:none;border:none;cursor:pointer;color:var(--ink);padding:6px}
   .menu-toggle svg{width:26px;height:26px}
 
-  .hero{padding:calc(120px + env(safe-area-inset-top)) 0 90px;background:linear-gradient(180deg,#f3eee4 0%,var(--paper) 58%)}
+  .hero{padding:calc(132px + env(safe-area-inset-top)) 0 116px;background:linear-gradient(180deg,#f3eee4 0%,var(--paper) 58%)}
   .hero-grid{display:grid;grid-template-columns:1fr 1px 1fr;gap:56px;align-items:center}
   .hero-rule{background:var(--line);align-self:stretch}
   .hero-mark{display:flex;justify-content:center}
@@ -69,7 +78,7 @@
   .btn-text:hover::after{transform:scaleX(1)}
   .btn svg{width:18px;height:18px}
 
-  section{padding:96px 0}
+  section{padding:118px 0}
   .alt{background:var(--mist)}
   .sec-head{max-width:620px;margin-bottom:54px}
   .sec-head .title{margin-bottom:16px}
@@ -185,7 +194,7 @@
   @media(max-width:680px){
     .navlinks,.auth-btn .lbl{display:none}
     .menu-toggle{display:block}.auth-btn{padding:9px}
-    section{padding:70px 0}
+    section{padding:86px 0}
     .stats{flex-direction:column}
     .stat{border-inline-start:none;border-bottom:1px solid var(--line);padding:20px}
     .stat:last-child{border-bottom:none}
@@ -238,6 +247,13 @@
 </style>
 </head>
 <body>
+
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-logo">
+    <img src="logo-dark.png" alt="" />
+    <span class="intro-shine"></span>
+  </div>
+</div>
 
 <header class="nav" id="nav">
   <div class="nav-inner">
@@ -388,7 +404,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی و توسعه: <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v2.9</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v3.0</span></div>
     </div>
   </div>
 </footer>
@@ -783,6 +799,19 @@ addEventListener('keydown',e=>{
   };
   k.addEventListener('click',hit);
   k.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); hit(); } });
+})();
+
+/* ===== intro loader ===== */
+(function(){
+  var intro=document.getElementById('intro'); if(!intro) return;
+  if(document.documentElement.classList.contains('introSeen')){ intro.remove(); return; }
+  try{ sessionStorage.setItem('jb_seen','1'); }catch(e){}
+  var reduce=false; try{ reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+  var hold=reduce?250:1750;
+  setTimeout(function(){
+    intro.classList.add('hide');
+    setTimeout(function(){ if(intro&&intro.parentNode) intro.remove(); }, reduce?0:680);
+  }, hold);
 })();
 
 /* ===== boot ===== */
