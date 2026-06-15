@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v2.0" />
+<meta name="version" content="v2.1" />
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -197,7 +197,11 @@
   .ltr-input{direction:ltr;text-align:left;letter-spacing:.3px}
   .lightbox{position:fixed;inset:0;z-index:200;background:rgba(20,18,14,.92);display:none;align-items:center;justify-content:center;padding:24px}
   .lightbox.show{display:flex}
-  .lightbox img#lbImg{max-width:92vw;max-height:82vh;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
+  .lightbox img#lbImg{max-width:92vw;max-height:82vh;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);opacity:0;transition:opacity .18s}
+  .lightbox img#lbImg.ready{opacity:1}
+  .lb-spin{position:fixed;top:50%;left:50%;width:42px;height:42px;border-radius:50%;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;display:none;transform:translate(-50%,-50%);animation:lbspin .7s linear infinite}
+  .lightbox.loading .lb-spin{display:block}
+  @keyframes lbspin{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
   .lb-close{position:fixed;inset-block-start:18px;inset-inline-end:18px;width:44px;height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.35);color:#fff;font-size:24px;line-height:1;cursor:pointer}
   .lb-nav{position:fixed;inset-block-start:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.4);color:#fff;font-size:22px;cursor:pointer;display:grid;place-items:center}
   .lb-prev{inset-inline-start:16px}.lb-next{inset-inline-end:16px}
@@ -373,7 +377,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی و توسعه: <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v2.0</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — تمامی حقوق محفوظ است. <span class="ver">· v2.1</span></div>
     </div>
   </div>
 </footer>
@@ -416,7 +420,8 @@
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
   <button class="lb-close" onclick="closeLightbox()" aria-label="بستن">×</button>
   <button class="lb-nav lb-prev" onclick="lbNav(-1)" aria-label="قبلی">❮</button>
-  <img id="lbImg" src="" alt="" />
+  <div class="lb-spin" id="lbSpin"></div>
+  <img id="lbImg" src="" alt="" decoding="async" fetchpriority="high" />
   <button class="lb-nav lb-next" onclick="lbNav(1)" aria-label="بعدی">❯</button>
   <div class="lb-count" id="lbCount"></div>
 </div>
@@ -686,11 +691,20 @@ let lbList=[], lbIdx=0;
 function openLightbox(pid, idx){
   const pr=productCache.find(p=>p.id===pid); if(!pr) return;
   lbList=imgsOf(pr); if(!lbList.length) return;
-  lbIdx=idx||0; renderLb();
+  lbIdx=idx||0;
   document.getElementById('lightbox').classList.add('show');
+  renderLb();
+  // warm the browser cache for the other photos so swiping is instant
+  lbList.forEach((u,i)=>{ if(i!==lbIdx){ const im=new Image(); im.src=u; } });
 }
 function renderLb(){
-  document.getElementById('lbImg').src=lbList[lbIdx];
+  const im=document.getElementById('lbImg');
+  const box=document.getElementById('lightbox');
+  const done=()=>{ im.classList.add('ready'); box.classList.remove('loading'); };
+  im.classList.remove('ready'); box.classList.add('loading');
+  im.onload=done; im.onerror=()=>box.classList.remove('loading');
+  im.src=lbList[lbIdx];
+  if(im.complete && im.naturalWidth) done();   // already cached → show instantly
   const multi=lbList.length>1;
   document.getElementById('lbCount').textContent = multi ? (faNum(lbIdx+1)+' / '+faNum(lbList.length)) : '';
   document.querySelector('.lb-prev').style.display=multi?'grid':'none';
