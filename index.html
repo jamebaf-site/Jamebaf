@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v3.7" />
+<meta name="version" content="v3.8" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -141,8 +141,8 @@
   .creator b{color:#fff;font-weight:600}
   .copy{color:rgba(255,255,255,.4)}
 
-  .fab{position:fixed;inset-block-end:calc(24px + env(safe-area-inset-bottom));inset-inline-start:24px;z-index:55;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--ink);box-shadow:0 12px 30px -12px rgba(0,0,0,.5);transition:.2s}
-  .fab:hover{transform:scale(1.06)}
+  .fab{position:fixed;inset-block-end:calc(24px + env(safe-area-inset-bottom));inset-inline-start:24px;z-index:55;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--ink);box-shadow:0 12px 30px -12px rgba(0,0,0,.5);transition:transform .2s,box-shadow .2s;transform:translateZ(0);will-change:transform;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+  @media (hover:hover){.fab:hover{transform:translateZ(0) scale(1.06)}}
   .fab svg{width:22px;height:22px}
 
   .mobile-menu{display:none;position:fixed;inset:0;z-index:70;background:var(--paper);padding:84px 32px 32px;flex-direction:column}
@@ -152,6 +152,7 @@
 
   .overlay{position:fixed;inset:0;z-index:80;background:rgba(20,18,14,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
   .overlay.show{display:flex}
+  body.scroll-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   .modal{background:var(--card);border-radius:16px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.5);animation:pop .28s ease;max-height:92vh;overflow-y:auto}
   @keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   .modal-head{padding:30px 28px 22px;text-align:center;border-bottom:1px solid var(--line);position:relative}
@@ -216,9 +217,9 @@
   .ltr-input{direction:ltr;text-align:left;letter-spacing:.3px}
   .lightbox{position:fixed;inset:0;z-index:200;background:rgba(20,18,14,.9);display:none;align-items:center;justify-content:center;padding:20px}
   .lightbox.show{display:flex}
-  .lb-card{width:min(94vw,500px);max-height:90vh;background:var(--card);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 90px -30px rgba(0,0,0,.7)}
+  .lb-card{width:min(94vw,500px);max-height:90vh;max-height:90dvh;background:var(--card);border-radius:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;box-shadow:0 40px 90px -30px rgba(0,0,0,.7)}
   .lb-imgwrap{position:relative;background:var(--mist);display:flex;align-items:center;justify-content:center;min-height:220px}
-  .lb-imgwrap img#lbImg{max-width:100%;max-height:60vh;object-fit:contain;display:block;opacity:0;transition:opacity .18s}
+  .lb-imgwrap img#lbImg{max-width:100%;max-height:60vh;max-height:56dvh;object-fit:contain;display:block;opacity:0;transition:opacity .18s}
   .lb-imgwrap img#lbImg.ready{opacity:1}
   .lb-spin{position:absolute;top:50%;left:50%;width:38px;height:38px;border-radius:50%;border:3px solid rgba(0,0,0,.12);border-top-color:var(--ink);display:none;transform:translate(-50%,-50%);animation:lbspin .7s linear infinite}
   .lightbox.loading .lb-spin{display:block}
@@ -547,10 +548,10 @@ function openAuth(){
   toggleMenu(false);
   if(isAdminFlag){ openPanel(); }
   else{ setModalHead('ورود مدیران','این بخش ویژه مدیران سایت است'); showStep('stepLogin'); }
-  document.getElementById('overlay').classList.add('show');
+  document.getElementById('overlay').classList.add('show'); lockScroll();
   setTimeout(()=>{const f=document.querySelector('.step.active input'); if(f)f.focus();},120);
 }
-function closeAuth(){ document.getElementById('overlay').classList.remove('show'); }
+function closeAuth(){ document.getElementById('overlay').classList.remove('show'); unlockScroll(); }
 
 async function doLogin(){
   const email=val('admEmail').trim(), pass=val('admPass');
@@ -754,12 +755,17 @@ async function idleLogout(){
 }
 ['mousemove','keydown','click','touchstart','scroll'].forEach(ev=>addEventListener(ev,onActivity,{passive:true}));
 
+/* ===== scroll lock for preview/modals (iOS-safe) ===== */
+let _sy=0,_lk=0;
+function lockScroll(){ if(_lk++===0){ _sy=window.scrollY||document.documentElement.scrollTop||0; document.body.style.top=(-_sy)+"px"; document.body.classList.add("scroll-locked"); } }
+function unlockScroll(){ if(_lk>0 && --_lk===0){ document.body.classList.remove("scroll-locked"); document.body.style.top=""; window.scrollTo(0,_sy); } }
+
 /* ===== photo lightbox (gallery) ===== */
 let lbList=[], lbIdx=0, lbProduct=null;
 function openLightbox(pid, idx){
   const pr=productCache.find(p=>p.id===pid); if(!pr) return;
   lbProduct=pr; lbList=imgsOf(pr); lbIdx=Math.min(idx||0, Math.max(0,lbList.length-1));
-  document.getElementById('lightbox').classList.add('show');
+  document.getElementById('lightbox').classList.add('show'); lockScroll();
   renderLb();
   // warm the cache for the other photos so swiping is instant
   lbList.forEach((u,i)=>{ if(i!==lbIdx){ const im=new Image(); im.src=u; } });
@@ -794,7 +800,7 @@ function renderLb(){
   document.getElementById('lbInfo').innerHTML=html;
 }
 function lbNav(d){ if(!lbList.length)return; lbIdx=(lbIdx+d+lbList.length)%lbList.length; renderLb(); }
-function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); unlockScroll(); }
 function editFromDetail(id){ closeLightbox(); if(!isAdminFlag) return; openAuth(); startEdit(id); }
 function deleteFromDetail(id){ if(!confirm('این محصول حذف شود؟')) return; closeLightbox(); delProductUI(id); }
 
