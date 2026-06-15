@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v3.3" />
+<meta name="version" content="v3.4" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -41,7 +41,7 @@
   @keyframes introShine{from{background-position:165% 0}to{background-position:-165% 0}}
 
   .eyebrow{display:flex;align-items:center;gap:12px;font-size:12.5px;font-weight:600;letter-spacing:3px;color:var(--soft);margin-bottom:22px}
-  .eyebrow::before{content:"";width:30px;height:1px;background:var(--line-2)}
+  .eyebrow::before{content:"";width:34px;height:0;border-top:1px dashed var(--line-2)}
   h1,h2,h3{font-weight:300;letter-spacing:-.4px;line-height:1.12;margin:0}
   .title{font-size:clamp(30px,4.4vw,50px)}
   .lede{color:var(--soft);font-size:18.5px;font-weight:300;max-width:560px}
@@ -69,6 +69,14 @@
   .hero h1{font-size:clamp(40px,6.4vw,74px);line-height:1.2;margin-bottom:22px}
   .hero h1 em{font-style:normal;font-weight:500}
   .hero .lede{margin-bottom:34px}
+  .thread{margin:10px 0 32px;max-width:340px}
+  .thread svg{width:100%;height:auto;display:block;overflow:visible}
+  .thread .weft{fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-dasharray:460;stroke-dashoffset:0;animation:weave 1.8s cubic-bezier(.45,0,.15,1) .35s both}
+  .thread .warp{stroke:var(--line-2);stroke-width:1;opacity:.55;animation:warpIn .7s ease .1s both}
+  .thread .knot{fill:var(--ink);transform-box:fill-box;transform-origin:center;animation:knotIn .5s cubic-bezier(.2,.7,.2,1) 2s both}
+  @keyframes weave{from{stroke-dashoffset:460}to{stroke-dashoffset:0}}
+  @keyframes warpIn{from{opacity:0}to{opacity:.55}}
+  @keyframes knotIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
   .cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
   .btn{display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:none;font-family:inherit;font-weight:600;font-size:16px;padding:14px 26px;border-radius:8px;transition:.22s}
   .btn-solid{background:var(--ink);color:#fff}
@@ -293,6 +301,18 @@
     <div class="hero-text">
       <div class="eyebrow">پوشاک · تریکو</div>
       <h1>اصالت در هر<br/><em>تار و پود</em></h1>
+      <div class="thread" aria-hidden="true">
+        <svg viewBox="0 0 320 36" role="presentation">
+          <line class="warp" x1="290" y1="6" x2="290" y2="30"/>
+          <line class="warp" x1="238" y1="6" x2="238" y2="30"/>
+          <line class="warp" x1="186" y1="6" x2="186" y2="30"/>
+          <line class="warp" x1="134" y1="6" x2="134" y2="30"/>
+          <line class="warp" x1="82" y1="6" x2="82" y2="30"/>
+          <line class="warp" x1="30" y1="6" x2="30" y2="30"/>
+          <path class="weft" d="M316,18 q-13,-13 -26,0 q-13,13 -26,0 q-13,-13 -26,0 q-13,13 -26,0 q-13,-13 -26,0 q-13,13 -26,0 q-13,-13 -26,0 q-13,13 -26,0 q-13,-13 -26,0 q-13,13 -26,0 q-13,-13 -26,0 q-13,13 -26,0"/>
+          <circle class="knot" cx="316" cy="18" r="3"/>
+        </svg>
+      </div>
       <p class="lede">جامه باف، عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل.</p>
       <div class="cta-row">
         <a href="#products" class="btn btn-solid">مشاهده محصولات</a>
@@ -405,7 +425,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v3.3</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v3.4</span></div>
     </div>
   </div>
 </footer>
