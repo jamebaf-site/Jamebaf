@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v4.3" />
+<meta name="version" content="v4.4" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -314,6 +314,37 @@
   .xp-btns .del{color:#b00020;border-color:#e6b8be}
   .xp-add{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:none;border:1px dashed var(--line-2);border-radius:8px;padding:9px;width:100%;cursor:pointer;transition:.2s}
   .xp-add:hover{border-color:var(--ink);background:var(--mist)}
+  /* ===== in-place section editing ===== */
+  .sec-edit-wrap{display:flex;justify-content:flex-start;margin-bottom:10px}
+  .sec-edit{display:none;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line-2);color:var(--ink-2);border-radius:9px;padding:7px 10px;cursor:pointer;font-family:inherit;transition:.2s;vertical-align:middle}
+  body.is-admin .sec-edit{display:inline-flex}
+  .sec-head .sec-edit{margin-top:10px}
+  .sec-edit:hover{border-color:var(--ink);color:var(--ink)}
+  .sec-edit svg{width:17px;height:17px;flex:none}
+  .sec-edit.editing{border-color:var(--ink);color:var(--ink);background:var(--mist)}
+  .sec-edit-actions{display:inline-flex;gap:6px}
+  .sec-edit-actions button{font-family:inherit;font-size:13px;font-weight:600;border-radius:7px;padding:5px 12px;cursor:pointer;border:1px solid var(--line-2)}
+  .se-save{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .se-cancel{background:var(--card);color:var(--ink-2)}
+  /* editable regions while a section is in edit mode */
+  [data-ck].ck-editing,[data-xpedit] .xp-live{outline:2px dashed var(--line-2);outline-offset:3px;border-radius:4px;background:rgba(20,18,14,.02);cursor:text;min-width:24px;display:inline-block}
+  p[data-ck].ck-editing,div[data-ck].ck-editing{display:block}
+  .ck-editing:focus{outline:2px solid var(--ink);background:var(--card)}
+  /* inline extra-paragraph editing controls */
+  .xp-live{margin:0 0 10px;padding:10px 12px}
+  .xp-inline-add{display:none;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:none;border:1px dashed var(--line-2);border-radius:8px;padding:8px 12px;cursor:pointer;margin-top:8px}
+  .editing-on .xp-inline-add{display:inline-block}
+  .xp-live-row{position:relative}
+  .xp-del-inline{position:absolute;inset-inline-end:-8px;inset-block-start:-8px;width:22px;height:22px;border-radius:50%;border:1px solid #e6b8be;background:var(--card);color:#b00020;cursor:pointer;font-size:14px;line-height:1;display:none}
+  .editing-on .xp-del-inline{display:block}
+  /* admin edit/delete buttons on each product card */
+  .pcard{position:relative}
+  .card-admin{position:absolute;inset-block-start:8px;inset-inline-end:8px;display:none;gap:6px;z-index:3}
+  body.is-admin .card-admin{display:flex}
+  .card-admin button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-2);background:rgba(255,255,255,.92);backdrop-filter:blur(4px);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0;transition:.2s}
+  .card-admin button:hover{border-color:var(--ink)}
+  .card-admin .del{color:#b00020;border-color:#e6b8be}
+  .card-admin svg{width:15px;height:15px}
 </style>
 </head>
 <body>
@@ -362,6 +393,7 @@
 <section class="hero" id="home">
   <div class="wrap hero-grid reveal">
     <div class="hero-text">
+      <div class="sec-edit-wrap"><button class="sec-edit" data-edit="hero" onclick="toggleSectionEdit('hero')" aria-label="ویرایش این بخش" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="sec-edit-actions" hidden><button type="button" class="se-save" onclick="event.stopPropagation();saveSectionEdit('hero',this)">ذخیره</button><button type="button" class="se-cancel" onclick="event.stopPropagation();cancelSectionEdit('hero')">لغو</button></span></button></div>
       <div class="eyebrow" data-ck="hero_eyebrow">پوشاک · تریکو</div>
       <h1><span class="ttl-lg" data-ck="hero_title_lg">اصالت در هر</span><em data-ck="hero_title_em">تار و پود</em></h1>
       <div class="thread" aria-hidden="true">
@@ -399,6 +431,7 @@
 <section id="about" class="alt">
   <div class="wrap about-grid">
     <div class="about-text reveal">
+      <div class="sec-edit-wrap"><button class="sec-edit" data-edit="about" onclick="toggleSectionEdit('about')" aria-label="ویرایش این بخش" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="sec-edit-actions" hidden><button type="button" class="se-save" onclick="event.stopPropagation();saveSectionEdit('about',this)">ذخیره</button><button type="button" class="se-cancel" onclick="event.stopPropagation();cancelSectionEdit('about')">لغو</button></span></button></div>
       <div class="eyebrow" data-ck="about_eyebrow">درباره ما</div>
       <h2 class="title" style="margin-bottom:22px" data-ck="about_title">درباره جامه باف</h2>
       <p data-ck="about_p1">جامه باف در زمینه تأمین و عرضه پوشاک و تریکو باکیفیت فعالیت می‌کند و بر اصالت و دقت در ارائه محصولات تمرکز دارد.</p>
@@ -420,6 +453,7 @@
     <div class="sec-head reveal">
       <div class="eyebrow" data-ck="products_eyebrow">محصولات و خدمات</div>
       <h2 class="title" data-ck="products_title">آنچه ارائه می‌دهیم</h2>
+      <button class="sec-edit" data-edit="products" onclick="toggleSectionEdit('products')" aria-label="ویرایش این بخش" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="sec-edit-actions" hidden><button type="button" class="se-save" onclick="event.stopPropagation();saveSectionEdit('products',this)">ذخیره</button><button type="button" class="se-cancel" onclick="event.stopPropagation();cancelSectionEdit('products')">لغو</button></span></button>
     </div>
     <div class="search-bar" id="searchBar">
       <div class="search-inner">
@@ -437,6 +471,7 @@
     <div class="sec-head reveal">
       <div class="eyebrow" data-ck="why_eyebrow">چرا جامه باف</div>
       <h2 class="title" data-ck="why_title">دلایلی برای اعتماد</h2>
+      <button class="sec-edit" data-edit="why" onclick="toggleSectionEdit('why')" aria-label="ویرایش این بخش" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="sec-edit-actions" hidden><button type="button" class="se-save" onclick="event.stopPropagation();saveSectionEdit('why',this)">ذخیره</button><button type="button" class="se-cancel" onclick="event.stopPropagation();cancelSectionEdit('why')">لغو</button></span></button>
     </div>
     <div class="why-grid">
       <div class="why reveal">
@@ -464,6 +499,7 @@
     <div class="sec-head reveal">
       <div class="eyebrow" data-ck="contact_eyebrow">تماس با ما</div>
       <h2 class="title" data-ck="contact_title">با ما در ارتباط باشید</h2>
+      <button class="sec-edit" data-edit="contact" onclick="toggleSectionEdit('contact')" aria-label="ویرایش این بخش" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="sec-edit-actions" hidden><button type="button" class="se-save" onclick="event.stopPropagation();saveSectionEdit('contact',this)">ذخیره</button><button type="button" class="se-cancel" onclick="event.stopPropagation();cancelSectionEdit('contact')">لغو</button></span></button>
     </div>
     <div class="contact-grid" style="grid-template-columns:1fr;max-width:600px;margin-inline:auto">
       <div class="reveal">
@@ -499,6 +535,7 @@
         <img src="logo-white.png" alt="جامه باف" />
         <div class="nm">جامه باف</div>
         <div class="tg" data-ck="footer_tagline">اصالت در هر تار و پود</div>
+        <button class="sec-edit" data-edit="footer" onclick="toggleSectionEdit('footer')" aria-label="ویرایش این بخش" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span class="sec-edit-actions" hidden><button type="button" class="se-save" onclick="event.stopPropagation();saveSectionEdit('footer',this)">ذخیره</button><button type="button" class="se-cancel" onclick="event.stopPropagation();cancelSectionEdit('footer')">لغو</button></span></button>
       </div>
       <nav class="foot-links">
         <a href="#home">خانه</a><a href="#about">درباره ما</a><a href="#products">محصولات</a><a href="#why">چرا ما</a><a href="#contact">تماس با ما</a>
@@ -506,7 +543,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v4.3</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v4.4</span></div>
     </div>
   </div>
 </footer>
@@ -632,6 +669,10 @@ function renderProducts(){
   }
   grid.innerHTML=list.map(pr=>(
     '<div class="pcard reveal in" onclick="openLightbox(\''+pr.id+'\',0)">'
+    +'<div class="card-admin">'
+      +'<button onclick="event.stopPropagation();cardEdit(\''+pr.id+'\')" aria-label="ویرایش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>'
+      +'<button class="del" onclick="event.stopPropagation();cardDelete(\''+pr.id+'\')" aria-label="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>'
+    +'</div>'
     +cardMedia(pr)
     +'<div class="pcap">'+esc(pr.title)+'</div>'
     +cardTags(pr)
@@ -878,6 +919,7 @@ async function refreshAuth(){
   }
   armIdle();
   renderProducts();
+  syncAdminEditUI();
 }
 
 /* ===== auto-logout after inactivity (admin only) ===== */
@@ -941,6 +983,8 @@ function lbNav(d){ if(!lbList.length)return; lbIdx=(lbIdx+d+lbList.length)%lbLis
 function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); unlockScroll(); }
 function editFromDetail(id){ closeLightbox(); if(!isAdminFlag) return; openAuth(); startEdit(id); }
 function deleteFromDetail(id){ if(!confirm('این محصول حذف شود؟')) return; closeLightbox(); delProductUI(id); }
+function cardEdit(id){ if(!isAdminFlag) return; openAuth(); startEdit(id); }
+function cardDelete(id){ if(!isAdminFlag) return; if(!confirm('این محصول حذف شود؟')) return; delProductUI(id); }
 
 /* ===== keyboard ===== */
 document.getElementById('admEmail').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('admPass').focus();});
@@ -1189,6 +1233,162 @@ async function saveContentUI(btn){
     toast('محتوای سایت ذخیره شد.');
   }catch(e){ toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق بود')); }
   finally{ if(btn){ btn.disabled=false; btn.textContent='ذخیره محتوای سایت'; } }
+}
+
+/* ===== in-place section editing (admin) ===== */
+/* which data-ck keys belong to each section (drives editability + save scope) */
+const SECTION_KEYS = {
+  hero:    ['hero_eyebrow','hero_title_lg','hero_title_em','hero_lede'],
+  about:   ['about_eyebrow','about_title','about_p1','about_p2','stat1_n','stat1_l','stat2_n','stat2_l','stat3_n','stat3_l'],
+  products:['products_eyebrow','products_title'],
+  why:     ['why_eyebrow','why_title','why1_h','why1_p','why2_h','why2_p','why3_h','why3_p'],
+  contact: ['contact_eyebrow','contact_title'],
+  footer:  ['footer_tagline'],
+};
+const SECTION_EXTRA = { hero:'hero', about:'about', why:'why' }; // extra-paragraph blocks
+const CONTACT_FIELDS = ['contact_address','contact_phone1','contact_phone2','contact_fax','contact_mobile','contact_email'];
+let editingSection = null;
+
+function elsForKeys(keys){
+  const out=[];
+  keys.forEach(k=>document.querySelectorAll('[data-ck="'+k+'"]').forEach(el=>out.push([k,el])));
+  return out;
+}
+function setBtnEditing(sec,on){
+  const btn=document.querySelector('.sec-edit[data-edit="'+sec+'"]'); if(!btn) return;
+  btn.classList.toggle('editing',on);
+  const pencilSvg=btn.querySelector('svg'), actions=btn.querySelector('.sec-edit-actions');
+  if(pencilSvg) pencilSvg.hidden=on;
+  if(actions) actions.hidden=!on;
+}
+
+function toggleSectionEdit(sec){
+  if(!isAdminFlag) return;
+  // products has no inline text — open the manager instead
+  if(sec==='products'){ openPanel(); return; }
+  if(editingSection && editingSection!==sec){ cancelSectionEdit(editingSection); }
+  if(editingSection===sec){ cancelSectionEdit(sec); return; }
+  editingSection=sec;
+  setBtnEditing(sec,true);
+
+  // make data-ck text regions editable
+  elsForKeys(SECTION_KEYS[sec]||[]).forEach(([k,el])=>{
+    el.dataset.ckOrig = (contentMap[k]!==undefined&&contentMap[k]!==null&&contentMap[k]!=='') ? contentMap[k] : el.textContent;
+    el.classList.add('ck-editing');
+    el.setAttribute('contenteditable','plaintext-only');
+  });
+
+  // contact special: edit underlying values as plain text inside their cells
+  if(sec==='contact') contactEditOn();
+
+  // extra paragraphs inline
+  const xs=SECTION_EXTRA[sec];
+  if(xs){ extraInlineOn(xs); }
+}
+
+function collectSection(sec){
+  const rows=[];
+  elsForKeys(SECTION_KEYS[sec]||[]).forEach(([k,el])=>{
+    rows.push({ key:k, value: el.innerText.replace(/\n+/g,' ').trim() });
+  });
+  if(sec==='contact'){
+    CONTACT_FIELDS.forEach(k=>{
+      const inp=document.getElementById('cedit_'+k);
+      if(inp) rows.push({ key:k, value: inp.innerText.trim() });
+    });
+  }
+  const xs=SECTION_EXTRA[sec];
+  if(xs){
+    const arr=[...document.querySelectorAll('#extra_'+xs+' .xp-live')].map(n=>n.innerText.trim()).filter(t=>t!=='');
+    rows.push({ key:'extra_'+xs, value: arr });
+  }
+  return rows;
+}
+
+async function saveSectionEdit(sec,btn){
+  const rows=collectSection(sec);
+  if(btn){ btn.disabled=true; btn.textContent='…'; }
+  try{
+    await JB.saveContentBatch(rows);
+    rows.forEach(r=>{ contentMap[r.key]=r.value; });
+    teardownEdit(sec);
+    applyContent();
+    toast('این بخش ذخیره شد.');
+  }catch(e){ toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق بود')); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent='ذخیره'; } }
+}
+
+function cancelSectionEdit(sec){
+  // restore data-ck text from saved values
+  elsForKeys(SECTION_KEYS[sec]||[]).forEach(([k,el])=>{
+    if('ckOrig' in el.dataset){ el.textContent=el.dataset.ckOrig; }
+  });
+  teardownEdit(sec);
+  applyContent();
+}
+
+function teardownEdit(sec){
+  elsForKeys(SECTION_KEYS[sec]||[]).forEach(([k,el])=>{
+    el.classList.remove('ck-editing'); el.removeAttribute('contenteditable'); delete el.dataset.ckOrig;
+  });
+  if(sec==='contact') contactEditOff();
+  const xs=SECTION_EXTRA[sec]; if(xs) extraInlineOff(xs);
+  setBtnEditing(sec,false);
+  editingSection=null;
+}
+
+/* ----- contact in-place: swap link cells for editable plain-text values ----- */
+function contactEditOn(){
+  const map=[['cAddress','contact_address'],['cPhones',null],['cFax','contact_fax'],['cMobile','contact_mobile'],['cEmail','contact_email']];
+  const box=document.querySelector('#contact .contact-grid'); if(!box) return;
+  box.classList.add('editing-on');
+  // build a simple editable field per value, appended under each row's value cell
+  const mk=(k,label,val)=>'<div class="ce-field" style="margin:8px 0 0"><label>'+esc(label)+'</label>'
+    +'<div id="cedit_'+k+'" class="ck-editing ltr-input" contenteditable="plaintext-only" style="padding:8px 10px">'+esc(val)+'</div></div>';
+  const addr=document.getElementById('cAddress');
+  if(addr) addr.insertAdjacentHTML('afterend', mk('contact_address','آدرس', cval('contact_address')));
+  const ph=document.getElementById('cPhones');
+  if(ph){ ph.insertAdjacentHTML('afterend', mk('contact_phone1','تلفن ۱', cval('contact_phone1'))+mk('contact_phone2','تلفن ۲', cval('contact_phone2'))); }
+  const fx=document.getElementById('cFax');
+  if(fx) fx.insertAdjacentHTML('afterend', mk('contact_fax','فکس', cval('contact_fax')));
+  const mb=document.getElementById('cMobile');
+  if(mb) mb.insertAdjacentHTML('afterend', mk('contact_mobile','موبایل', cval('contact_mobile')));
+  const emRow=document.getElementById('cEmailRow');
+  if(emRow){ const em=document.getElementById('cEmail'); if(em) em.insertAdjacentHTML('afterend', mk('contact_email','ایمیل (خالی = پنهان)', cval('contact_email'))); if(emRow.style.display==='none') emRow.style.display=''; }
+}
+function contactEditOff(){
+  document.querySelectorAll('[id^="cedit_"]').forEach(n=>{ const f=n.closest('.ce-field'); (f||n).remove(); });
+  const box=document.querySelector('#contact .contact-grid'); if(box) box.classList.remove('editing-on');
+}
+
+/* ----- extra paragraphs inline ----- */
+function extraInlineOn(xs){
+  const box=document.getElementById('extra_'+xs); if(!box) return;
+  box.classList.add('editing-on');
+  const arr=extraArr('extra_'+xs);
+  box.innerHTML = arr.map(t=>xpLiveRow(t)).join('')
+    + '<button type="button" class="xp-inline-add" onclick="xpInlineAdd(\''+xs+'\')">+ افزودن پاراگراف</button>';
+}
+function xpLiveRow(t){
+  return '<div class="xp-live-row"><button type="button" class="xp-del-inline" onclick="this.parentNode.remove()" aria-label="حذف">×</button>'
+    +'<p class="xp-live" contenteditable="plaintext-only">'+esc(t)+'</p></div>';
+}
+function xpInlineAdd(xs){
+  const box=document.getElementById('extra_'+xs); if(!box) return;
+  const addBtn=box.querySelector('.xp-inline-add');
+  addBtn.insertAdjacentHTML('beforebegin', xpLiveRow(''));
+  const last=addBtn.previousElementSibling.querySelector('.xp-live'); if(last) last.focus();
+}
+function extraInlineOff(xs){
+  const box=document.getElementById('extra_'+xs); if(box){ box.classList.remove('editing-on'); }
+  // applyContent() will repaint from contentMap afterwards
+}
+
+/* show/hide admin pencils + body flag whenever auth changes */
+function syncAdminEditUI(){
+  document.body.classList.toggle('is-admin', !!isAdminFlag);
+  document.querySelectorAll('.sec-edit').forEach(b=>{ b.hidden = !isAdminFlag; });
+  if(!isAdminFlag && editingSection){ cancelSectionEdit(editingSection); }
 }
 
 /* ===== boot ===== */
