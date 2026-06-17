@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v4.2" />
+<meta name="version" content="v4.3" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -276,6 +276,44 @@
   .ce-field input:focus,.ce-field textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,18,14,.08)}
   .ce-field textarea{resize:vertical;min-height:60px;line-height:1.8}
   .ce-field .ltr-input{direction:ltr;text-align:left}
+  /* select matches input styling */
+  .field select{width:100%;font-family:inherit;font-size:16px;color:var(--ink);padding:13px 15px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);transition:.2s;cursor:pointer}
+  .field select:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,18,14,.08)}
+  /* product card tag chips */
+  .ptags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;padding:0 10px 10px}
+  .ptag{font-size:11px;font-weight:600;color:var(--ink-2);background:var(--mist);border:1px solid var(--line);border-radius:6px;padding:2px 8px;line-height:1.7}
+  .ptag.g{background:var(--ink);color:#fff;border-color:var(--ink)}
+  /* search */
+  .nav-search{background:none;border:none;cursor:pointer;color:var(--ink-2);padding:8px;border-radius:6px;display:inline-flex;align-items:center;transition:.2s}
+  .nav-search:hover{color:var(--ink);background:var(--mist)}
+  .nav-search svg{width:21px;height:21px;stroke-width:1.8}
+  .search-bar{max-width:var(--maxw);margin:0 auto 26px;padding:0 28px;display:none}
+  .search-bar.show{display:block}
+  .search-inner{position:relative;max-width:520px}
+  .search-inner svg{position:absolute;inset-inline-start:14px;inset-block-start:50%;transform:translateY(-50%);width:19px;height:19px;color:var(--soft);pointer-events:none}
+  .search-inner input{width:100%;font-family:inherit;font-size:16px;color:var(--ink);padding:13px 44px 13px 15px;border:1px solid var(--line-2);border-radius:10px;background:var(--card);transition:.2s}
+  .search-inner input:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,18,14,.08)}
+  .search-clear{position:absolute;inset-inline-end:10px;inset-block-start:50%;transform:translateY(-50%);background:none;border:none;color:var(--soft);cursor:pointer;font-size:20px;line-height:1;padding:4px;display:none}
+  .search-clear.show{display:block}
+  /* admin-added paragraphs */
+  .extra-paras{display:flex;flex-direction:column;gap:14px}
+  .extra-paras p{margin:0}
+  .about-text .extra-paras{margin-top:18px}
+  .hero-text .extra-paras{margin-top:18px;color:var(--soft);max-width:560px}
+  .why-extra{margin-top:40px;max-width:760px;color:var(--soft);font-size:16px}
+  .why-extra p{margin:0}
+  /* extra-paragraph editor rows */
+  .xp-list{display:flex;flex-direction:column;gap:8px;margin:6px 0 12px}
+  .xp-row{display:flex;gap:8px;align-items:flex-start}
+  .xp-row textarea{flex:1;font-family:inherit;font-size:14px;color:var(--ink);padding:9px 11px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);resize:vertical;min-height:52px;line-height:1.8}
+  .xp-row textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,18,14,.08)}
+  .xp-btns{display:flex;flex-direction:column;gap:4px;flex:none}
+  .xp-btns button{width:30px;height:24px;border:1px solid var(--line-2);background:var(--mist);border-radius:6px;cursor:pointer;font-size:13px;line-height:1;color:var(--ink);display:grid;place-items:center;padding:0;font-family:inherit}
+  .xp-btns button:hover:not(:disabled){border-color:var(--ink)}
+  .xp-btns button:disabled{opacity:.3;cursor:default}
+  .xp-btns .del{color:#b00020;border-color:#e6b8be}
+  .xp-add{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);background:none;border:1px dashed var(--line-2);border-radius:8px;padding:9px;width:100%;cursor:pointer;transition:.2s}
+  .xp-add:hover{border-color:var(--ink);background:var(--mist)}
 </style>
 </head>
 <body>
@@ -300,6 +338,7 @@
       <a href="#why">چرا ما</a>
       <a href="#contact">تماس با ما</a>
     </nav>
+    <button class="nav-search" onclick="toggleSearch()" aria-label="جستجو"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></button>
     <button class="auth-btn" id="authBtn" onclick="openAuth()" style="display:none">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
       <span class="lbl" id="authLbl">مدیریت</span>
@@ -313,6 +352,7 @@
 <div class="mobile-menu" id="mobileMenu">
   <button class="mm-close" onclick="toggleMenu(false)" aria-label="بستن">×</button>
   <a href="#home" onclick="toggleMenu(false)">خانه</a>
+  <a href="#products" onclick="toggleMenu(false);openSearch()">جستجوی محصولات</a>
   <a href="#about" onclick="toggleMenu(false)">درباره ما</a>
   <a href="#products" onclick="toggleMenu(false)">محصولات</a>
   <a href="#why" onclick="toggleMenu(false)">چرا ما</a>
@@ -345,6 +385,7 @@
         </svg>
       </div>
       <p class="lede" data-ck="hero_lede">جامه باف، عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل.</p>
+      <div class="extra-paras" id="extra_hero" data-extra="hero"></div>
       <div class="cta-row">
         <a href="#products" class="btn btn-solid">مشاهده محصولات</a>
         <a href="#contact" class="btn btn-text">تماس با ما ←</a>
@@ -362,6 +403,7 @@
       <h2 class="title" style="margin-bottom:22px" data-ck="about_title">درباره جامه باف</h2>
       <p data-ck="about_p1">جامه باف در زمینه تأمین و عرضه پوشاک و تریکو باکیفیت فعالیت می‌کند و بر اصالت و دقت در ارائه محصولات تمرکز دارد.</p>
       <p data-ck="about_p2">از انتخاب مواد اولیه تا تحویل نهایی، تمامی مراحل با نظارت دقیق انجام می‌شود تا محصولی باکیفیت و ماندگار به دست مشتریان برسد.</p>
+      <div class="extra-paras" id="extra_about" data-extra="about"></div>
     </div>
     <div class="about-side reveal">
       <div class="stats">
@@ -378,6 +420,13 @@
     <div class="sec-head reveal">
       <div class="eyebrow" data-ck="products_eyebrow">محصولات و خدمات</div>
       <h2 class="title" data-ck="products_title">آنچه ارائه می‌دهیم</h2>
+    </div>
+    <div class="search-bar" id="searchBar">
+      <div class="search-inner">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="searchInput" type="text" placeholder="جستجو در محصولات…" oninput="onSearchInput(this.value)" autocomplete="off" />
+        <button class="search-clear" id="searchClear" onclick="clearSearch()" aria-label="پاک کردن">×</button>
+      </div>
     </div>
     <div class="pgrid" id="pgrid"></div>
   </div>
@@ -406,6 +455,7 @@
         <p data-ck="why3_p">ارائه مشاوره تخصصی و خدمات پس از فروش به مشتریان.</p>
       </div>
     </div>
+    <div class="extra-paras why-extra" id="extra_why" data-extra="why"></div>
   </div>
 </section>
 
@@ -456,7 +506,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v4.2</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v4.3</span></div>
     </div>
   </div>
 </footer>
@@ -485,6 +535,8 @@
         <div class="block-label" id="apHeading">افزودن محصول</div>
         <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
+        <div class="field"><label for="apGender">جنسیت</label><select id="apGender"><option value="">— انتخاب کنید —</option><option value="مردانه">مردانه</option><option value="زنانه">زنانه</option><option value="بچگانه">بچگانه</option><option value="یونیسکس">یونیسکس</option></select></div>
+        <div class="field"><label for="apModel">مدل</label><input id="apModel" type="text" placeholder="مثلاً یقه‌اسکی، جودون" /></div>
         <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
         <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
         <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
@@ -538,6 +590,7 @@ function toast(msg){
 /* ===== state ===== */
 let isAdminFlag=false;
 let productCache=[];
+let searchQuery="";
 
 /* ===== products (public read) ===== */
 async function loadProducts(){
@@ -554,18 +607,63 @@ function cardMedia(pr){
   // only the cover loads on the card; details + other photos load on tap
   return badge+'<img class="pimg" src="'+esc(imgs[0])+'" alt="'+esc(pr.title)+'" loading="lazy">';
 }
+function cardTags(pr){
+  let h='';
+  if(pr.gender) h+='<span class="ptag g">'+esc(pr.gender)+'</span>';
+  if(pr.model)  h+='<span class="ptag">'+esc(pr.model)+'</span>';
+  return h ? '<div class="ptags">'+h+'</div>' : '';
+}
+function matchesSearch(pr,q){
+  if(!q) return true;
+  const hay=((pr.title||'')+' '+(pr.description||'')+' '+(pr.gender||'')+' '+(pr.model||'')).toLowerCase();
+  return hay.includes(q);
+}
 function renderProducts(){
   const grid=document.getElementById('pgrid'); if(!grid) return;
   if(!productCache.length){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">هنوز محصولی ثبت نشده است.</div>';
     return;
   }
-  grid.innerHTML=productCache.map(pr=>(
+  const q=(searchQuery||'').trim().toLowerCase();
+  const list=productCache.filter(pr=>matchesSearch(pr,q));
+  if(!list.length){
+    grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">محصولی با این جستجو یافت نشد.</div>';
+    return;
+  }
+  grid.innerHTML=list.map(pr=>(
     '<div class="pcard reveal in" onclick="openLightbox(\''+pr.id+'\',0)">'
     +cardMedia(pr)
     +'<div class="pcap">'+esc(pr.title)+'</div>'
+    +cardTags(pr)
     +'</div>'
   )).join('');
+}
+
+/* ===== search ===== */
+function openSearch(){
+  const bar=document.getElementById('searchBar'); if(bar) bar.classList.add('show');
+  const inp=document.getElementById('searchInput');
+  setTimeout(()=>{ if(inp) inp.focus(); },80);
+}
+function toggleSearch(){
+  const bar=document.getElementById('searchBar'); if(!bar) return;
+  const willShow=!bar.classList.contains('show');
+  bar.classList.toggle('show',willShow);
+  if(willShow){
+    document.getElementById('products').scrollIntoView({behavior:'smooth'});
+    setTimeout(()=>{ const inp=document.getElementById('searchInput'); if(inp) inp.focus(); },220);
+  }
+}
+function onSearchInput(v){
+  searchQuery=v||'';
+  const c=document.getElementById('searchClear'); if(c) c.classList.toggle('show',!!searchQuery);
+  renderProducts();
+}
+function clearSearch(){
+  searchQuery='';
+  const inp=document.getElementById('searchInput'); if(inp){ inp.value=''; inp.focus(); }
+  const c=document.getElementById('searchClear'); if(c) c.classList.remove('show');
+  renderProducts();
 }
 
 /* ===== nav / menu / reveal ===== */
@@ -688,6 +786,8 @@ function clearPending(){
   pendingItems=[]; editingId=null; originalImages=[];
   const a=document.getElementById('apTitle'),b=document.getElementById('apDesc'),p=document.getElementById('apPhoto');
   if(a)a.value=''; if(b)b.value=''; if(p)p.value='';
+  const g=document.getElementById('apGender'),md=document.getElementById('apModel');
+  if(g)g.value=''; if(md)md.value='';
   const h=document.getElementById('apHeading'),s=document.getElementById('apSave'),c=document.getElementById('apCancel');
   if(h)h.textContent='افزودن محصول'; if(s)s.textContent='افزودن محصول'; if(c)c.style.display='none';
   renderPreview();
@@ -700,6 +800,8 @@ function startEdit(id){
   pendingItems=originalImages.map(u=>({kind:'url', url:u}));
   document.getElementById('apTitle').value=pr.title||'';
   document.getElementById('apDesc').value=pr.description||'';
+  document.getElementById('apGender').value=pr.gender||'';
+  document.getElementById('apModel').value=pr.model||'';
   document.getElementById('apHeading').textContent='ویرایش محصول';
   document.getElementById('apSave').textContent='ذخیره تغییرات';
   document.getElementById('apCancel').style.display='flex';
@@ -724,6 +826,7 @@ function resizeFile(file,max){
 
 async function saveProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
+  const gender=val('apGender'), model=val('apModel').trim();
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
   const label=editingId?'ذخیره تغییرات':'افزودن محصول';
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
@@ -744,10 +847,10 @@ async function saveProductUI(btn){
     const images=pendingItems.map(it=> it.kind==='url' ? it.url : uploaded.get(it));
     if(editingId){
       const removedUrls=originalImages.filter(u=>!images.includes(u));
-      await JB.updateProduct(editingId,{ title, description, images, removedUrls });
+      await JB.updateProduct(editingId,{ title, description, images, removedUrls, gender, model });
       toast('تغییرات ذخیره شد.');
     }else{
-      await JB.createProduct({ title, description, images });
+      await JB.createProduct({ title, description, images, gender, model });
       toast('محصول با موفقیت افزوده شد.');
     }
     clearPending();
@@ -982,6 +1085,26 @@ function applyContent(){
     else { em.innerHTML=''; if(emRow) emRow.style.display='none'; }
   }
   // FAB + footer call buttons could be wired later; left as-is intentionally.
+  applyExtraParas();
+}
+
+/* admin-managed extra paragraphs, one array per section */
+const EXTRA_SECTIONS = [
+  { id:'hero',  key:'extra_hero',  label:'پاراگراف‌های اضافه — بخش اصلی' },
+  { id:'about', key:'extra_about', label:'پاراگراف‌های اضافه — درباره ما' },
+  { id:'why',   key:'extra_why',   label:'پاراگراف‌های اضافه — چرا ما' },
+];
+function extraArr(key){
+  const v=contentMap[key];
+  if(Array.isArray(v)) return v.filter(x=>typeof x==='string' && x.trim()!=='');
+  return [];
+}
+function applyExtraParas(){
+  for(const sec of EXTRA_SECTIONS){
+    const box=document.getElementById('extra_'+sec.id); if(!box) continue;
+    const arr=extraArr(sec.key);
+    box.innerHTML=arr.map(t=>'<p>'+esc(t).replace(/\n/g,'<br/>')+'</p>').join('');
+  }
 }
 
 async function loadContent(){
@@ -995,9 +1118,32 @@ function ceVal(key){
   const v = (key in contentMap) ? contentMap[key] : undefined;
   return (v===undefined||v===null) ? (contentFallback[key]!==undefined?contentFallback[key]:'') : v;
 }
+let xpDraft={};   // { sectionId: [strings] } working copy while editing
+function xpRender(secId){
+  const box=document.getElementById('xp_'+secId); if(!box) return;
+  const arr=xpDraft[secId]||[];
+  box.innerHTML=arr.map((t,i)=>{
+    const first=i===0,last=i===arr.length-1;
+    return '<div class="xp-row">'
+      +'<textarea oninput="xpEdit(\''+secId+'\','+i+',this.value)">'+esc(t)+'</textarea>'
+      +'<div class="xp-btns">'
+        +'<button type="button" onclick="xpMove(\''+secId+'\','+i+',-1)" '+(first?'disabled':'')+' aria-label="بالا">↑</button>'
+        +'<button type="button" onclick="xpMove(\''+secId+'\','+i+',1)" '+(last?'disabled':'')+' aria-label="پایین">↓</button>'
+        +'<button type="button" class="del" onclick="xpDel(\''+secId+'\','+i+')" aria-label="حذف">×</button>'
+      +'</div></div>';
+  }).join('');
+}
+function xpEdit(secId,i,v){ if(xpDraft[secId]) xpDraft[secId][i]=v; }
+function xpAdd(secId){ (xpDraft[secId]=xpDraft[secId]||[]).push(''); xpRender(secId); }
+function xpDel(secId,i){ if(xpDraft[secId]){ xpDraft[secId].splice(i,1); xpRender(secId); } }
+function xpMove(secId,i,d){
+  const a=xpDraft[secId]; if(!a) return; const j=i+d; if(j<0||j>=a.length) return;
+  const t=a[i]; a[i]=a[j]; a[j]=t; xpRender(secId);
+}
+
 function renderContentEditor(){
   const box=document.getElementById('contentEditor'); if(!box) return;
-  box.innerHTML = CONTENT_SCHEMA.map(g=>{
+  let html = CONTENT_SCHEMA.map(g=>{
     const fields=g.fields.map(([key,label,type])=>{
       const v=esc(ceVal(key));
       const cls = type==='ltr' ? 'ltr-input' : '';
@@ -1008,6 +1154,18 @@ function renderContentEditor(){
     }).join('');
     return '<details class="ce-group"><summary>'+esc(g.group)+'</summary><div class="ce-body">'+fields+'</div></details>';
   }).join('');
+  // extra-paragraph editors (seed drafts from current content)
+  xpDraft={};
+  html += EXTRA_SECTIONS.map(sec=>{
+    xpDraft[sec.id]=extraArr(sec.key).slice();
+    return '<details class="ce-group"><summary>'+esc(sec.label)+'</summary><div class="ce-body">'
+      +'<div class="xp-list" id="xp_'+sec.id+'"></div>'
+      +'<button type="button" class="xp-add" onclick="xpAdd(\''+sec.id+'\')">+ افزودن پاراگراف</button>'
+      +'</div></details>';
+  }).join('');
+  box.innerHTML = html;
+  // now render each draft list
+  EXTRA_SECTIONS.forEach(sec=>xpRender(sec.id));
 }
 async function saveContentUI(btn){
   const rows=[];
@@ -1016,6 +1174,11 @@ async function saveContentUI(btn){
       const el=document.getElementById('ce_'+key);
       if(el) rows.push({ key, value: el.value });
     }
+  }
+  // extra-paragraph arrays (drop empties, keep order)
+  for(const sec of EXTRA_SECTIONS){
+    const arr=(xpDraft[sec.id]||[]).map(t=>String(t)).filter(t=>t.trim()!=='');
+    rows.push({ key: sec.key, value: arr });
   }
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
   try{

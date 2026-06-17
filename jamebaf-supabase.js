@@ -28,6 +28,10 @@ function missingImagesColumn(error){
   const m = (error && error.message || "").toLowerCase();
   return m.includes("images") && (m.includes("column") || m.includes("schema"));
 }
+function missingTagColumn(error){
+  const m = (error && error.message || "").toLowerCase();
+  return (m.includes("gender") || m.includes("model")) && (m.includes("column") || m.includes("schema"));
+}
 
 const JB = {
   // ---- ADMIN AUTH (email + password) ----
@@ -90,25 +94,29 @@ const JB = {
   },
 
   // ---- ADMIN: create with already-uploaded image URLs ----
-  async createProduct({ title, description, images }) {
+  async createProduct({ title, description, images, gender, model }) {
     const imgs = images || [];
     const { error } = await sb.from("products").insert({
-      title, description, image_url: imgs[0] ?? null, images: imgs
+      title, description, image_url: imgs[0] ?? null, images: imgs,
+      gender: gender || null, model: model || null
     });
     if (error) {
       if (missingImagesColumn(error)) throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
+      if (missingTagColumn(error)) throw new Error("ستون «gender» یا «model» در جدول products وجود ندارد — دستور SQL تگ‌ها را در Supabase اجرا کنید.");
       throw error;
     }
   },
 
   // ---- ADMIN: edit a product; removedUrls get cleaned from storage ----
-  async updateProduct(id, { title, description, images, removedUrls }) {
+  async updateProduct(id, { title, description, images, removedUrls, gender, model }) {
     const imgs = images || [];
     const { error } = await sb.from("products").update({
-      title, description, image_url: imgs[0] ?? null, images: imgs
+      title, description, image_url: imgs[0] ?? null, images: imgs,
+      gender: gender || null, model: model || null
     }).eq("id", id);
     if (error) {
       if (missingImagesColumn(error)) throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
+      if (missingTagColumn(error)) throw new Error("ستون «gender» یا «model» در جدول products وجود ندارد — دستور SQL تگ‌ها را در Supabase اجرا کنید.");
       throw error;
     }
     const paths = (removedUrls || []).map(urlToPath).filter(Boolean);
