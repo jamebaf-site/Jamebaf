@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v4.1" />
+<meta name="version" content="v4.2" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -262,6 +262,20 @@
   .usage.full{color:#b00020}.usage.full .bar i{background:#b00020}
   .pcount{position:absolute;inset-block-start:14px;inset-inline-start:14px;background:rgba(20,18,14,.78);color:#fff;font-size:12px;font-weight:600;padding:4px 9px;border-radius:7px;display:inline-flex;align-items:center;gap:5px;z-index:2}
   .pcount svg{width:13px;height:13px}
+  .content-editor{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .ce-group{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .ce-group>summary{list-style:none;cursor:pointer;padding:12px 14px;font-size:14px;font-weight:600;color:var(--ink);background:var(--mist);display:flex;align-items:center;justify-content:space-between}
+  .ce-group>summary::-webkit-details-marker{display:none}
+  .ce-group>summary::after{content:"+";font-size:18px;color:var(--soft)}
+  .ce-group[open]>summary::after{content:"−"}
+  .ce-body{padding:14px}
+  .ce-field{margin-bottom:14px}
+  .ce-field:last-child{margin-bottom:0}
+  .ce-field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
+  .ce-field input,.ce-field textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);padding:10px 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);transition:.2s}
+  .ce-field input:focus,.ce-field textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(20,18,14,.08)}
+  .ce-field textarea{resize:vertical;min-height:60px;line-height:1.8}
+  .ce-field .ltr-input{direction:ltr;text-align:left}
 </style>
 </head>
 <body>
@@ -308,8 +322,8 @@
 <section class="hero" id="home">
   <div class="wrap hero-grid reveal">
     <div class="hero-text">
-      <div class="eyebrow">پوشاک · تریکو</div>
-      <h1><span class="ttl-lg">اصالت در هر</span><em>تار و پود</em></h1>
+      <div class="eyebrow" data-ck="hero_eyebrow">پوشاک · تریکو</div>
+      <h1><span class="ttl-lg" data-ck="hero_title_lg">اصالت در هر</span><em data-ck="hero_title_em">تار و پود</em></h1>
       <div class="thread" aria-hidden="true">
         <svg viewBox="0 0 320 36" role="presentation" xmlns:xlink="http://www.w3.org/1999/xlink">
           <line class="warp" x1="290" y1="6" x2="290" y2="30"/>
@@ -330,7 +344,7 @@
           </g>
         </svg>
       </div>
-      <p class="lede">جامه باف، عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل.</p>
+      <p class="lede" data-ck="hero_lede">جامه باف، عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل.</p>
       <div class="cta-row">
         <a href="#products" class="btn btn-solid">مشاهده محصولات</a>
         <a href="#contact" class="btn btn-text">تماس با ما ←</a>
@@ -344,16 +358,16 @@
 <section id="about" class="alt">
   <div class="wrap about-grid">
     <div class="about-text reveal">
-      <div class="eyebrow">درباره ما</div>
-      <h2 class="title" style="margin-bottom:22px">درباره جامه باف</h2>
-      <p>جامه باف در زمینه تأمین و عرضه پوشاک و تریکو باکیفیت فعالیت می‌کند و بر اصالت و دقت در ارائه محصولات تمرکز دارد.</p>
-      <p>از انتخاب مواد اولیه تا تحویل نهایی، تمامی مراحل با نظارت دقیق انجام می‌شود تا محصولی باکیفیت و ماندگار به دست مشتریان برسد.</p>
+      <div class="eyebrow" data-ck="about_eyebrow">درباره ما</div>
+      <h2 class="title" style="margin-bottom:22px" data-ck="about_title">درباره جامه باف</h2>
+      <p data-ck="about_p1">جامه باف در زمینه تأمین و عرضه پوشاک و تریکو باکیفیت فعالیت می‌کند و بر اصالت و دقت در ارائه محصولات تمرکز دارد.</p>
+      <p data-ck="about_p2">از انتخاب مواد اولیه تا تحویل نهایی، تمامی مراحل با نظارت دقیق انجام می‌شود تا محصولی باکیفیت و ماندگار به دست مشتریان برسد.</p>
     </div>
     <div class="about-side reveal">
       <div class="stats">
-        <div class="stat"><div class="n">۳۰+</div><div class="l">سال فعالیت</div></div>
-        <div class="stat"><div class="n">۵۰۰۰+</div><div class="l">مشتری</div></div>
-        <div class="stat"><div class="n">۱۰۰٪</div><div class="l">تضمین کیفیت</div></div>
+        <div class="stat"><div class="n" data-ck="stat1_n">۳۰+</div><div class="l" data-ck="stat1_l">سال فعالیت</div></div>
+        <div class="stat"><div class="n" data-ck="stat2_n">۵۰۰۰+</div><div class="l" data-ck="stat2_l">مشتری</div></div>
+        <div class="stat"><div class="n" data-ck="stat3_n">۱۰۰٪</div><div class="l" data-ck="stat3_l">تضمین کیفیت</div></div>
       </div>
     </div>
   </div>
@@ -362,8 +376,8 @@
 <section id="products">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow">محصولات و خدمات</div>
-      <h2 class="title">آنچه ارائه می‌دهیم</h2>
+      <div class="eyebrow" data-ck="products_eyebrow">محصولات و خدمات</div>
+      <h2 class="title" data-ck="products_title">آنچه ارائه می‌دهیم</h2>
     </div>
     <div class="pgrid" id="pgrid"></div>
   </div>
@@ -372,24 +386,24 @@
 <section id="why" class="alt">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow">چرا جامه باف</div>
-      <h2 class="title">دلایلی برای اعتماد</h2>
+      <div class="eyebrow" data-ck="why_eyebrow">چرا جامه باف</div>
+      <h2 class="title" data-ck="why_title">دلایلی برای اعتماد</h2>
     </div>
     <div class="why-grid">
       <div class="why reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <h4>تضمین کیفیت</h4>
-        <p>تمامی محصولات پیش از عرضه، بررسی و کنترل کیفیت می‌شوند.</p>
+        <h4 data-ck="why1_h">تضمین کیفیت</h4>
+        <p data-ck="why1_p">تمامی محصولات پیش از عرضه، بررسی و کنترل کیفیت می‌شوند.</p>
       </div>
       <div class="why reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
-        <h4>تنوع و طراحی اصیل</h4>
-        <p>طیف گسترده‌ای از طرح‌ها و محصولات باکیفیت و اصیل.</p>
+        <h4 data-ck="why2_h">تنوع و طراحی اصیل</h4>
+        <p data-ck="why2_p">طیف گسترده‌ای از طرح‌ها و محصولات باکیفیت و اصیل.</p>
       </div>
       <div class="why reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/></svg></div>
-        <h4>پشتیبانی حرفه‌ای</h4>
-        <p>ارائه مشاوره تخصصی و خدمات پس از فروش به مشتریان.</p>
+        <h4 data-ck="why3_h">پشتیبانی حرفه‌ای</h4>
+        <p data-ck="why3_p">ارائه مشاوره تخصصی و خدمات پس از فروش به مشتریان.</p>
       </div>
     </div>
   </div>
@@ -398,30 +412,30 @@
 <section id="contact">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow">تماس با ما</div>
-      <h2 class="title">با ما در ارتباط باشید</h2>
+      <div class="eyebrow" data-ck="contact_eyebrow">تماس با ما</div>
+      <h2 class="title" data-ck="contact_title">با ما در ارتباط باشید</h2>
     </div>
     <div class="contact-grid" style="grid-template-columns:1fr;max-width:600px;margin-inline:auto">
       <div class="reveal">
         <div class="info-row">
           <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          <div><div class="k">آدرس</div><div class="v">تهران، ميدان بهارستان، خيابان ظهير الاسلام،<br/>ساختمان صنعت، طبقه دوم، پلاك ٩</div></div>
+          <div><div class="k">آدرس</div><div class="v" id="cAddress" data-ck="contact_address">تهران، ميدان بهارستان، خيابان ظهير الاسلام،<br/>ساختمان صنعت، طبقه دوم، پلاك ٩</div></div>
         </div>
         <div class="info-row">
           <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-          <div><div class="k">تلفن</div><div class="v"><a href="tel:+982133911153" class="ltr">(+9821) 33 91 11 53</a><br/><a href="tel:+982133911547" class="ltr">(+9821) 33 91 15 47</a></div></div>
+          <div><div class="k">تلفن</div><div class="v" id="cPhones"><a href="tel:+982133911153" class="ltr">(+9821) 33 91 11 53</a><br/><a href="tel:+982133911547" class="ltr">(+9821) 33 91 15 47</a></div></div>
         </div>
         <div class="info-row">
           <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
-          <div><div class="k">فکس</div><div class="v"><span class="ltr">(+9821) 33 11 20 71</span></div></div>
+          <div><div class="k">فکس</div><div class="v" id="cFax"><span class="ltr">(+9821) 33 11 20 71</span></div></div>
         </div>
         <div class="info-row">
           <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
-          <div><div class="k">موبایل</div><div class="v"><a href="tel:+989122465766" class="ltr">+98 912 246 5766</a></div></div>
+          <div><div class="k">موبایل</div><div class="v" id="cMobile"><a href="tel:+989122465766" class="ltr">+98 912 246 5766</a></div></div>
         </div>
-        <div class="info-row">
+        <div class="info-row" id="cEmailRow">
           <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></div>
-          <div><div class="k">ایمیل</div><div class="v"><a href="mailto:jamebaf@gmail.com" class="ltr">jamebaf@gmail.com</a></div></div>
+          <div><div class="k">ایمیل</div><div class="v" id="cEmail"><a href="mailto:jamebaf@gmail.com" class="ltr">jamebaf@gmail.com</a></div></div>
         </div>
       </div>
     </div>
@@ -434,7 +448,7 @@
       <div class="foot-brand">
         <img src="logo-white.png" alt="جامه باف" />
         <div class="nm">جامه باف</div>
-        <div class="tg">اصالت در هر تار و پود</div>
+        <div class="tg" data-ck="footer_tagline">اصالت در هر تار و پود</div>
       </div>
       <nav class="foot-links">
         <a href="#home">خانه</a><a href="#about">درباره ما</a><a href="#products">محصولات</a><a href="#why">چرا ما</a><a href="#contact">تماس با ما</a>
@@ -442,7 +456,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v4.1</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v4.2</span></div>
     </div>
   </div>
 </footer>
@@ -476,6 +490,10 @@
         <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
         <div class="block-label" style="margin-top:24px">محصولات موجود</div>
         <div class="prod-admin-list" id="prodAdminList"></div>
+        <div class="block-label" style="margin-top:26px">محتوای سایت</div>
+        <p class="hint" style="text-align:right;margin:0 0 14px">متن بخش‌های سایت را ویرایش کنید. پس از ذخیره، تغییرات برای همه بازدیدکنندگان نمایش داده می‌شود.</p>
+        <div id="contentEditor" class="content-editor"></div>
+        <button class="btn btn-solid" id="cSaveBtn" onclick="saveContentUI(this)" style="margin-top:4px">ذخیره محتوای سایت</button>
         <button class="btn logout" onclick="doLogout()">خروج از حساب</button>
       </div>
     </div>
@@ -597,6 +615,7 @@ async function openPanel(){
   showStep('stepPanel');
   cancelEdit();          // start clean in "add" mode
   renderAdminList();
+  renderContentEditor();
   refreshUsage();
 }
 
@@ -857,8 +876,162 @@ addEventListener('keydown',e=>{
   }, hold);
 })();
 
+/* ===== editable site content (Supabase-backed) ===== */
+/* Schema drives BOTH the live-apply and the admin editor form.
+   group: editor section label. fields: [key, label, type]
+   type: 'text' | 'area' | 'ltr' (left-to-right input for phones/email) */
+const CONTENT_SCHEMA = [
+  { group:'بخش اصلی (Hero)', fields:[
+    ['hero_eyebrow','عنوان بالایی','text'],
+    ['hero_title_lg','تیتر بزرگ (خط اول)','text'],
+    ['hero_title_em','تیتر (خط دوم)','text'],
+    ['hero_lede','توضیح کوتاه','area'],
+  ]},
+  { group:'درباره ما', fields:[
+    ['about_eyebrow','عنوان بالایی','text'],
+    ['about_title','تیتر','text'],
+    ['about_p1','پاراگراف اول','area'],
+    ['about_p2','پاراگراف دوم','area'],
+  ]},
+  { group:'آمار', fields:[
+    ['stat1_n','عدد ۱','text'],['stat1_l','برچسب ۱','text'],
+    ['stat2_n','عدد ۲','text'],['stat2_l','برچسب ۲','text'],
+    ['stat3_n','عدد ۳','text'],['stat3_l','برچسب ۳','text'],
+  ]},
+  { group:'بخش محصولات (عنوان)', fields:[
+    ['products_eyebrow','عنوان بالایی','text'],
+    ['products_title','تیتر','text'],
+  ]},
+  { group:'چرا ما', fields:[
+    ['why_eyebrow','عنوان بالایی','text'],
+    ['why_title','تیتر','text'],
+    ['why1_h','عنوان مزیت ۱','text'],['why1_p','متن مزیت ۱','area'],
+    ['why2_h','عنوان مزیت ۲','text'],['why2_p','متن مزیت ۲','area'],
+    ['why3_h','عنوان مزیت ۳','text'],['why3_p','متن مزیت ۳','area'],
+  ]},
+  { group:'تماس با ما', fields:[
+    ['contact_eyebrow','عنوان بالایی','text'],
+    ['contact_title','تیتر','text'],
+    ['contact_address','آدرس','area'],
+    ['contact_phone1','تلفن ۱','ltr'],
+    ['contact_phone2','تلفن ۲','ltr'],
+    ['contact_fax','فکس','ltr'],
+    ['contact_mobile','موبایل','ltr'],
+    ['contact_email','ایمیل (خالی = نمایش داده نشود)','ltr'],
+  ]},
+  { group:'فوتر', fields:[
+    ['footer_tagline','شعار فوتر','text'],
+  ]},
+];
+
+let contentMap = {};   // live { key: value }
+
+/* fallbacks captured from the original DOM so the site never goes blank */
+const contentFallback = {};
+function captureFallbacks(){
+  document.querySelectorAll('[data-ck]').forEach(el=>{
+    const k=el.getAttribute('data-ck');
+    if(!(k in contentFallback)) contentFallback[k]=el.innerHTML;
+  });
+  // contact structured defaults (from current hrefs/markup)
+  contentFallback.contact_phone1 = '(+9821) 33 91 11 53';
+  contentFallback.contact_phone2 = '(+9821) 33 91 15 47';
+  contentFallback.contact_fax    = '(+9821) 33 11 20 71';
+  contentFallback.contact_mobile = '+98 912 246 5766';
+  contentFallback.contact_email  = 'jamebaf@gmail.com';
+}
+function cval(key){
+  const v = contentMap[key];
+  if(v===undefined || v===null || v==='') {
+    return (key in contentFallback) ? contentFallback[key] : '';
+  }
+  return v;
+}
+/* turn a display phone like "+98 912 246 5766" into a tel: href */
+function telHref(s){ return 'tel:'+String(s||'').replace(/[^\d+]/g,''); }
+
+function applyContent(){
+  // simple [data-ck] text regions
+  document.querySelectorAll('[data-ck]').forEach(el=>{
+    const k=el.getAttribute('data-ck');
+    const v=contentMap[k];
+    // only override when a saved value exists; else keep original DOM (fallback)
+    if(v!==undefined && v!==null && v!==''){ el.textContent=v; }
+  });
+  // contact_address allows line breaks → render as HTML (escaped + <br>)
+  const addr=document.getElementById('cAddress');
+  if(addr){ const v=contentMap.contact_address;
+    if(v!==undefined&&v!==null&&v!==''){ addr.innerHTML=esc(v).replace(/\n/g,'<br/>'); } }
+  // phones
+  const ph=document.getElementById('cPhones');
+  if(ph){
+    const p1=cval('contact_phone1'), p2=cval('contact_phone2');
+    let h='';
+    if(p1) h+='<a href="'+telHref(p1)+'" class="ltr">'+esc(p1)+'</a>';
+    if(p2) h+=(h?'<br/>':'')+'<a href="'+telHref(p2)+'" class="ltr">'+esc(p2)+'</a>';
+    ph.innerHTML=h;
+  }
+  const fx=document.getElementById('cFax');
+  if(fx){ const f=cval('contact_fax'); fx.innerHTML = f?'<span class="ltr">'+esc(f)+'</span>':''; }
+  const mb=document.getElementById('cMobile');
+  if(mb){ const m=cval('contact_mobile'); mb.innerHTML = m?'<a href="'+telHref(m)+'" class="ltr">'+esc(m)+'</a>':''; }
+  const em=document.getElementById('cEmail'), emRow=document.getElementById('cEmailRow');
+  if(em){
+    const e=(contentMap.contact_email!==undefined)?contentMap.contact_email:cval('contact_email');
+    if(e){ em.innerHTML='<a href="mailto:'+esc(e)+'" class="ltr">'+esc(e)+'</a>'; if(emRow) emRow.style.display=''; }
+    else { em.innerHTML=''; if(emRow) emRow.style.display='none'; }
+  }
+  // FAB + footer call buttons could be wired later; left as-is intentionally.
+}
+
+async function loadContent(){
+  try{ contentMap = await JB.getContent() || {}; }
+  catch(e){ contentMap = {}; }
+  applyContent();
+}
+
+/* ----- admin editor ----- */
+function ceVal(key){
+  const v = (key in contentMap) ? contentMap[key] : undefined;
+  return (v===undefined||v===null) ? (contentFallback[key]!==undefined?contentFallback[key]:'') : v;
+}
+function renderContentEditor(){
+  const box=document.getElementById('contentEditor'); if(!box) return;
+  box.innerHTML = CONTENT_SCHEMA.map(g=>{
+    const fields=g.fields.map(([key,label,type])=>{
+      const v=esc(ceVal(key));
+      const cls = type==='ltr' ? 'ltr-input' : '';
+      const input = type==='area'
+        ? '<textarea id="ce_'+key+'" class="'+cls+'">'+v+'</textarea>'
+        : '<input id="ce_'+key+'" type="text" class="'+cls+'" value="'+v+'">';
+      return '<div class="ce-field"><label for="ce_'+key+'">'+esc(label)+'</label>'+input+'</div>';
+    }).join('');
+    return '<details class="ce-group"><summary>'+esc(g.group)+'</summary><div class="ce-body">'+fields+'</div></details>';
+  }).join('');
+}
+async function saveContentUI(btn){
+  const rows=[];
+  for(const g of CONTENT_SCHEMA){
+    for(const [key] of g.fields){
+      const el=document.getElementById('ce_'+key);
+      if(el) rows.push({ key, value: el.value });
+    }
+  }
+  if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
+  try{
+    await JB.saveContentBatch(rows);
+    // update live map + DOM immediately
+    rows.forEach(r=>{ contentMap[r.key]=r.value; });
+    applyContent();
+    toast('محتوای سایت ذخیره شد.');
+  }catch(e){ toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق بود')); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent='ذخیره محتوای سایت'; } }
+}
+
 /* ===== boot ===== */
 (async function boot(){
+  captureFallbacks();
+  await loadContent();
   await loadProducts();
   try{ isAdminFlag = await JB.isAdmin(); }catch(e){ isAdminFlag=false; }
   await refreshAuth();

@@ -125,6 +125,37 @@ const JB = {
     const { error } = await sb.from("products").delete().eq("id", id);
     if (error) throw error;
   },
+  // ---- SITE CONTENT (anyone can read; admin can write) ----
+  // Returns a { key: value } map of all editable regions.
+  async getContent() {
+    const { data, error } = await sb.from("site_content").select("key,value");
+    if (error) throw error;
+    const map = {};
+    for (const row of (data ?? [])) map[row.key] = row.value;
+    return map;
+  },
+
+  // Upsert one region. value may be a string or a JSON-serialisable object.
+  async saveContent(key, value) {
+    const { error } = await sb.from("site_content")
+      .upsert({ key, value }, { onConflict: "key" });
+    if (error) {
+      const m = (error.message || "").toLowerCase();
+      if (m.includes("site_content") && (m.includes("does not exist") || m.includes("schema") || m.includes("relation"))) {
+        throw new Error("جدول «site_content» وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
+      }
+      throw error;
+    }
+  },
+
+  // Upsert several regions at once: pass an array of { key, value }.
+  async saveContentBatch(rows) {
+    const payload = (rows || []).filter(r => r && r.key);
+    if (!payload.length) return;
+    const { error } = await sb.from("site_content")
+      .upsert(payload, { onConflict: "key" });
+    if (error) throw error;
+  },
 };
 
 window.JB = JB;
