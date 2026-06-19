@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v5.9" />
+<meta name="version" content="v6.0" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -618,7 +618,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v5.9</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.0</span></div>
     </div>
   </div>
 </footer>
@@ -776,13 +776,16 @@ function renderAllProducts(){
   grid.innerHTML=list.map(productCardHTML).join('');
   markLoaded(grid);
 }
+let _allReturnY=0;
 function showAllProducts(focusSearch){
   const all=document.getElementById('products-all');
+  if(!document.body.classList.contains('viewing-all')){ _allReturnY=window.scrollY||0; }
   all.hidden=false;
   document.body.classList.add('viewing-all');
-  if(location.hash!=='#products-all') history.pushState(null,'',( '#products-all'));
+  if(location.hash!=='#products-all') history.pushState(null,'','#products-all');
   renderAllProducts();
-  window.scrollTo({top:0,behavior:'instant' in window ? 'auto':'auto'});
+  const html=document.documentElement, prev=html.style.scrollBehavior;
+  html.style.scrollBehavior='auto'; window.scrollTo(0,0); html.style.scrollBehavior=prev;
   if(focusSearch){ setTimeout(()=>{ const i=document.getElementById('searchInputAll'); if(i) i.focus(); },120); }
 }
 function hideAllProducts(){
@@ -790,7 +793,8 @@ function hideAllProducts(){
   all.hidden=true;
   document.body.classList.remove('viewing-all');
   if(location.hash==='#products-all'){ history.pushState(null,'','#products'); }
-  const sec=document.getElementById('products'); if(sec) sec.scrollIntoView({behavior:'auto'});
+  const html=document.documentElement, prev=html.style.scrollBehavior;
+  html.style.scrollBehavior='auto'; window.scrollTo(0,_allReturnY||0); html.style.scrollBehavior=prev;
 }
 function onSearchAllInput(v){
   searchQuery=v||'';
@@ -1051,7 +1055,16 @@ async function idleLogout(){
 /* ===== scroll lock for preview/modals (iOS-safe) ===== */
 let _sy=0,_lk=0;
 function lockScroll(){ if(_lk++===0){ _sy=window.scrollY||document.documentElement.scrollTop||0; document.body.style.top=(-_sy)+"px"; document.body.classList.add("scroll-locked"); } }
-function unlockScroll(){ if(_lk>0 && --_lk===0){ document.body.classList.remove("scroll-locked"); document.body.style.top=""; window.scrollTo(0,_sy); } }
+function unlockScroll(){ if(_lk>0 && --_lk===0){
+  const y=_sy;
+  const html=document.documentElement;
+  const prev=html.style.scrollBehavior;
+  html.style.scrollBehavior='auto';           // never animate the restore
+  document.body.classList.remove("scroll-locked");
+  document.body.style.top="";
+  window.scrollTo(0,y);                         // restore in the same frame as un-fix
+  html.style.scrollBehavior=prev;
+} }
 
 /* ===== photo lightbox (gallery) ===== */
 let lbList=[], lbIdx=0, lbProduct=null;
