@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v6.0" />
+<meta name="version" content="v6.3" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -310,7 +310,9 @@
   .field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(156,61,46,.15)}
   /* product card tag chips */
   .ptags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;padding:0 10px 10px}
-  .ptag{font-size:11px;font-weight:600;color:var(--ink-2);background:var(--mist);border:1px solid var(--line);border-radius:6px;padding:2px 8px;line-height:1.7}
+  .ptag{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink-2);background:var(--mist);border:1px solid var(--line);border-radius:6px;padding:3px 10px;line-height:1.7;cursor:pointer;transition:all var(--t) var(--ease)}
+  .ptag:hover{border-color:var(--accent);color:var(--accent)}
+  .ptag.g:hover{background:var(--accent);border-color:var(--accent);color:#fff}
   .ptag.g{background:var(--ink);color:#fff;border-color:var(--ink)}
   /* search */
   .nav-search{background:none;border:none;cursor:pointer;color:var(--ink-2);padding:8px;border-radius:6px;display:inline-flex;align-items:center;transition:all var(--t) var(--ease)}
@@ -400,6 +402,11 @@
   .pgrid-lg .pcap{font-size:17px}
   @media(max-width:900px){ .pgrid-lg{grid-template-columns:repeat(2,1fr);gap:18px} }
   @media(max-width:560px){ .pgrid-lg{grid-template-columns:repeat(2,1fr);gap:12px} .products-all{padding-top:calc(104px + env(safe-area-inset-top))} }
+  /* gender filter chips (full products view) */
+  .pfilter{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 26px}
+  .pchip{font-family:inherit;font-size:14.5px;font-weight:600;color:var(--ink-2);background:var(--card);border:1px solid var(--line-2);border-radius:999px;padding:9px 20px;cursor:pointer;transition:all var(--t) var(--ease)}
+  .pchip:hover{border-color:var(--accent);color:var(--accent)}
+  .pchip.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 </style>
 </head>
 <body>
@@ -537,6 +544,11 @@
         <button class="search-clear" id="searchClearAll" onclick="clearSearchAll()" aria-label="پاک کردن">×</button>
       </div>
     </div>
+    <div class="pfilter" id="pfilter" role="group" aria-label="فیلتر جنسیت">
+      <button class="pchip active" data-g="" onclick="setGenderFilter('',this)">همه</button>
+      <button class="pchip" data-g="پسرانه" onclick="setGenderFilter('پسرانه',this)">پسرانه</button>
+      <button class="pchip" data-g="دخترانه" onclick="setGenderFilter('دخترانه',this)">دخترانه</button>
+    </div>
     <div class="pgrid pgrid-lg" id="pgridAll"></div>
   </div>
 </section>
@@ -618,7 +630,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.0</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.3</span></div>
     </div>
   </div>
 </footer>
@@ -647,7 +659,7 @@
         <div class="block-label" id="apHeading">افزودن محصول</div>
         <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
-        <div class="field"><label for="apGender">جنسیت</label><select id="apGender"><option value="">— انتخاب کنید —</option><option value="مردانه">مردانه</option><option value="زنانه">زنانه</option><option value="بچگانه">بچگانه</option><option value="یونیسکس">یونیسکس</option></select></div>
+        <div class="field"><label for="apGender">جنسیت</label><select id="apGender"><option value="">— انتخاب کنید —</option><option value="پسرانه">پسرانه</option><option value="دخترانه">دخترانه</option></select></div>
         <div class="field"><label for="apModel">مدل</label><input id="apModel" type="text" placeholder="مثلاً یقه‌اسکی، جودون" /></div>
         <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
         <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
@@ -703,6 +715,7 @@ function toast(msg){
 let isAdminFlag=false;
 let productCache=[];
 let searchQuery="";
+let genderFilter="";
 
 /* ===== products (public read) ===== */
 async function loadProducts(){
@@ -721,14 +734,46 @@ function cardMedia(pr){
 }
 function cardTags(pr){
   let h='';
-  if(pr.gender) h+='<span class="ptag g">'+esc(pr.gender)+'</span>';
-  if(pr.model)  h+='<span class="ptag">'+esc(pr.model)+'</span>';
+  if(pr.gender) h+='<button type="button" class="ptag g" onclick="event.stopPropagation();filterByGender(\''+esc(pr.gender).replace(/'/g,"\\'")+'\')" aria-label="نمایش همه '+esc(pr.gender)+'">'+esc(pr.gender)+'</button>';
+  if(pr.model)  h+='<button type="button" class="ptag" onclick="event.stopPropagation();filterByModel(\''+esc(pr.model).replace(/'/g,"\\'")+'\')" aria-label="نمایش همه '+esc(pr.model)+'">'+esc(pr.model)+'</button>';
   return h ? '<div class="ptags">'+h+'</div>' : '';
 }
+// tap a gender tag → open full view filtered to that gender
+function filterByGender(g){
+  showAllProducts(false);
+  searchQuery=''; const si=document.getElementById('searchInputAll'); if(si) si.value='';
+  const sc=document.getElementById('searchClearAll'); if(sc) sc.classList.remove('show');
+  genderFilter=g||'';
+  document.querySelectorAll('#pfilter .pchip').forEach(b=>b.classList.toggle('active', b.getAttribute('data-g')===genderFilter));
+  renderAllProducts();
+}
+// tap a model tag → open full view, filter via search to that model
+function filterByModel(m){
+  showAllProducts(false);
+  searchQuery=m||'';
+  const inp=document.getElementById('searchInputAll'); if(inp) inp.value=m||'';
+  const c=document.getElementById('searchClearAll'); if(c) c.classList.toggle('show',!!searchQuery);
+  renderAllProducts();
+}
+// normalise Persian/Arabic variants + digits so search matches regardless of how it was typed
+function normFa(str){
+  return String(str||'')
+    .replace(/\u064a/g,'\u06cc')   // Arabic yeh ي → Persian ye ی
+    .replace(/\u0643/g,'\u06a9')   // Arabic kaf ك → Persian ke ک
+    .replace(/\u0629/g,'\u0647')   // teh marbuta ة → he ه
+    .replace(/[\u200c\u200f\u200e]/g,' ') // ZWNJ / RTL/LTR marks → space
+    .replace(/[\u0660-\u0669]/g,d=>String(d.charCodeAt(0)-0x0660)) // Arabic-Indic digits → 0-9
+    .replace(/[\u06f0-\u06f9]/g,d=>String(d.charCodeAt(0)-0x06f0)) // Persian digits → 0-9
+    .replace(/\s+/g,' ')
+    .trim()
+    .toLowerCase();
+}
 function matchesSearch(pr,q){
-  if(!q) return true;
-  const hay=((pr.title||'')+' '+(pr.description||'')+' '+(pr.gender||'')+' '+(pr.model||'')).toLowerCase();
-  return hay.includes(q);
+  const query=normFa(q);
+  if(!query) return true;
+  const hay=normFa((pr.title||'')+' '+(pr.description||'')+' '+(pr.gender||'')+' '+(pr.model||''));
+  // every word must be found somewhere (AND across all fields)
+  return query.split(' ').every(w=>!w || hay.includes(w));
 }
 // reusable card builder (used by homepage top-4 grid AND the full all-products view)
 function productCardHTML(pr){
@@ -767,14 +812,18 @@ function renderAllProducts(){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">هنوز محصولی ثبت نشده است.</div>';
     return;
   }
-  const q=(searchQuery||'').trim().toLowerCase();
-  const list=productCache.filter(pr=>matchesSearch(pr,q));
+  const list=productCache.filter(pr=>matchesSearch(pr,searchQuery) && (!genderFilter || (pr.gender||'')===genderFilter));
   if(!list.length){
-    grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">محصولی با این جستجو یافت نشد.</div>';
+    grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">محصولی با این فیلتر یافت نشد.</div>';
     return;
   }
   grid.innerHTML=list.map(productCardHTML).join('');
   markLoaded(grid);
+}
+function setGenderFilter(g,btn){
+  genderFilter=g||'';
+  document.querySelectorAll('#pfilter .pchip').forEach(b=>b.classList.toggle('active', b===btn));
+  renderAllProducts();
 }
 let _allReturnY=0;
 function showAllProducts(focusSearch){
@@ -783,6 +832,9 @@ function showAllProducts(focusSearch){
   all.hidden=false;
   document.body.classList.add('viewing-all');
   if(location.hash!=='#products-all') history.pushState(null,'','#products-all');
+  genderFilter='';
+  const chips=document.querySelectorAll('#pfilter .pchip');
+  chips.forEach(b=>b.classList.toggle('active', b.getAttribute('data-g')===''));
   renderAllProducts();
   const html=document.documentElement, prev=html.style.scrollBehavior;
   html.style.scrollBehavior='auto'; window.scrollTo(0,0); html.style.scrollBehavior=prev;
