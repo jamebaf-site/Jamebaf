@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v6.5" />
+<meta name="version" content="v6.6" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -25,7 +25,8 @@
     --ease-soft:cubic-bezier(.45,0,.15,1); /* gentle in-out */
     --t-fast:.18s;--t:.32s;--t-slow:.5s;
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
   html{-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
   body{
     margin:0;font-family:"Vazirmatn",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -61,7 +62,7 @@
   .title{font-size:clamp(30px,4.4vw,50px)}
   .lede{color:var(--soft);font-size:18.5px;font-weight:300;max-width:560px}
 
-  header.nav{position:fixed;inset:0 0 auto 0;z-index:60;background:rgba(250,248,243,.8);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s;padding-top:env(safe-area-inset-top)}
+  header.nav{position:fixed;inset:0 0 auto 0;z-index:60;background:rgba(250,248,243,.8);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s;padding-top:env(safe-area-inset-top)}
   .nav.scrolled{border-bottom-color:var(--line);box-shadow:0 6px 24px -22px rgba(0,0,0,.5)}
   .nav-inner{display:flex;align-items:center;gap:18px;max-width:var(--maxw);margin:0 auto;padding:14px 28px}
   .brand{display:flex;align-items:center;gap:11px;margin-inline-end:auto}
@@ -185,7 +186,7 @@
   .mobile-menu a{font-size:22px;font-weight:400;padding:18px 0;border-bottom:1px solid var(--line);color:var(--ink)}
   .mobile-menu .mm-close{position:absolute;inset-block-start:22px;inset-inline-end:24px;background:none;border:1px solid var(--line-2);color:var(--ink);width:40px;height:40px;border-radius:8px;font-size:22px;cursor:pointer}
 
-  .overlay{position:fixed;inset:0;z-index:80;background:rgba(20,18,14,.45);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay{position:fixed;inset:0;z-index:80;background:rgba(20,18,14,.45);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
   .overlay.show{display:flex}
   body.scroll-locked{position:fixed;left:0;right:0;width:100%;overflow:hidden}
   .modal{background:var(--card);border-radius:16px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.5);animation:pop .42s var(--ease-out);max-height:92vh;overflow-y:auto}
@@ -382,7 +383,7 @@
   .pcard{position:relative}
   .card-admin{position:absolute;inset-block-start:8px;inset-inline-end:8px;display:none;gap:6px;z-index:3}
   body.is-admin .card-admin{display:flex}
-  .card-admin button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-2);background:rgba(255,255,255,.92);backdrop-filter:blur(4px);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0;transition:all var(--t) var(--ease)}
+  .card-admin button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line-2);background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0;transition:all var(--t) var(--ease)}
   .card-admin button:hover{border-color:var(--ink)}
   .card-admin .del{color:#b00020;border-color:#e6b8be}
   .card-admin svg{width:15px;height:15px}
@@ -393,7 +394,7 @@
   /* full products view */
   body.viewing-all #home,body.viewing-all #about,body.viewing-all #products,
   body.viewing-all #why,body.viewing-all #contact,body.viewing-all footer{display:none}
-  .products-all{padding:calc(120px + env(safe-area-inset-top)) 0 100px;min-height:100vh}
+  .products-all{padding:calc(120px + env(safe-area-inset-top)) 0 100px;min-height:100vh;min-height:100dvh}
   .pall-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:30px}
   .pall-back{display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:15px;padding:10px 16px;border-radius:9px;cursor:pointer;transition:all var(--t) var(--ease)}
   .pall-back:hover{border-color:var(--accent);color:var(--accent)}
@@ -408,6 +409,19 @@
   .pchip{font-family:inherit;font-size:14.5px;font-weight:600;color:var(--ink-2);background:var(--card);border:1px solid var(--line-2);border-radius:999px;padding:9px 20px;cursor:pointer;transition:all var(--t) var(--ease)}
   .pchip:hover{border-color:var(--accent);color:var(--accent)}
   .pchip.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  /* price in lightbox */
+  #lbInfo .lb-price{font-size:18px;font-weight:700;color:var(--accent);margin:6px 0 0}
+  /* admin pinned checkbox */
+  .field-check{display:flex;align-items:center}
+  .field-check .chk{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:15px;color:var(--ink-2);font-weight:500}
+  .field-check .chk input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+  /* all-products controls: filter chips + sort */
+  .pall-controls{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+  .pall-controls .pfilter{margin:0}
+  .psort-wrap{display:flex;align-items:center;gap:8px}
+  .psort-lbl{font-size:13.5px;font-weight:600;color:var(--soft)}
+  .psort{font-family:inherit;font-size:14.5px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line-2);border-radius:9px;padding:9px 14px;cursor:pointer;transition:all var(--t) var(--ease)}
+  .psort:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(156,61,46,.15)}
 </style>
 </head>
 <body>
@@ -545,10 +559,17 @@
         <button class="search-clear" id="searchClearAll" onclick="clearSearchAll()" aria-label="پاک کردن">×</button>
       </div>
     </div>
-    <div class="pfilter" id="pfilter" role="group" aria-label="فیلتر جنسیت">
-      <button class="pchip active" data-g="" onclick="setGenderFilter('',this)">همه</button>
-      <button class="pchip" data-g="پسرانه" onclick="setGenderFilter('پسرانه',this)">پسرانه</button>
-      <button class="pchip" data-g="دخترانه" onclick="setGenderFilter('دخترانه',this)">دخترانه</button>
+    <div class="pall-controls">
+      <div class="pfilter" id="pfilter" role="group" aria-label="فیلتر جنسیت"></div>
+      <div class="psort-wrap">
+        <label for="psort" class="psort-lbl">مرتب‌سازی</label>
+        <select id="psort" class="psort" onchange="setSort(this.value)">
+          <option value="newest">جدیدترین</option>
+          <option value="oldest">قدیمی‌ترین</option>
+          <option value="cheapest">ارزان‌ترین</option>
+          <option value="expensive">گران‌ترین</option>
+        </select>
+      </div>
     </div>
     <div class="pgrid pgrid-lg" id="pgridAll"></div>
   </div>
@@ -631,7 +652,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.5</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.6</span></div>
     </div>
   </div>
 </footer>
@@ -660,12 +681,17 @@
         <div class="block-label" id="apHeading">افزودن محصول</div>
         <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
-        <div class="field"><label for="apGender">جنسیت</label><select id="apGender"><option value="">— انتخاب کنید —</option><option value="پسرانه">پسرانه</option><option value="دخترانه">دخترانه</option></select></div>
-        <div class="field"><label for="apModel">مدل</label><input id="apModel" type="text" placeholder="مثلاً یقه‌اسکی، جودون" /></div>
+        <div class="field"><label for="apGender">جنسیت</label><input id="apGender" list="genderList" placeholder="انتخاب یا افزودن" autocomplete="off" /><datalist id="genderList"></datalist></div>
+        <div class="field"><label for="apModel">مدل</label><input id="apModel" list="modelList" placeholder="انتخاب یا افزودن" autocomplete="off" /><datalist id="modelList"></datalist></div>
         <div class="field"><label for="apSize">سایز</label><input id="apSize" type="text" placeholder="مثلاً ۶۰/۶۵" /></div>
+        <div class="field"><label for="apPrice">قیمت</label><input id="apPrice" type="text" placeholder="مثلاً ۲۵۰٬۰۰۰ تومان" /></div>
+        <div class="field field-check"><label class="chk"><input id="apPinned" type="checkbox" /> <span>سنجاق به صفحه اصلی</span></label></div>
         <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
         <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
         <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
+        <div class="block-label" style="margin-top:24px">تنظیمات صفحه اصلی</div>
+        <div class="field"><label for="apHomeCount">تعداد محصولات صفحه اصلی</label><input id="apHomeCount" type="number" min="1" max="50" placeholder="4" /></div>
+        <button class="btn btn-solid" id="apHomeCountSave" onclick="saveHomeCount(this)" style="margin-bottom:6px">ذخیره تعداد</button>
         <div class="block-label" style="margin-top:24px">محصولات موجود</div>
         <div class="prod-admin-list" id="prodAdminList"></div>
         <div class="block-label" style="margin-top:26px">محتوای سایت</div>
@@ -718,6 +744,34 @@ let isAdminFlag=false;
 let productCache=[];
 let searchQuery="";
 let genderFilter="";
+let sortMode="newest";
+let appSettings={ home_count:4, gender_options:["پسرانه","دخترانه","دیگران"], model_options:["بلوز","شلوار","نوزادی","پتو","ست بلوز و شلوار"] };
+
+async function loadSettings(){
+  try{
+    const hc=await JB.getSetting('home_count',4);
+    const go=await JB.getSetting('gender_options',appSettings.gender_options);
+    const mo=await JB.getSetting('model_options',appSettings.model_options);
+    appSettings.home_count = Math.max(1, parseInt(hc,10)||4);
+    appSettings.gender_options = Array.isArray(go)?go:appSettings.gender_options;
+    appSettings.model_options = Array.isArray(mo)?mo:appSettings.model_options;
+  }catch(e){}
+  fillOptionDatalists();
+}
+function fillOptionDatalists(){
+  const gl=document.getElementById('genderList'), ml=document.getElementById('modelList');
+  if(gl) gl.innerHTML=(appSettings.gender_options||[]).map(o=>'<option value="'+esc(o)+'">').join('');
+  if(ml) ml.innerHTML=(appSettings.model_options||[]).map(o=>'<option value="'+esc(o)+'">').join('');
+}
+// add a newly-typed option to its list and persist forever
+async function persistOption(key, value){
+  value=(value||'').trim(); if(!value) return;
+  const list=appSettings[key]||[];
+  if(list.includes(value)) return;
+  list.push(value); appSettings[key]=list;
+  try{ await JB.saveSetting(key, list); }catch(e){}
+  fillOptionDatalists();
+}
 
 /* ===== products (public read) ===== */
 async function loadProducts(){
@@ -801,11 +855,25 @@ function renderProducts(){
     if(moreWrap) moreWrap.style.display='none';
     return;
   }
-  const top=productCache.slice(0,4);
-  grid.innerHTML=top.map(productCardHTML).join('');
+  const pinned=productCache.filter(p=>p.pinned);
+  const top=(pinned.length?pinned:productCache).slice(0,appSettings.home_count);
+  grid.innerHTML=top.length?top.map(productCardHTML).join(''):'<div class="empty-note" style="grid-column:1/-1">محصولی برای نمایش سنجاق نشده است.</div>';
   markLoaded(grid);
-  // show the button only when there are more than 4 products
-  if(moreWrap) moreWrap.style.display = productCache.length>4 ? 'flex' : 'none';
+  // always offer "view all" when there is at least one product
+  if(moreWrap) moreWrap.style.display = productCache.length ? 'flex' : 'none';
+}
+// sort comparator for the all-products view
+function sortProducts(list){
+  const num=v=>{ const n=parseInt(String(v||'').replace(/[^0-9۰-۹٠-٩]/g,'').replace(/[۰-۹]/g,d=>d.charCodeAt(0)-0x06f0).replace(/[٠-٩]/g,d=>d.charCodeAt(0)-0x0660),10); return isNaN(n)?null:n; };
+  const a=list.slice();
+  if(sortMode==='newest')  a.sort((x,y)=>new Date(y.created_at)-new Date(x.created_at));
+  else if(sortMode==='oldest') a.sort((x,y)=>new Date(x.created_at)-new Date(y.created_at));
+  else if(sortMode==='cheapest'||sortMode==='expensive'){
+    a.sort((x,y)=>{ const px=num(x.price), py=num(y.price);
+      if(px===null&&py===null) return 0; if(px===null) return 1; if(py===null) return -1;
+      return sortMode==='cheapest' ? px-py : py-px; });
+  }
+  return a;
 }
 
 /* ===== full products view + search ===== */
@@ -815,13 +883,27 @@ function renderAllProducts(){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">هنوز محصولی ثبت نشده است.</div>';
     return;
   }
-  const list=productCache.filter(pr=>matchesSearch(pr,searchQuery) && (!genderFilter || (pr.gender||'')===genderFilter));
+  let list=productCache.filter(pr=>!pr.pinned && matchesSearch(pr,searchQuery) && (!genderFilter || (pr.gender||'')===genderFilter));
+  list=sortProducts(list);
   if(!list.length){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">محصولی با این فیلتر یافت نشد.</div>';
     return;
   }
   grid.innerHTML=list.map(productCardHTML).join('');
   markLoaded(grid);
+}
+function setSort(mode){ sortMode=mode||'newest'; renderAllProducts(); }
+async function saveHomeCount(btn){
+  const v=Math.max(1, parseInt(document.getElementById('apHomeCount').value,10)||4);
+  if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
+  try{ await JB.saveSetting('home_count', v); appSettings.home_count=v; renderProducts(); toast('تعداد ذخیره شد.'); }
+  catch(e){ toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق')); }
+  finally{ if(btn){ btn.disabled=false; btn.textContent='ذخیره تعداد'; } }
+}
+function renderGenderChips(){
+  const box=document.getElementById('pfilter'); if(!box) return;
+  const opts=['',...(appSettings.gender_options||[])];
+  box.innerHTML=opts.map(o=>'<button class="pchip'+(o===genderFilter?' active':'')+'" data-g="'+esc(o)+'" onclick="setGenderFilter(\''+esc(o).replace(/'/g,"\\'")+'\',this)">'+(o===''?'همه':esc(o))+'</button>').join('');
 }
 function setGenderFilter(g,btn){
   genderFilter=g||'';
@@ -835,9 +917,9 @@ function showAllProducts(focusSearch){
   all.hidden=false;
   document.body.classList.add('viewing-all');
   if(location.hash!=='#products-all') history.pushState(null,'','#products-all');
-  genderFilter='';
-  const chips=document.querySelectorAll('#pfilter .pchip');
-  chips.forEach(b=>b.classList.toggle('active', b.getAttribute('data-g')===''));
+  genderFilter=''; sortMode='newest';
+  const ps=document.getElementById('psort'); if(ps) ps.value='newest';
+  renderGenderChips();
   renderAllProducts();
   const html=document.documentElement, prev=html.style.scrollBehavior;
   html.style.scrollBehavior='auto'; window.scrollTo(0,0); html.style.scrollBehavior=prev;
@@ -927,6 +1009,8 @@ async function openPanel(){
   cancelEdit();          // start clean in "add" mode
   renderAdminList();
   renderContentEditor();
+  const hc=document.getElementById('apHomeCount'); if(hc) hc.value=appSettings.home_count||4;
+  fillOptionDatalists();
   refreshUsage();
 }
 
@@ -999,8 +1083,8 @@ function clearPending(){
   pendingItems=[]; editingId=null; originalImages=[];
   const a=document.getElementById('apTitle'),b=document.getElementById('apDesc'),p=document.getElementById('apPhoto');
   if(a)a.value=''; if(b)b.value=''; if(p)p.value='';
-  const g=document.getElementById('apGender'),md=document.getElementById('apModel'),sz=document.getElementById('apSize');
-  if(g)g.value=''; if(md)md.value=''; if(sz)sz.value='';
+  const g=document.getElementById('apGender'),md=document.getElementById('apModel'),sz=document.getElementById('apSize'),pc=document.getElementById('apPrice'),pn=document.getElementById('apPinned');
+  if(g)g.value=''; if(md)md.value=''; if(sz)sz.value=''; if(pc)pc.value=''; if(pn)pn.checked=false;
   const h=document.getElementById('apHeading'),s=document.getElementById('apSave'),c=document.getElementById('apCancel');
   if(h)h.textContent='افزودن محصول'; if(s)s.textContent='افزودن محصول'; if(c)c.style.display='none';
   renderPreview();
@@ -1016,6 +1100,8 @@ function startEdit(id){
   document.getElementById('apGender').value=pr.gender||'';
   document.getElementById('apModel').value=pr.model||'';
   document.getElementById('apSize').value=pr.size||'';
+  document.getElementById('apPrice').value=pr.price||'';
+  document.getElementById('apPinned').checked=!!pr.pinned;
   document.getElementById('apHeading').textContent='ویرایش محصول';
   document.getElementById('apSave').textContent='ذخیره تغییرات';
   document.getElementById('apCancel').style.display='flex';
@@ -1040,7 +1126,8 @@ function resizeFile(file,max){
 
 async function saveProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
-  const gender=val('apGender'), model=val('apModel').trim(), size=val('apSize').trim();
+  const gender=val('apGender').trim(), model=val('apModel').trim(), size=val('apSize').trim(), price=val('apPrice').trim(), pinned=document.getElementById('apPinned').checked;
+  await persistOption('gender_options', gender); await persistOption('model_options', model);
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
   const label=editingId?'ذخیره تغییرات':'افزودن محصول';
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
@@ -1061,10 +1148,10 @@ async function saveProductUI(btn){
     const images=pendingItems.map(it=> it.kind==='url' ? it.url : uploaded.get(it));
     if(editingId){
       const removedUrls=originalImages.filter(u=>!images.includes(u));
-      await JB.updateProduct(editingId,{ title, description, images, removedUrls, gender, model, size });
+      await JB.updateProduct(editingId,{ title, description, images, removedUrls, gender, model, size, price, pinned });
       toast('تغییرات ذخیره شد.');
     }else{
-      await JB.createProduct({ title, description, images, gender, model, size });
+      await JB.createProduct({ title, description, images, gender, model, size, price, pinned });
       toast('محصول با موفقیت افزوده شد.');
     }
     clearPending();
@@ -1151,6 +1238,7 @@ function renderLb(){
   if(lbProduct){
     html+='<h3>'+esc(lbProduct.title)+'</h3>';
     if(lbProduct.description) html+='<p>'+esc(lbProduct.description)+'</p>';
+    if(lbProduct.price) html+='<p class="lb-price">'+esc(lbProduct.price)+'</p>';
   }
   if(multi) html+='<div class="cnt">'+faNum(lbIdx+1)+' / '+faNum(lbList.length)+'</div>';
   if(isAdminFlag && lbProduct){
@@ -1456,7 +1544,7 @@ function toggleSectionEdit(sec){
   elsForKeys(SECTION_KEYS[sec]||[]).forEach(([k,el])=>{
     el.dataset.ckOrig = (contentMap[k]!==undefined&&contentMap[k]!==null&&contentMap[k]!=='') ? contentMap[k] : el.textContent;
     el.classList.add('ck-editing');
-    el.setAttribute('contenteditable','plaintext-only');
+    el.setAttribute('contenteditable', (function(){var d=document.createElement('div');try{d.contentEditable='plaintext-only';return d.contentEditable==='plaintext-only'?'plaintext-only':'true';}catch(e){return 'true';}})());
   });
 
   // contact special: edit underlying values as plain text inside their cells
@@ -1525,7 +1613,7 @@ function contactEditOn(){
   box.classList.add('editing-on');
   // build a simple editable field per value, appended under each row's value cell
   const mk=(k,label,val)=>'<div class="ce-field" style="margin:8px 0 0"><label>'+esc(label)+'</label>'
-    +'<div id="cedit_'+k+'" class="ck-editing ltr-input" contenteditable="plaintext-only" style="padding:8px 10px">'+esc(val)+'</div></div>';
+    +'<div id="cedit_'+k+'" class="ck-editing ltr-input" contenteditable="true" style="padding:8px 10px">'+esc(val)+'</div></div>';
   const addr=document.getElementById('cAddress');
   if(addr) addr.insertAdjacentHTML('afterend', mk('contact_address','آدرس', cval('contact_address')));
   const ph=document.getElementById('cPhones');
@@ -1552,7 +1640,7 @@ function extraInlineOn(xs){
 }
 function xpLiveRow(t){
   return '<div class="xp-live-row"><button type="button" class="xp-del-inline" onclick="this.parentNode.remove()" aria-label="حذف">×</button>'
-    +'<p class="xp-live" contenteditable="plaintext-only">'+esc(t)+'</p></div>';
+    +'<p class="xp-live" contenteditable="true">'+esc(t)+'</p></div>';
 }
 function xpInlineAdd(xs){
   const box=document.getElementById('extra_'+xs); if(!box) return;
@@ -1584,6 +1672,7 @@ function syncAdminEditUI(){
 (async function boot(){
   captureFallbacks();
   await loadContent();
+  await loadSettings();
   await loadProducts();
   try{ isAdminFlag = await JB.isAdmin(); }catch(e){ isAdminFlag=false; }
   await refreshAuth();

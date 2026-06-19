@@ -94,11 +94,12 @@ const JB = {
   },
 
   // ---- ADMIN: create with already-uploaded image URLs ----
-  async createProduct({ title, description, images, gender, model, size }) {
+  async createProduct({ title, description, images, gender, model, size, price, pinned }) {
     const imgs = images || [];
     const { error } = await sb.from("products").insert({
       title, description, image_url: imgs[0] ?? null, images: imgs,
-      gender: gender || null, model: model || null, size: size || null
+      gender: gender || null, model: model || null, size: size || null,
+      price: price || null, pinned: !!pinned
     });
     if (error) {
       if (missingImagesColumn(error)) throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
@@ -108,11 +109,12 @@ const JB = {
   },
 
   // ---- ADMIN: edit a product; removedUrls get cleaned from storage ----
-  async updateProduct(id, { title, description, images, removedUrls, gender, model, size }) {
+  async updateProduct(id, { title, description, images, removedUrls, gender, model, size, price, pinned }) {
     const imgs = images || [];
     const { error } = await sb.from("products").update({
       title, description, image_url: imgs[0] ?? null, images: imgs,
-      gender: gender || null, model: model || null, size: size || null
+      gender: gender || null, model: model || null, size: size || null,
+      price: price || null, pinned: !!pinned
     }).eq("id", id);
     if (error) {
       if (missingImagesColumn(error)) throw new Error("ستون «images» در جدول products وجود ندارد — دستور SQL مرحله نصب را در Supabase اجرا کنید.");
@@ -164,6 +166,21 @@ const JB = {
       .upsert(payload, { onConflict: "key" });
     if (error) throw error;
   },
+};
+
+JB.setPinned = async function(id, pinned){
+  const { error } = await sb.from("products").update({ pinned: !!pinned }).eq("id", id);
+  if (error) throw error;
+};
+// settings reuse site_content (key/jsonb). get one, with default.
+JB.getSetting = async function(key, dflt){
+  const { data, error } = await sb.from("site_content").select("value").eq("key", key).maybeSingle();
+  if (error) return dflt;
+  return (data && data.value !== undefined && data.value !== null) ? data.value : dflt;
+};
+JB.saveSetting = async function(key, value){
+  const { error } = await sb.from("site_content").upsert({ key, value }, { onConflict: "key" });
+  if (error) throw error;
 };
 
 window.JB = JB;
