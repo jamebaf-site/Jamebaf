@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v6.6" />
+<meta name="version" content="v6.7" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -652,7 +652,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.6</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.7</span></div>
     </div>
   </div>
 </footer>
@@ -681,8 +681,12 @@
         <div class="block-label" id="apHeading">افزودن محصول</div>
         <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
-        <div class="field"><label for="apGender">جنسیت</label><input id="apGender" list="genderList" placeholder="انتخاب یا افزودن" autocomplete="off" /><datalist id="genderList"></datalist></div>
-        <div class="field"><label for="apModel">مدل</label><input id="apModel" list="modelList" placeholder="انتخاب یا افزودن" autocomplete="off" /><datalist id="modelList"></datalist></div>
+        <div class="field"><label for="apGender">جنسیت</label>
+          <select id="apGender"><option value="">— انتخاب کنید —</option></select>
+          <input id="apGenderNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
+        <div class="field"><label for="apModel">مدل</label>
+          <select id="apModel"><option value="">— انتخاب کنید —</option></select>
+          <input id="apModelNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
         <div class="field"><label for="apSize">سایز</label><input id="apSize" type="text" placeholder="مثلاً ۶۰/۶۵" /></div>
         <div class="field"><label for="apPrice">قیمت</label><input id="apPrice" type="text" placeholder="مثلاً ۲۵۰٬۰۰۰ تومان" /></div>
         <div class="field field-check"><label class="chk"><input id="apPinned" type="checkbox" /> <span>سنجاق به صفحه اصلی</span></label></div>
@@ -759,9 +763,14 @@ async function loadSettings(){
   fillOptionDatalists();
 }
 function fillOptionDatalists(){
-  const gl=document.getElementById('genderList'), ml=document.getElementById('modelList');
-  if(gl) gl.innerHTML=(appSettings.gender_options||[]).map(o=>'<option value="'+esc(o)+'">').join('');
-  if(ml) ml.innerHTML=(appSettings.model_options||[]).map(o=>'<option value="'+esc(o)+'">').join('');
+  const fill=(selId,opts,keep)=>{
+    const sel=document.getElementById(selId); if(!sel) return;
+    const cur=keep!==undefined?keep:sel.value;
+    sel.innerHTML='<option value="">— انتخاب کنید —</option>'+(opts||[]).map(o=>'<option value="'+esc(o)+'"'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
+    if(cur && !(opts||[]).includes(cur)){ sel.insertAdjacentHTML('beforeend','<option value="'+esc(cur)+'" selected>'+esc(cur)+'</option>'); }
+  };
+  fill('apGender', appSettings.gender_options);
+  fill('apModel', appSettings.model_options);
 }
 // add a newly-typed option to its list and persist forever
 async function persistOption(key, value){
@@ -1084,6 +1093,7 @@ function clearPending(){
   const a=document.getElementById('apTitle'),b=document.getElementById('apDesc'),p=document.getElementById('apPhoto');
   if(a)a.value=''; if(b)b.value=''; if(p)p.value='';
   const g=document.getElementById('apGender'),md=document.getElementById('apModel'),sz=document.getElementById('apSize'),pc=document.getElementById('apPrice'),pn=document.getElementById('apPinned');
+  const gn=document.getElementById('apGenderNew'),mn=document.getElementById('apModelNew'); if(gn)gn.value=''; if(mn)mn.value='';
   if(g)g.value=''; if(md)md.value=''; if(sz)sz.value=''; if(pc)pc.value=''; if(pn)pn.checked=false;
   const h=document.getElementById('apHeading'),s=document.getElementById('apSave'),c=document.getElementById('apCancel');
   if(h)h.textContent='افزودن محصول'; if(s)s.textContent='افزودن محصول'; if(c)c.style.display='none';
@@ -1097,8 +1107,11 @@ function startEdit(id){
   pendingItems=originalImages.map(u=>({kind:'url', url:u}));
   document.getElementById('apTitle').value=pr.title||'';
   document.getElementById('apDesc').value=pr.description||'';
-  document.getElementById('apGender').value=pr.gender||'';
-  document.getElementById('apModel').value=pr.model||'';
+  fillOptionDatalists();
+  const gSel=document.getElementById('apGender'); if(pr.gender && !Array.from(gSel.options).some(o=>o.value===pr.gender)) gSel.insertAdjacentHTML('beforeend','<option value="'+esc(pr.gender)+'">'+esc(pr.gender)+'</option>');
+  gSel.value=pr.gender||'';
+  const mSel=document.getElementById('apModel'); if(pr.model && !Array.from(mSel.options).some(o=>o.value===pr.model)) mSel.insertAdjacentHTML('beforeend','<option value="'+esc(pr.model)+'">'+esc(pr.model)+'</option>');
+  mSel.value=pr.model||'';
   document.getElementById('apSize').value=pr.size||'';
   document.getElementById('apPrice').value=pr.price||'';
   document.getElementById('apPinned').checked=!!pr.pinned;
@@ -1126,8 +1139,11 @@ function resizeFile(file,max){
 
 async function saveProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
-  const gender=val('apGender').trim(), model=val('apModel').trim(), size=val('apSize').trim(), price=val('apPrice').trim(), pinned=document.getElementById('apPinned').checked;
-  await persistOption('gender_options', gender); await persistOption('model_options', model);
+  const gNew=val('apGenderNew').trim(), mNew=val('apModelNew').trim();
+  const gender=(gNew||val('apGender').trim()), model=(mNew||val('apModel').trim());
+  const size=val('apSize').trim(), price=val('apPrice').trim(), pinned=document.getElementById('apPinned').checked;
+  if(gNew) await persistOption('gender_options', gNew);
+  if(mNew) await persistOption('model_options', mNew);
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
   const label=editingId?'ذخیره تغییرات':'افزودن محصول';
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }

@@ -175,8 +175,11 @@ JB.setPinned = async function(id, pinned){
 // settings reuse site_content (key/jsonb). get one, with default.
 JB.getSetting = async function(key, dflt){
   const { data, error } = await sb.from("site_content").select("value").eq("key", key).maybeSingle();
-  if (error) return dflt;
-  return (data && data.value !== undefined && data.value !== null) ? data.value : dflt;
+  if (error || !data || data.value === undefined || data.value === null) return dflt;
+  let v = data.value;
+  // jsonb may arrive already-parsed OR as a JSON string — normalise
+  if (typeof v === "string") { try { v = JSON.parse(v); } catch(e){} }
+  return v;
 };
 JB.saveSetting = async function(key, value){
   const { error } = await sb.from("site_content").upsert({ key, value }, { onConflict: "key" });
