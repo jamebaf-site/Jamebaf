@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v6.3" />
+<meta name="version" content="v6.4" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -630,7 +630,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.3</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.4</span></div>
     </div>
   </div>
 </footer>
@@ -661,6 +661,7 @@
         <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
         <div class="field"><label for="apGender">جنسیت</label><select id="apGender"><option value="">— انتخاب کنید —</option><option value="پسرانه">پسرانه</option><option value="دخترانه">دخترانه</option></select></div>
         <div class="field"><label for="apModel">مدل</label><input id="apModel" type="text" placeholder="مثلاً یقه‌اسکی، جودون" /></div>
+        <div class="field"><label for="apSize">سایز</label><input id="apSize" type="text" placeholder="مثلاً ۶۰/۶۵" /></div>
         <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
         <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
         <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
@@ -736,6 +737,7 @@ function cardTags(pr){
   let h='';
   if(pr.gender) h+='<button type="button" class="ptag g" onclick="event.stopPropagation();filterByGender(\''+esc(pr.gender).replace(/'/g,"\\'")+'\')" aria-label="نمایش همه '+esc(pr.gender)+'">'+esc(pr.gender)+'</button>';
   if(pr.model)  h+='<button type="button" class="ptag" onclick="event.stopPropagation();filterByModel(\''+esc(pr.model).replace(/'/g,"\\'")+'\')" aria-label="نمایش همه '+esc(pr.model)+'">'+esc(pr.model)+'</button>';
+  if(pr.size)   h+='<button type="button" class="ptag" onclick="event.stopPropagation();filterByModel(\''+esc(pr.size).replace(/'/g,"\\'")+'\')" aria-label="نمایش سایز '+esc(pr.size)+'">سایز '+esc(pr.size)+'</button>';
   return h ? '<div class="ptags">'+h+'</div>' : '';
 }
 // tap a gender tag → open full view filtered to that gender
@@ -771,7 +773,7 @@ function normFa(str){
 function matchesSearch(pr,q){
   const query=normFa(q);
   if(!query) return true;
-  const hay=normFa((pr.title||'')+' '+(pr.description||'')+' '+(pr.gender||'')+' '+(pr.model||''));
+  const hay=normFa((pr.title||'')+' '+(pr.description||'')+' '+(pr.gender||'')+' '+(pr.model||'')+' '+(pr.size||''));
   // every word must be found somewhere (AND across all fields)
   return query.split(' ').every(w=>!w || hay.includes(w));
 }
@@ -996,8 +998,8 @@ function clearPending(){
   pendingItems=[]; editingId=null; originalImages=[];
   const a=document.getElementById('apTitle'),b=document.getElementById('apDesc'),p=document.getElementById('apPhoto');
   if(a)a.value=''; if(b)b.value=''; if(p)p.value='';
-  const g=document.getElementById('apGender'),md=document.getElementById('apModel');
-  if(g)g.value=''; if(md)md.value='';
+  const g=document.getElementById('apGender'),md=document.getElementById('apModel'),sz=document.getElementById('apSize');
+  if(g)g.value=''; if(md)md.value=''; if(sz)sz.value='';
   const h=document.getElementById('apHeading'),s=document.getElementById('apSave'),c=document.getElementById('apCancel');
   if(h)h.textContent='افزودن محصول'; if(s)s.textContent='افزودن محصول'; if(c)c.style.display='none';
   renderPreview();
@@ -1012,6 +1014,7 @@ function startEdit(id){
   document.getElementById('apDesc').value=pr.description||'';
   document.getElementById('apGender').value=pr.gender||'';
   document.getElementById('apModel').value=pr.model||'';
+  document.getElementById('apSize').value=pr.size||'';
   document.getElementById('apHeading').textContent='ویرایش محصول';
   document.getElementById('apSave').textContent='ذخیره تغییرات';
   document.getElementById('apCancel').style.display='flex';
@@ -1036,7 +1039,7 @@ function resizeFile(file,max){
 
 async function saveProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
-  const gender=val('apGender'), model=val('apModel').trim();
+  const gender=val('apGender'), model=val('apModel').trim(), size=val('apSize').trim();
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
   const label=editingId?'ذخیره تغییرات':'افزودن محصول';
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
@@ -1057,10 +1060,10 @@ async function saveProductUI(btn){
     const images=pendingItems.map(it=> it.kind==='url' ? it.url : uploaded.get(it));
     if(editingId){
       const removedUrls=originalImages.filter(u=>!images.includes(u));
-      await JB.updateProduct(editingId,{ title, description, images, removedUrls, gender, model });
+      await JB.updateProduct(editingId,{ title, description, images, removedUrls, gender, model, size });
       toast('تغییرات ذخیره شد.');
     }else{
-      await JB.createProduct({ title, description, images, gender, model });
+      await JB.createProduct({ title, description, images, gender, model, size });
       toast('محصول با موفقیت افزوده شد.');
     }
     clearPending();
