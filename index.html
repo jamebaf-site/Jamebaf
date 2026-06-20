@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v8.5" />
+<meta name="version" content="v8.6" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -225,6 +225,20 @@
   .pa-pin{font-size:11px;color:var(--gold-deep);font-weight:600;margin-inline-start:4px}
   .pa-left{font-size:11px;color:var(--soft);font-weight:500}
   .trash-note{font-size:11px;color:var(--soft);font-weight:500}
+  .mgmt-view[hidden]{display:none}
+  .mgmt-menu{display:flex;flex-direction:column;gap:10px;margin:8px 0 16px}
+  .mgmt-menu>button{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--paper);border:1px solid var(--line-2);border-radius:13px;padding:15px 16px;font-family:inherit;cursor:pointer;transition:all var(--t) var(--ease)}
+  .mgmt-menu>button:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .mm-main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .mm-title{font-size:15px;font-weight:700;color:var(--ink)}
+  .mm-sub{font-size:12px;color:var(--soft);margin-top:3px}
+  .mm-badge{background:var(--accent);color:#fff;font-size:11px;font-weight:700;min-width:21px;height:21px;border-radius:11px;display:inline-grid;place-items:center;padding:0 6px;flex:none}
+  .mm-badge[hidden]{display:none}
+  .mm-chev{color:var(--soft);flex:none;display:inline-flex}
+  .mm-chev svg{width:18px;height:18px}
+  .mgmt-back{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:14px;padding:9px 14px;border-radius:9px;cursor:pointer;margin-bottom:18px;transition:all var(--t) var(--ease)}
+  .mgmt-back svg{width:17px;height:17px}
+  .mgmt-back:hover{border-color:var(--accent);color:var(--accent)}
   .pall-tools{display:flex;align-items:center;gap:12px}
   .psel-btn{background:var(--card);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:all var(--t) var(--ease)}
   .psel-btn:hover,.psel-btn.active{border-color:var(--accent);color:var(--accent)}
@@ -239,7 +253,8 @@
   .psel-actions button:hover{border-color:var(--ink);color:var(--ink)}
   .psel-actions button.del{color:#b00020;border-color:#e6b8be}
   .psel-actions button.del:hover{background:#fbeaec}
-  .psel-done{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important}
+  .psel-done{background:var(--mist);border:1px solid var(--line-2);color:var(--soft);font-family:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:9px;cursor:pointer;white-space:nowrap;transition:all var(--t) var(--ease)}
+  .psel-done.active{background:var(--ink);border-color:var(--ink);color:#fff}
   .pcard.selecting{cursor:pointer}
   .psel-check{position:absolute;inset-block-start:10px;inset-inline-end:10px;width:27px;height:27px;border-radius:50%;border:2px solid #fff;background:rgba(20,18,14,.28);display:grid;place-items:center;z-index:4;box-shadow:0 1px 5px rgba(0,0,0,.3);transition:background var(--t) var(--ease)}
   .psel-check svg{width:15px;height:15px;color:#fff;opacity:0;transition:opacity var(--t) var(--ease)}
@@ -625,12 +640,12 @@
       <div class="psel-top">
         <button class="psel-all" id="pselAll" onclick="toggleSelectAllPage()">انتخاب همه</button>
         <span class="psel-count" id="pselCount">محصولی انتخاب نشده</span>
+        <button class="psel-done" id="pselDone" onclick="toggleSelectMode()">پایان</button>
       </div>
       <div class="psel-actions" id="pselActions" hidden>
         <button id="pselPin" onclick="bulkPin(true)">سنجاق</button>
         <button id="pselUnpin" onclick="bulkPin(false)">حذف سنجاق</button>
         <button id="pselDel" class="del" onclick="bulkDelete()">حذف</button>
-        <button class="psel-done" onclick="toggleSelectMode()">پایان</button>
       </div>
     </div>
     <div class="pgrid pgrid-lg" id="pgridAll"></div>
@@ -714,7 +729,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.5</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.6</span></div>
     </div>
   </div>
 </footer>
@@ -740,35 +755,58 @@
       </div>
       <div class="step" id="stepPanel">
         <div class="usage" id="apUsage"></div>
-        <div class="block-label" id="apHeading">افزودن محصول</div>
-        <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
-        <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
-        <div class="field"><label for="apGender">جنسیت</label>
-          <select id="apGender"><option value="">— انتخاب کنید —</option></select>
-          <input id="apGenderNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
-        <div class="field"><label for="apModel">مدل</label>
-          <select id="apModel"><option value="">— انتخاب کنید —</option></select>
-          <input id="apModelNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
-        <div class="field"><label for="apSize">سایز</label><input id="apSize" type="text" placeholder="مثلاً ۶۰/۶۵" /></div>
-        <div class="field"><label for="apPrice">قیمت</label><input id="apPrice" type="text" placeholder="مثلاً ۲۵۰٬۰۰۰ تومان" /></div>
-        <div class="field field-check"><label class="chk"><input id="apPinned" type="checkbox" /> <span>سنجاق به صفحه اصلی</span></label></div>
-        <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
-        <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
-        <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
-        <div class="block-label" style="margin-top:24px">تنظیمات صفحه اصلی</div>
-        <div class="field"><label for="apHomeCount">تعداد محصولات صفحه اصلی</label><input id="apHomeCount" type="number" min="1" max="50" placeholder="4" /></div>
-        <button class="btn btn-solid" id="apHomeCountSave" onclick="saveHomeCount(this)" style="margin-bottom:6px">ذخیره تعداد</button>
-        <div class="block-label" style="margin-top:24px">محصولات موجود</div>
-        <div class="prod-admin-list" id="prodAdminList"></div>
-        <div id="trashSection" style="display:none">
-          <div class="block-label" style="margin-top:24px">حذف‌شده‌های اخیر <span class="trash-note">(تا ۲ روز قابل بازگردانی)</span></div>
+
+        <div class="mgmt-view" id="mgmt-menu">
+          <div class="mgmt-menu">
+            <button onclick="showMgmt('mgmt-product')"><span class="mm-main"><span class="mm-title">محصولات</span><span class="mm-sub">افزودن، ویرایش و مدیریت محصولات</span></span><span class="mm-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span></button>
+            <button onclick="showMgmt('mgmt-deleted')"><span class="mm-main"><span class="mm-title">حذف‌شده‌های اخیر</span><span class="mm-sub">بازگردانی موارد حذف‌شده</span></span><span class="mm-badge" id="trashBadge" hidden></span><span class="mm-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span></button>
+            <button onclick="showMgmt('mgmt-home')"><span class="mm-main"><span class="mm-title">تنظیمات صفحه اصلی</span><span class="mm-sub">تعداد محصولات نمایشی</span></span><span class="mm-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span></button>
+            <button onclick="showMgmt('mgmt-content')"><span class="mm-main"><span class="mm-title">محتوای سایت</span><span class="mm-sub">ویرایش متن بخش‌های سایت</span></span><span class="mm-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></span></button>
+          </div>
+          <button class="btn logout" onclick="doLogout()">خروج از حساب</button>
+        </div>
+
+        <div class="mgmt-view" id="mgmt-product" hidden>
+          <button class="mgmt-back" onclick="showMgmt('mgmt-menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> بازگشت به منو</button>
+          <div class="block-label" id="apHeading">افزودن محصول</div>
+          <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
+          <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
+          <div class="field"><label for="apGender">جنسیت</label>
+            <select id="apGender"><option value="">— انتخاب کنید —</option></select>
+            <input id="apGenderNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
+          <div class="field"><label for="apModel">مدل</label>
+            <select id="apModel"><option value="">— انتخاب کنید —</option></select>
+            <input id="apModelNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
+          <div class="field"><label for="apSize">سایز</label><input id="apSize" type="text" placeholder="مثلاً ۶۰/۶۵" /></div>
+          <div class="field"><label for="apPrice">قیمت</label><input id="apPrice" type="text" placeholder="مثلاً ۲۵۰٬۰۰۰ تومان" /></div>
+          <div class="field field-check"><label class="chk"><input id="apPinned" type="checkbox" /> <span>سنجاق به صفحه اصلی</span></label></div>
+          <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
+          <button class="btn btn-solid" id="apSave" onclick="saveProductUI(this)">افزودن محصول</button>
+          <button class="btn logout" id="apCancel" onclick="cancelEdit()" style="display:none">انصراف از ویرایش</button>
+          <div class="block-label" style="margin-top:26px">محصولات موجود</div>
+          <div class="prod-admin-list" id="prodAdminList"></div>
+        </div>
+
+        <div class="mgmt-view" id="mgmt-deleted" hidden>
+          <button class="mgmt-back" onclick="showMgmt('mgmt-menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> بازگشت به منو</button>
+          <div class="block-label">حذف‌شده‌های اخیر <span class="trash-note">(تا ۲ روز قابل بازگردانی)</span></div>
           <div class="prod-admin-list" id="trashList"></div>
         </div>
-        <div class="block-label" style="margin-top:26px">محتوای سایت</div>
-        <p class="hint" style="text-align:right;margin:0 0 14px">متن بخش‌های سایت را ویرایش کنید. پس از ذخیره، تغییرات برای همه بازدیدکنندگان نمایش داده می‌شود.</p>
-        <div id="contentEditor" class="content-editor"></div>
-        <button class="btn btn-solid" id="cSaveBtn" onclick="saveContentUI(this)" style="margin-top:4px">ذخیره محتوای سایت</button>
-        <button class="btn logout" onclick="doLogout()">خروج از حساب</button>
+
+        <div class="mgmt-view" id="mgmt-home" hidden>
+          <button class="mgmt-back" onclick="showMgmt('mgmt-menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> بازگشت به منو</button>
+          <div class="block-label">تنظیمات صفحه اصلی</div>
+          <div class="field"><label for="apHomeCount">تعداد محصولات صفحه اصلی</label><input id="apHomeCount" type="number" min="1" max="50" placeholder="4" /></div>
+          <button class="btn btn-solid" id="apHomeCountSave" onclick="saveHomeCount(this)">ذخیره تعداد</button>
+        </div>
+
+        <div class="mgmt-view" id="mgmt-content" hidden>
+          <button class="mgmt-back" onclick="showMgmt('mgmt-menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> بازگشت به منو</button>
+          <div class="block-label">محتوای سایت</div>
+          <p class="hint" style="text-align:right;margin:0 0 14px">متن بخش‌های سایت را ویرایش کنید. پس از ذخیره، تغییرات برای همه بازدیدکنندگان نمایش داده می‌شود.</p>
+          <div id="contentEditor" class="content-editor"></div>
+          <button class="btn btn-solid" id="cSaveBtn" onclick="saveContentUI(this)" style="margin-top:4px">ذخیره محتوای سایت</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1044,6 +1082,7 @@ function updatePageSelBar(){
   const n=selectedProducts.size;
   const c=document.getElementById('pselCount'); if(c) c.textContent = n ? faNum(n)+' مورد انتخاب شد' : 'محصولی انتخاب نشده';
   const acts=document.getElementById('pselActions'); if(acts) acts.hidden = (n===0);
+  const done=document.getElementById('pselDone'); if(done) done.classList.toggle('active', n>0);
   const ids=pageVisibleIds||[]; const allSel=ids.length>0 && ids.every(id=>selectedProducts.has(id));
   const a=document.getElementById('pselAll'); if(a) a.textContent = allSel ? 'لغو انتخاب همه' : 'انتخاب همه';
 }
@@ -1125,6 +1164,7 @@ const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.t
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
 /* ===== modal ===== */
+function showMgmt(id){ document.querySelectorAll('#stepPanel .mgmt-view').forEach(v=>v.hidden=true); const el=document.getElementById(id); if(el) el.hidden=false; const m=document.querySelector('.modal'); if(m) m.scrollTo({top:0}); }
 function showStep(id){ document.querySelectorAll('.step').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 function setModalHead(t,s){ document.getElementById('modalTitle').textContent=t; document.getElementById('modalSub').textContent=s; }
 function openAuth(){
@@ -1160,8 +1200,9 @@ async function doLogout(){
 }
 
 async function openPanel(){
-  setModalHead('پنل مدیریت','افزودن و مدیریت محصولات');
+  setModalHead('پنل مدیریت','یک بخش را برای مدیریت باز کنید');
   showStep('stepPanel');
+  showMgmt('mgmt-menu');
   cancelEdit();          // start clean in "add" mode
   selectedProducts.clear();
   renderAdminList();
@@ -1322,6 +1363,7 @@ function startEdit(id){
   document.getElementById('apSave').textContent='ذخیره تغییرات';
   document.getElementById('apCancel').style.display='flex';
   renderPreview();
+  showMgmt('mgmt-product');
   const m=document.querySelector('.modal'); if(m) m.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1387,12 +1429,13 @@ async function delProductUI(id){
   toast('به حذف‌شده‌های اخیر منتقل شد.');
 }
 function renderTrashList(){
-  const box=document.getElementById('trashList'), sec=document.getElementById('trashSection');
-  if(!box) return;
+  const box=document.getElementById('trashList');
   const t=loadTrash();
   const entries=Object.keys(t).map(id=>({id, ts:t[id].ts||0, pr:t[id].pr||{}})).sort((a,b)=>b.ts-a.ts);
-  if(!entries.length){ if(sec) sec.style.display='none'; box.innerHTML=''; return; }
-  if(sec) sec.style.display='';
+  const badge=document.getElementById('trashBadge');
+  if(badge){ if(entries.length){ badge.textContent=faNum(entries.length); badge.hidden=false; } else badge.hidden=true; }
+  if(!box) return;
+  if(!entries.length){ box.innerHTML='<div class="empty-note">موردی در حذف‌شده‌های اخیر نیست.</div>'; return; }
   box.innerHTML=entries.map(e=>{
     const imgs=imgsOf(e.pr);
     const th=imgs.length?'<img class="tr-th" src="'+esc(imgs[0])+'" alt="">':'<div class="tr-th">'+BOX+'</div>';
