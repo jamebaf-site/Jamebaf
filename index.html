@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v6.7" />
+<meta name="version" content="v6.8" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -652,7 +652,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.7</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.8</span></div>
     </div>
   </div>
 </footer>
@@ -735,6 +735,24 @@ const BOX='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-lin
 
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function val(id){ return document.getElementById(id).value; }
+// convert Persian (۰-۹) and Arabic-Indic (٠-٩) digits to English 0-9
+function toEnDigits(str){
+  return String(str==null?'':str)
+    .replace(/[\u06f0-\u06f9]/g,d=>String(d.charCodeAt(0)-0x06f0))
+    .replace(/[\u0660-\u0669]/g,d=>String(d.charCodeAt(0)-0x0660));
+}
+// live-normalise digits in any text/number/search field as the user types
+document.addEventListener('input',function(e){
+  const t=e.target;
+  if(!t || (t.tagName!=='INPUT' && t.tagName!=='TEXTAREA')) return;
+  if(t.type==='checkbox'||t.type==='radio'||t.type==='file') return;
+  const v=t.value;
+  if(/[\u06f0-\u06f9\u0660-\u0669]/.test(v)){
+    const start=t.selectionStart;
+    t.value=toEnDigits(v);
+    try{ t.setSelectionRange(start,start); }catch(_){}
+  }
+},true);
 function faNum(n){ return String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]); }
 function imgsOf(pr){ return (pr.images&&pr.images.length)?pr.images:(pr.image_url?[pr.image_url]:[]); }
 function toast(msg){
