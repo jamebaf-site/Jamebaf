@@ -5,7 +5,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="version" content="v6.8" />
+<meta name="theme-color" content="#F4EEE0" />
+<meta name="version" content="v6.9" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -163,7 +164,6 @@
   .info-row .v a{transition:all var(--t) var(--ease);border-bottom:1px solid transparent}
   .info-row .v a:hover{border-bottom-color:var(--ink)}
 
-
   footer{background:#1A140E;color:rgba(247,240,228,.72);padding:80px 0 44px}
   .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;flex-wrap:wrap;padding-bottom:40px;border-bottom:1px solid rgba(255,255,255,.1)}
   .foot-brand img{height:132px;margin-bottom:18px;filter:drop-shadow(0 18px 34px rgba(0,0,0,.65)) drop-shadow(0 0 46px rgba(255,255,255,.12))}
@@ -203,7 +203,7 @@
   .field input{width:100%;font-family:inherit;font-size:16px;color:var(--ink);padding:13px 15px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);transition:all var(--t) var(--ease)}
   .field input::placeholder{color:var(--soft);opacity:1}
   .field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(156,61,46,.15)}
-  .field input[type=file]{padding:10px;font-size:14px;cursor:pointer}
+  .field input[type=file]{padding:10px;font-size:16px;cursor:pointer}
   .field input[type=file]::-webkit-file-upload-button,.field input[type=file]::file-selector-button{font-family:inherit;border:1px solid var(--line-2);background:var(--mist);padding:8px 12px;border-radius:7px;margin-inline-end:12px;cursor:pointer;color:var(--ink);font-weight:600}
   .modal-body .btn{width:100%;justify-content:center;margin-top:4px}
   .hint{font-size:13px;color:var(--soft);text-align:center;margin:16px 0 0;line-height:2}
@@ -302,7 +302,7 @@
   .ce-field{margin-bottom:14px}
   .ce-field:last-child{margin-bottom:0}
   .ce-field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:6px}
-  .ce-field input,.ce-field textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);padding:10px 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);transition:all var(--t) var(--ease)}
+  .ce-field input,.ce-field textarea{width:100%;font-family:inherit;font-size:16px;color:var(--ink);padding:10px 12px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);transition:all var(--t) var(--ease)}
   .ce-field input:focus,.ce-field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(156,61,46,.15)}
   .ce-field textarea{resize:vertical;min-height:60px;line-height:1.8}
   .ce-field .ltr-input{direction:ltr;text-align:left}
@@ -652,7 +652,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.8</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.9</span></div>
     </div>
   </div>
 </footer>
@@ -813,7 +813,7 @@ function cardMedia(pr){
     ? '<span class="pcount"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>'+faNum(imgs.length)+'</span>'
     : '';
   // only the cover loads on the card; details + other photos load on tap
-  return badge+'<img class="pimg" src="'+esc(imgs[0])+'" alt="'+esc(pr.title)+'" loading="lazy" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\')">';
+  return badge+'<img class="pimg" src="'+esc(imgs[0])+'" alt="'+esc(pr.title)+'" loading="lazy" decoding="async" onload="this.classList.add(\'loaded\')" onerror="this.classList.add(\'loaded\')">';
 }
 function cardTags(pr){
   let h='';
@@ -990,7 +990,7 @@ document.addEventListener('click',(e)=>{
 
 /* ===== nav / menu / reveal ===== */
 const nav=document.getElementById('nav');
-addEventListener('scroll',()=>{ nav.classList.toggle('scrolled', scrollY>30); },{passive:true});
+if(nav) addEventListener('scroll',()=>{ nav.classList.toggle('scrolled', scrollY>30); },{passive:true});
 function toggleMenu(open){ document.getElementById('mobileMenu').classList.toggle('show',open); }
 const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.01,rootMargin:'0px 0px -12% 0px'});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
@@ -1190,7 +1190,7 @@ async function saveProductUI(btn){
     }
     clearPending();
     await loadProducts(); renderAdminList(); refreshUsage();
-  }catch(e){ console.error('save failed:', e); toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق بود')); }
+  }catch(e){ toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق بود')); }
   finally{ if(btn){ btn.disabled=false; btn.textContent=label; } }
 }
 async function delProductUI(id){
@@ -1206,7 +1206,7 @@ async function refreshAuth(){
   const btn=document.getElementById('authBtn');
   if(isAdminFlag){
     btn.style.display='inline-flex';
-    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg><span class="lbl" id="authLbl">مدیریت</span>';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg><span class="lbl">مدیریت</span>';
     btn.onclick=openAuth;
   }else{
     btn.style.display='none';
