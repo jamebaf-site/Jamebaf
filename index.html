@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v6.9" />
+<meta name="version" content="v7.1" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -89,13 +89,14 @@
   .hero .lede{margin-bottom:34px}
   .thread{margin:2px 0 26px;max-width:340px}
   .thread svg{width:100%;height:auto;display:block;overflow:visible}
-  .thread .weft{fill:none;stroke:var(--ink);stroke-width:1.7;stroke-linecap:round;stroke-dasharray:358.1;stroke-dashoffset:0;animation:weave 1.8s cubic-bezier(.45,0,.15,1) .35s both}
+  .thread .weft{fill:none;stroke:url(#weftGrad);stroke-width:1.7;stroke-linecap:round;stroke-dasharray:358.1;stroke-dashoffset:0;animation:weave 1.8s cubic-bezier(.45,0,.15,1) .35s both}
   .thread .warp{stroke:var(--line-2);stroke-width:1;opacity:.55;animation:warpIn .7s ease .1s both}
   .thread .knot{fill:var(--ink);transform-box:fill-box;transform-origin:center;animation:knotIn .5s cubic-bezier(.2,.7,.2,1) 2s both}
   .thread .needle{opacity:0;animation:ndlLife 2.7s linear 0s both}
-  .thread .needle .nbody{fill:#c2bdb2;stroke:#6f6c64;stroke-width:.5}
-  .thread .needle .neye{fill:none;stroke:#6f6c64;stroke-width:1}
-  .thread .needle .nshine{stroke:#fff;stroke-width:.6;opacity:.7;stroke-linecap:round}
+  .thread .needle .nbody{fill:url(#needleGrad);stroke:#5f5c54;stroke-width:.45}
+  .thread .needle{filter:url(#needleShadow)}
+  .thread .needle .neye{fill:none;stroke:#5f5c54;stroke-width:.9}
+  .thread .needle .nshine{stroke:#fff;stroke-width:.55;opacity:.85;stroke-linecap:round}
   @keyframes ndlLife{0%,12%{opacity:0}15%{opacity:1}80%{opacity:1}95%,100%{opacity:0}}
   @keyframes weave{from{stroke-dashoffset:358.1}to{stroke-dashoffset:0}}
   @keyframes warpIn{from{opacity:0}to{opacity:.55}}
@@ -422,6 +423,25 @@
   .psort-lbl{font-size:13.5px;font-weight:600;color:var(--soft)}
   .psort{font-family:inherit;font-size:14.5px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line-2);border-radius:9px;padding:9px 14px;cursor:pointer;transition:all var(--t) var(--ease)}
   .psort:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(156,61,46,.15)}
+  /* ===== v7.1 graphics sharpening (rendering-only, no layout change) ===== */
+  svg{ shape-rendering:geometricPrecision; text-rendering:geometricPrecision; }
+  /* crisp, even icon strokes that don't blur at any size */
+  .why .ic svg,.info-ic svg,.pcard .ic svg,.nav-search svg,.pa-item .th svg,
+  .card-admin button svg,.fab svg,.btn svg,.sec-edit svg,.pall-back svg,.keytrig svg{
+    vector-effect:non-scaling-stroke;
+    stroke-linejoin:round; stroke-linecap:round;
+  }
+  /* sharper logo/photo bitmaps on high-DPI screens */
+  .intro-logo img,.brand img,.hero-mark img,.foot-logo img,.modal-logo img{
+    image-rendering:-webkit-optimize-contrast;
+    image-rendering:auto;
+    -webkit-backface-visibility:hidden; backface-visibility:hidden;
+    transform:translateZ(0);
+  }
+  .pcard .pimg,#lbImg{ image-rendering:auto; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
+  /* crisp hairline rendering for the woven thread + needle */
+  .thread svg{ shape-rendering:geometricPrecision; }
+  .thread .weft,.thread .warp{ vector-effect:non-scaling-stroke; }
 </style>
 </head>
 <body>
@@ -475,6 +495,21 @@
       <h1><span class="ttl-lg" data-ck="hero_title_lg">اصالت</span><em data-ck="hero_title_em">در هر تار و پود</em></h1>
       <div class="thread" aria-hidden="true">
         <svg viewBox="0 0 320 36" role="presentation" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <defs>
+            <linearGradient id="weftGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#3a322a"/>
+              <stop offset="0.5" stop-color="#241c15"/>
+              <stop offset="1" stop-color="#3a322a"/>
+            </linearGradient>
+            <linearGradient id="needleGrad" x1="0" y1="-2" x2="0" y2="2" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#e9e5dc"/>
+              <stop offset="0.5" stop-color="#b9b3a7"/>
+              <stop offset="1" stop-color="#8a8478"/>
+            </linearGradient>
+            <filter id="needleShadow" x="-50%" y="-50%" width="200%" height="200%">
+              <feDropShadow dx="0" dy="0.6" stdDeviation="0.5" flood-color="#000" flood-opacity="0.35"/>
+            </filter>
+          </defs>
           <line class="warp" x1="290" y1="6" x2="290" y2="30"/>
           <line class="warp" x1="238" y1="6" x2="238" y2="30"/>
           <line class="warp" x1="186" y1="6" x2="186" y2="30"/>
@@ -652,7 +687,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v6.9</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v7.1</span></div>
     </div>
   </div>
 </footer>
