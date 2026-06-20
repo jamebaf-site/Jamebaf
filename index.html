@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v8.6" />
+<meta name="version" content="v8.8" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -253,8 +253,8 @@
   .psel-actions button:hover{border-color:var(--ink);color:var(--ink)}
   .psel-actions button.del{color:#b00020;border-color:#e6b8be}
   .psel-actions button.del:hover{background:#fbeaec}
-  .psel-done{background:var(--mist);border:1px solid var(--line-2);color:var(--soft);font-family:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:9px;cursor:pointer;white-space:nowrap;transition:all var(--t) var(--ease)}
-  .psel-done.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .psel-done{background:var(--mist);border:1px solid var(--line-2);color:var(--soft);font-family:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:9px;cursor:not-allowed;white-space:nowrap;pointer-events:none;opacity:.7;transition:all var(--t) var(--ease)}
+  .psel-done.active{background:var(--ink);border-color:var(--ink);color:#fff;cursor:pointer;pointer-events:auto;opacity:1}
   .pcard.selecting{cursor:pointer}
   .psel-check{position:absolute;inset-block-start:10px;inset-inline-end:10px;width:27px;height:27px;border-radius:50%;border:2px solid #fff;background:rgba(20,18,14,.28);display:grid;place-items:center;z-index:4;box-shadow:0 1px 5px rgba(0,0,0,.3);transition:background var(--t) var(--ease)}
   .psel-check svg{width:15px;height:15px;color:#fff;opacity:0;transition:opacity var(--t) var(--ease)}
@@ -274,6 +274,12 @@
   .tr-restore:hover{background:var(--accent-soft)}
   .tr-del{color:#b00020;border:1px solid #e6b8be}
   .tr-del:hover{background:#fbeaec}
+  .tr-bulk{display:flex;gap:10px;margin-bottom:16px}
+  .tr-bulk button{flex:1;font-family:inherit;font-weight:700;font-size:13.5px;padding:12px;border-radius:11px;cursor:pointer;transition:all var(--t) var(--ease)}
+  .tr-recover-all{background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent)}
+  .tr-recover-all:hover{background:var(--accent);color:#fff}
+  .tr-empty{background:none;border:1px solid #e6b8be;color:#b00020}
+  .tr-empty:hover{background:#fbeaec}
   @media(max-width:480px){ .tr-item{flex-wrap:wrap} .tr-acts{width:100%} .tr-acts button{flex:1} }
 
   .toast-wrap{position:fixed;inset-block-start:calc(20px + env(safe-area-inset-top));inset-inline:0;z-index:120;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;padding:0 16px}
@@ -729,7 +735,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.6</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.8</span></div>
     </div>
   </div>
 </footer>
@@ -1289,12 +1295,17 @@ async function bulkDelete(){
   renderAllProductViews(); renderAdminList(); renderTrashList();
   toast(faNum(list.length)+' محصول به حذف‌شده‌های اخیر منتقل شد.');
 }
+async function setPinnedSafe(id, state){
+  if(window.JB && typeof JB.setPinned==='function') return JB.setPinned(id, state);
+  const pr=productCache.find(p=>p.id===id); if(!pr) throw new Error('product not found');
+  return JB.updateProduct(id, { title:pr.title||'', description:pr.description||'', images:imgsOf(pr), removedUrls:[], gender:pr.gender||'', model:pr.model||'', size:pr.size||'', price:pr.price||'', pinned:state });
+}
 async function bulkPin(state){
   const list=[...selectedProducts]; if(!list.length) return;
   productCache.forEach(p=>{ if(selectedProducts.has(p.id)) p.pinned=state; });
   renderAllProductViews(); renderAdminList();
   let fail=0;
-  for(const id of list){ try{ await JB.setPinned(id,state); }catch(e){ fail++; } }
+  for(const id of list){ try{ await setPinnedSafe(id,state); }catch(e){ fail++; } }
   if(fail){ toast('برخی به‌روزرسانی نشدند.'); await loadProducts(); renderAdminList(); }
   else toast(state ? faNum(list.length)+' محصول سنجاق شد.' : 'سنجاق برداشته شد.');
 }
@@ -1436,7 +1447,8 @@ function renderTrashList(){
   if(badge){ if(entries.length){ badge.textContent=faNum(entries.length); badge.hidden=false; } else badge.hidden=true; }
   if(!box) return;
   if(!entries.length){ box.innerHTML='<div class="empty-note">موردی در حذف‌شده‌های اخیر نیست.</div>'; return; }
-  box.innerHTML=entries.map(e=>{
+  const bulk='<div class="tr-bulk"><button class="tr-recover-all" onclick="restoreAll()">بازگردانی همه</button><button class="tr-empty" onclick="emptyTrash()">پاک‌سازی همه</button></div>';
+  box.innerHTML=bulk+entries.map(e=>{
     const imgs=imgsOf(e.pr);
     const th=imgs.length?'<img class="tr-th" src="'+esc(imgs[0])+'" alt="">':'<div class="tr-th">'+BOX+'</div>';
     const days=Math.max(1, Math.ceil((TRASH_MS-(Date.now()-e.ts))/86400000));
@@ -1459,6 +1471,21 @@ async function purgeOne(id){
   const t=loadTrash(); delete t[id]; saveTrash(t);
   renderTrashList();
   try{ await JB.deleteProduct(id); toast('برای همیشه حذف شد.'); }catch(e){ toast('خطا در حذف.'); }
+  refreshUsage();
+}
+async function restoreAll(){
+  const ids=Object.keys(loadTrash()); if(!ids.length) return;
+  saveTrash({});
+  await loadProducts(); renderAdminList(); renderTrashList();
+  toast(faNum(ids.length)+' محصول بازگردانی شد.');
+}
+async function emptyTrash(){
+  const ids=Object.keys(loadTrash()); if(!ids.length) return;
+  if(!confirm('همه موارد حذف‌شده برای همیشه پاک شوند؟ این عمل قابل بازگشت نیست.')) return;
+  saveTrash({});
+  renderTrashList();
+  for(const id of ids){ try{ await JB.deleteProduct(id); }catch(e){} }
+  toast('حذف‌شده‌ها پاک‌سازی شد.');
   refreshUsage();
 }
 
