@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v7.8" />
+<meta name="version" content="v7.9" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -89,17 +89,16 @@
   .hero .lede{margin-bottom:34px}
   .thread{margin:2px 0 26px;max-width:340px}
   .thread svg{width:100%;height:auto;display:block;overflow:visible}
-  .thread .weft{fill:none;stroke:url(#weftGrad);stroke-width:1.7;stroke-linecap:round}
-  .thread .warp{stroke:var(--line-2);stroke-width:1;opacity:.55;animation:warpIn .7s ease .1s both}
-  .thread .knot{fill:var(--ink);transform-box:fill-box;transform-origin:center;animation:knotIn .5s cubic-bezier(.2,.7,.2,1) 2s both}
-  .thread .needle{opacity:0;animation:ndlLife 2.7s linear 0s both}
+  .thread .weft{fill:none;stroke:url(#weftGrad);stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .thread .warp line{stroke:var(--line-2);stroke-width:1;opacity:0;animation:thWarp .6s ease .15s forwards}
+  .thread .knot{fill:var(--ink);transform-box:fill-box;transform-origin:center;opacity:0;animation:thKnot .5s cubic-bezier(.2,.7,.2,1) 2.15s forwards}
+  .thread .needle{opacity:0;animation:thNeedle 2.6s linear 0s forwards}
   .thread .needle .nbody{fill:url(#needleGrad);stroke:#5f5c54;stroke-width:.45}
-  .thread .needle{filter:url(#needleShadow)}
   .thread .needle .neye{fill:none;stroke:#5f5c54;stroke-width:.9}
   .thread .needle .nshine{stroke:#fff;stroke-width:.55;opacity:.85;stroke-linecap:round}
-  @keyframes ndlLife{0%,12%{opacity:0}15%{opacity:1}80%{opacity:1}95%,100%{opacity:0}}
-  @keyframes warpIn{from{opacity:0}to{opacity:.55}}
-  @keyframes knotIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+  @keyframes thWarp{to{opacity:.5}}
+  @keyframes thKnot{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+  @keyframes thNeedle{0%,13%{opacity:0}16%{opacity:1}88%{opacity:1}97%,100%{opacity:0}}
   .cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
   .btn{display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:none;font-family:inherit;font-weight:600;font-size:16px;padding:14px 26px;border-radius:8px;transition:transform var(--t-fast) var(--ease),box-shadow var(--t) var(--ease),background var(--t) var(--ease),color var(--t) var(--ease),border-color var(--t) var(--ease)}
   .btn:active{transform:scale(.96)}
@@ -438,9 +437,9 @@
     transform:translateZ(0);
   }
   .pcard .pimg,#lbImg{ image-rendering:auto; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
-  /* crisp hairline rendering for the woven thread + needle */
+  /* crisp hairline rendering for the woven thread */
   .thread svg{ shape-rendering:geometricPrecision; }
-  .thread .warp{ vector-effect:non-scaling-stroke; }
+  .thread .warp line{ vector-effect:non-scaling-stroke; }
 </style>
 </head>
 <body>
@@ -493,7 +492,7 @@
       <div class="eyebrow" data-ck="hero_eyebrow">پوشاک · تریکو</div>
       <h1><span class="ttl-lg" data-ck="hero_title_lg">اصالت</span><em data-ck="hero_title_em">در هر تار و پود</em></h1>
       <div class="thread" aria-hidden="true">
-        <svg viewBox="0 0 320 36" role="presentation" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg viewBox="0 0 320 40" role="presentation" xmlns:xlink="http://www.w3.org/1999/xlink">
           <defs>
             <linearGradient id="weftGrad" x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stop-color="#3a322a"/>
@@ -505,23 +504,24 @@
               <stop offset="0.5" stop-color="#b9b3a7"/>
               <stop offset="1" stop-color="#8a8478"/>
             </linearGradient>
-            <filter id="needleShadow" x="-50%" y="-50%" width="200%" height="200%">
-              <feDropShadow dx="0" dy="0.6" stdDeviation="0.5" flood-color="#000" flood-opacity="0.35"/>
-            </filter>
           </defs>
-          <line class="warp" x1="290" y1="6" x2="290" y2="30"/>
-          <line class="warp" x1="238" y1="6" x2="238" y2="30"/>
-          <line class="warp" x1="186" y1="6" x2="186" y2="30"/>
-          <line class="warp" x1="134" y1="6" x2="134" y2="30"/>
-          <line class="warp" x1="82" y1="6" x2="82" y2="30"/>
-          <line class="warp" x1="30" y1="6" x2="30" y2="30"/>
-          <path id="weftPath" class="weft" d="M316,18 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0" stroke-dasharray="335.38" stroke-dashoffset="335.38"><animate attributeName="stroke-dashoffset" values="335.38;0" dur="1.8s" begin="0.35s" calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.15 1" fill="freeze"/></path>
-          <circle class="knot" cx="316" cy="18" r="3"/>
+          <g class="warp">
+            <line x1="283" y1="9" x2="283" y2="31"/>
+            <line x1="233" y1="9" x2="233" y2="31"/>
+            <line x1="183" y1="9" x2="183" y2="31"/>
+            <line x1="133" y1="9" x2="133" y2="31"/>
+            <line x1="83" y1="9" x2="83" y2="31"/>
+            <line x1="33" y1="9" x2="33" y2="31"/>
+          </g>
+          <path id="weftPath" class="weft" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" d="M308,20 q-12.5,-10 -25,0 q-12.5,10 -25,0 q-12.5,-10 -25,0 q-12.5,10 -25,0 q-12.5,-10 -25,0 q-12.5,10 -25,0 q-12.5,-10 -25,0 q-12.5,10 -25,0 q-12.5,-10 -25,0 q-12.5,10 -25,0 q-12.5,-10 -25,0 q-12.5,10 -25,0">
+            <animate attributeName="stroke-dashoffset" values="100;0" dur="1.9s" begin="0.4s" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.15 1" fill="freeze"/>
+          </path>
+          <circle class="knot" cx="308" cy="20" r="3"/>
           <g class="needle">
             <path class="nbody" d="M-8,-1.3 L1,0 L-8,1.3 Z"/>
             <circle class="neye" cx="-9.4" cy="0" r="1.7"/>
             <line class="nshine" x1="-6" y1="-0.3" x2="-1" y2="0"/>
-            <animateMotion dur="1.8s" begin="0.35s" fill="freeze" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines="0.45 0 0.15 1" rotate="auto">
+            <animateMotion dur="1.9s" begin="0.4s" calcMode="spline" keyTimes="0;1" keyPoints="0;1" keySplines="0.4 0 0.15 1" rotate="auto" fill="freeze">
               <mpath xlink:href="#weftPath"/>
             </animateMotion>
           </g>
@@ -686,7 +686,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v7.8</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v7.9</span></div>
     </div>
   </div>
 </footer>
