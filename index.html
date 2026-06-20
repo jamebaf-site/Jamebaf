@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v7.7" />
+<meta name="version" content="v7.8" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -89,7 +89,7 @@
   .hero .lede{margin-bottom:34px}
   .thread{margin:2px 0 26px;max-width:340px}
   .thread svg{width:100%;height:auto;display:block;overflow:visible}
-  .thread .weft{fill:none;stroke:url(#weftGrad);stroke-width:1.7;stroke-linecap:round;stroke-dasharray:335.38;stroke-dashoffset:0;animation:weave 1.8s cubic-bezier(.45,0,.15,1) .35s both}
+  .thread .weft{fill:none;stroke:url(#weftGrad);stroke-width:1.7;stroke-linecap:round}
   .thread .warp{stroke:var(--line-2);stroke-width:1;opacity:.55;animation:warpIn .7s ease .1s both}
   .thread .knot{fill:var(--ink);transform-box:fill-box;transform-origin:center;animation:knotIn .5s cubic-bezier(.2,.7,.2,1) 2s both}
   .thread .needle{opacity:0;animation:ndlLife 2.7s linear 0s both}
@@ -98,7 +98,6 @@
   .thread .needle .neye{fill:none;stroke:#5f5c54;stroke-width:.9}
   .thread .needle .nshine{stroke:#fff;stroke-width:.55;opacity:.85;stroke-linecap:round}
   @keyframes ndlLife{0%,12%{opacity:0}15%{opacity:1}80%{opacity:1}95%,100%{opacity:0}}
-  @keyframes weave{from{stroke-dashoffset:335.38}to{stroke-dashoffset:0}}
   @keyframes warpIn{from{opacity:0}to{opacity:.55}}
   @keyframes knotIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
   .cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
@@ -441,7 +440,7 @@
   .pcard .pimg,#lbImg{ image-rendering:auto; -webkit-backface-visibility:hidden; backface-visibility:hidden; }
   /* crisp hairline rendering for the woven thread + needle */
   .thread svg{ shape-rendering:geometricPrecision; }
-  .thread .weft,.thread .warp{ vector-effect:non-scaling-stroke; }
+  .thread .warp{ vector-effect:non-scaling-stroke; }
 </style>
 </head>
 <body>
@@ -516,7 +515,7 @@
           <line class="warp" x1="134" y1="6" x2="134" y2="30"/>
           <line class="warp" x1="82" y1="6" x2="82" y2="30"/>
           <line class="warp" x1="30" y1="6" x2="30" y2="30"/>
-          <path id="weftPath" class="weft" d="M316,18 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0"/>
+          <path id="weftPath" class="weft" d="M316,18 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0 q-13,-9 -26,0 q-13,9 -26,0" stroke-dasharray="335.38" stroke-dashoffset="335.38"><animate attributeName="stroke-dashoffset" values="335.38;0" dur="1.8s" begin="0.35s" calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.15 1" fill="freeze"/></path>
           <circle class="knot" cx="316" cy="18" r="3"/>
           <g class="needle">
             <path class="nbody" d="M-8,-1.3 L1,0 L-8,1.3 Z"/>
@@ -687,7 +686,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v7.7</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v7.8</span></div>
     </div>
   </div>
 </footer>
@@ -1749,5 +1748,6 @@ function syncAdminEditUI(){
   syncHashView();
 })();
 </script>
+<script>(function(){var r=false;try{r=matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}if(r){var w=document.querySelector('.thread .weft');if(w){var a=w.querySelector('animate');if(a)a.remove();w.setAttribute('stroke-dashoffset','0');}}})();</script>
 </body>
 </html>
