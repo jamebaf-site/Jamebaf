@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v8.1" />
+<meta name="version" content="v8.3" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -212,6 +212,19 @@
   .pa-item .t{flex:1;font-size:14px;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .pa-item button{background:none;border:1px solid var(--line-2);color:var(--ink-2);border-radius:7px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all var(--t) var(--ease)}
   .pa-item button:hover{border-color:var(--ink);color:var(--ink)}
+  .pa-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 2px 12px;margin-bottom:10px;border-bottom:1px solid var(--line)}
+  .pa-all{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+  .pa-count{flex:1;min-width:0;font-size:12.5px;font-weight:600;color:var(--accent)}
+  .pa-bulk{display:flex;gap:6px}
+  .pa-bulk button{background:none;border:1px solid var(--line-2);color:var(--ink-2);border-radius:7px;padding:6px 11px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:all var(--t) var(--ease)}
+  .pa-bulk button:not(:disabled):hover{border-color:var(--ink);color:var(--ink)}
+  .pa-bulk button:disabled{opacity:.4;cursor:not-allowed}
+  .pa-bulk button.del{color:#b00020;border-color:#e6b8be}
+  .pa-cb{flex:none;width:18px;height:18px;accent-color:var(--accent);cursor:pointer;margin:0}
+  .pa-item.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .pa-pin{font-size:11px;color:var(--gold-deep);font-weight:600;margin-inline-start:4px}
+  .pa-left{font-size:11px;color:var(--soft);font-weight:500}
+  .trash-note{font-size:11px;color:var(--soft);font-weight:500}
 
   .toast-wrap{position:fixed;inset-block-start:calc(20px + env(safe-area-inset-top));inset-inline:0;z-index:120;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;padding:0 16px}
   .toast{background:var(--ink);color:#fff;padding:13px 20px;border-radius:10px;font-weight:500;font-size:14.5px;box-shadow:0 18px 40px -16px rgba(0,0,0,.6);max-width:420px;animation:slide .38s var(--ease-out)}
@@ -361,6 +374,7 @@
   /* editable regions while a section is in edit mode */
   [data-ck].ck-editing,[data-xpedit] .xp-live{outline:2px dashed var(--line-2);outline-offset:3px;border-radius:4px;background:rgba(20,18,14,.02);cursor:text;min-width:24px;display:inline-block}
   p[data-ck].ck-editing,div[data-ck].ck-editing{display:block}
+  html:not(.ck-ready) [data-ck]{visibility:hidden}
   .ck-editing:focus{outline:2px solid var(--ink);background:var(--card)}
   /* inline extra-paragraph editing controls */
   .xp-live{margin:0 0 10px;padding:10px 12px}
@@ -650,7 +664,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.1</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.3</span></div>
     </div>
   </div>
 </footer>
@@ -696,6 +710,10 @@
         <button class="btn btn-solid" id="apHomeCountSave" onclick="saveHomeCount(this)" style="margin-bottom:6px">ذخیره تعداد</button>
         <div class="block-label" style="margin-top:24px">محصولات موجود</div>
         <div class="prod-admin-list" id="prodAdminList"></div>
+        <div id="trashSection" style="display:none">
+          <div class="block-label" style="margin-top:24px">حذف‌شده‌های اخیر <span class="trash-note">(تا ۲ روز قابل بازگردانی)</span></div>
+          <div class="prod-admin-list" id="trashList"></div>
+        </div>
         <div class="block-label" style="margin-top:26px">محتوای سایت</div>
         <p class="hint" style="text-align:right;margin:0 0 14px">متن بخش‌های سایت را ویرایش کنید. پس از ذخیره، تغییرات برای همه بازدیدکنندگان نمایش داده می‌شود.</p>
         <div id="contentEditor" class="content-editor"></div>
@@ -762,6 +780,19 @@ function toast(msg){
 /* ===== state ===== */
 let isAdminFlag=false;
 let productCache=[];
+let selectedProducts=new Set();
+const TRASH_KEY='jb_trash_v1';
+const TRASH_MS=2*24*60*60*1000;   // 2 days
+function loadTrash(){ try{ return JSON.parse(localStorage.getItem(TRASH_KEY))||{}; }catch(e){ return {}; } }
+function saveTrash(t){ try{ localStorage.setItem(TRASH_KEY, JSON.stringify(t)); }catch(e){} }
+function trashIds(){ return new Set(Object.keys(loadTrash())); }
+async function purgeTrash(){
+  const t=loadTrash(); const now=Date.now(); let changed=false;
+  for(const id of Object.keys(t)){
+    if(now-(t[id].ts||0) > TRASH_MS){ try{ await JB.deleteProduct(id); }catch(e){} delete t[id]; changed=true; }
+  }
+  if(changed) saveTrash(t);
+}
 let searchQuery="";
 let genderFilter="";
 let sortMode="newest";
@@ -802,7 +833,10 @@ async function persistOption(key, value){
 async function loadProducts(){
   try{ productCache = await JB.listProducts(); }
   catch(e){ productCache=[]; toast('خطا در دریافت محصولات.'); }
-  renderProducts();
+  await purgeTrash();
+  const tr=trashIds();
+  if(tr.size) productCache=productCache.filter(p=>!tr.has(p.id));
+  renderProducts(); renderAllProducts();
 }
 function cardMedia(pr){
   const imgs=imgsOf(pr);
@@ -1032,7 +1066,9 @@ async function openPanel(){
   setModalHead('پنل مدیریت','افزودن و مدیریت محصولات');
   showStep('stepPanel');
   cancelEdit();          // start clean in "add" mode
+  selectedProducts.clear();
   renderAdminList();
+  renderTrashList();
   renderContentEditor();
   const hc=document.getElementById('apHomeCount'); if(hc) hc.value=appSettings.home_count||4;
   fillOptionDatalists();
@@ -1060,15 +1096,69 @@ function renderUsage(){
 }
 function renderAdminList(){
   const box=document.getElementById('prodAdminList');
-  if(!productCache.length){ box.innerHTML='<div class="empty-note">محصولی ثبت نشده است.</div>'; return; }
-  box.innerHTML=productCache.map(pr=>{
+  if(!productCache.length){ box.innerHTML='<div class="empty-note">محصولی ثبت نشده است.</div>'; selectedProducts.clear(); return; }
+  const ids=new Set(productCache.map(p=>p.id));
+  [...selectedProducts].forEach(id=>{ if(!ids.has(id)) selectedProducts.delete(id); });
+  const bar='<div class="pa-bar">'
+    +'<label class="pa-all"><input id="paAll" type="checkbox" onchange="toggleSelectAll(this.checked)"> انتخاب همه</label>'
+    +'<span id="paCount" class="pa-count"></span>'
+    +'<span class="pa-bulk">'
+      +'<button id="paPin" disabled onclick="bulkPin(true)">سنجاق</button>'
+      +'<button id="paUnpin" disabled onclick="bulkPin(false)">حذف سنجاق</button>'
+      +'<button id="paDel" class="del" disabled onclick="bulkDelete()">حذف</button>'
+    +'</span></div>';
+  const items=productCache.map(pr=>{
     const imgs=imgsOf(pr);
     const th = imgs.length ? '<img class="th" src="'+esc(imgs[0])+'" alt="">' : '<div class="th">'+BOX+'</div>';
     const cnt = imgs.length>1 ? ' <span style="color:var(--soft);font-weight:500">('+faNum(imgs.length)+' تصویر)</span>' : '';
-    return '<div class="pa-item">'+th+'<div class="t">'+esc(pr.title)+cnt+'</div>'
+    const pin = pr.pinned ? ' <span class="pa-pin">سنجاق‌شده</span>' : '';
+    const sel = selectedProducts.has(pr.id);
+    return '<div class="pa-item'+(sel?' sel':'')+'">'
+      +'<input type="checkbox" class="pa-cb" '+(sel?'checked':'')+' onchange="toggleSelect(\''+pr.id+'\',this.checked,this)">'
+      +th+'<div class="t">'+esc(pr.title)+cnt+pin+'</div>'
       +'<button onclick="startEdit(\''+pr.id+'\')">ویرایش</button>'
       +'<button onclick="delProductUI(\''+pr.id+'\')">حذف</button></div>';
   }).join('');
+  box.innerHTML=bar+items;
+  updateBulkBar();
+}
+function updateBulkBar(){
+  const n=selectedProducts.size;
+  const c=document.getElementById('paCount'); if(c) c.textContent = n ? faNum(n)+' انتخاب‌شده' : '';
+  ['paPin','paUnpin','paDel'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=!n; });
+  const a=document.getElementById('paAll'); if(a){ a.checked = n>0 && n===productCache.length; a.indeterminate = n>0 && n<productCache.length; }
+}
+function toggleSelect(id,on,el){
+  if(on) selectedProducts.add(id); else selectedProducts.delete(id);
+  const it=el&&el.closest('.pa-item'); if(it) it.classList.toggle('sel',on);
+  updateBulkBar();
+}
+function toggleSelectAll(on){
+  selectedProducts.clear();
+  if(on) productCache.forEach(p=>selectedProducts.add(p.id));
+  document.querySelectorAll('#prodAdminList .pa-cb').forEach(cb=>{ cb.checked=on; const it=cb.closest('.pa-item'); if(it) it.classList.toggle('sel',on); });
+  updateBulkBar();
+}
+function renderAllProductViews(){ renderProducts(); renderAllProducts(); }
+async function bulkDelete(){
+  const list=[...selectedProducts]; if(!list.length) return;
+  if(!confirm(faNum(list.length)+' محصول به حذف‌شده‌های اخیر منتقل شود؟')) return;
+  const t=loadTrash(), now=Date.now();
+  productCache.filter(p=>selectedProducts.has(p.id)).forEach(pr=>{ t[pr.id]={ ts:now, pr }; });
+  saveTrash(t);
+  productCache=productCache.filter(p=>!selectedProducts.has(p.id));
+  selectedProducts.clear();
+  renderAllProductViews(); renderAdminList(); renderTrashList();
+  toast(faNum(list.length)+' محصول به حذف‌شده‌های اخیر منتقل شد.');
+}
+async function bulkPin(state){
+  const list=[...selectedProducts]; if(!list.length) return;
+  productCache.forEach(p=>{ if(selectedProducts.has(p.id)) p.pinned=state; });
+  renderAllProductViews(); renderAdminList();
+  let fail=0;
+  for(const id of list){ try{ await JB.setPinned(id,state); }catch(e){ fail++; } }
+  if(fail){ toast('برخی به‌روزرسانی نشدند.'); await loadProducts(); renderAdminList(); }
+  else toast(state ? faNum(list.length)+' محصول سنجاق شد.' : 'سنجاق برداشته شد.');
 }
 
 /* ===== reorderable photos (new files + existing URLs) — add & edit ===== */
@@ -1192,11 +1282,42 @@ async function saveProductUI(btn){
   finally{ if(btn){ btn.disabled=false; btn.textContent=label; } }
 }
 async function delProductUI(id){
-  try{
-    await JB.deleteProduct(id);
-    toast('محصول حذف شد.');
-    await loadProducts(); renderAdminList();
-  }catch(e){ toast('خطا در حذف محصول.'); }
+  const idx=productCache.findIndex(p=>p.id===id); if(idx<0) return;
+  const pr=productCache[idx];
+  const t=loadTrash(); t[id]={ ts:Date.now(), pr }; saveTrash(t);
+  productCache.splice(idx,1); selectedProducts.delete(id);
+  renderAllProductViews(); renderAdminList(); renderTrashList();   // immediate
+  toast('به حذف‌شده‌های اخیر منتقل شد.');
+}
+function renderTrashList(){
+  const box=document.getElementById('trashList'), sec=document.getElementById('trashSection');
+  if(!box) return;
+  const t=loadTrash();
+  const entries=Object.keys(t).map(id=>({id, ts:t[id].ts||0, pr:t[id].pr||{}})).sort((a,b)=>b.ts-a.ts);
+  if(!entries.length){ if(sec) sec.style.display='none'; box.innerHTML=''; return; }
+  if(sec) sec.style.display='';
+  box.innerHTML=entries.map(e=>{
+    const imgs=imgsOf(e.pr);
+    const th=imgs.length?'<img class="th" src="'+esc(imgs[0])+'" alt="">':'<div class="th">'+BOX+'</div>';
+    const days=Math.max(1, Math.ceil((TRASH_MS-(Date.now()-e.ts))/86400000));
+    return '<div class="pa-item">'+th
+      +'<div class="t">'+esc(e.pr.title||'—')+' <span class="pa-left">('+faNum(days)+' روز مانده)</span></div>'
+      +'<button onclick="restoreProduct(\''+e.id+'\')">بازگردانی</button>'
+      +'<button class="del" onclick="purgeOne(\''+e.id+'\')">حذف دائمی</button></div>';
+  }).join('');
+}
+async function restoreProduct(id){
+  const t=loadTrash(); if(!t[id]) return;
+  delete t[id]; saveTrash(t);
+  await loadProducts(); renderAdminList(); renderTrashList();
+  toast('بازگردانی شد.');
+}
+async function purgeOne(id){
+  if(!confirm('این محصول برای همیشه حذف شود؟ قابل بازگشت نیست.')) return;
+  const t=loadTrash(); delete t[id]; saveTrash(t);
+  renderTrashList();
+  try{ await JB.deleteProduct(id); toast('برای همیشه حذف شد.'); }catch(e){ toast('خطا در حذف.'); }
+  refreshUsage();
 }
 
 /* ===== nav auth button ===== */
@@ -1377,7 +1498,8 @@ const CONTENT_SCHEMA = [
 let contentMap = {};   // live { key: value }
 const CK_CACHE = 'jb_content_cache_v1';
 function cacheContent(){ try{ localStorage.setItem(CK_CACHE, JSON.stringify(contentMap)); }catch(e){} }
-function applyCachedContent(){ try{ const r=localStorage.getItem(CK_CACHE); if(r){ const m=JSON.parse(r); if(m && typeof m==="object"){ contentMap=m; applyContent(); } } }catch(e){} }
+function revealContent(){ document.documentElement.classList.add("ck-ready"); }
+function applyCachedContent(){ try{ const r=localStorage.getItem(CK_CACHE); if(r){ const m=JSON.parse(r); if(m && typeof m==="object"){ contentMap=m; applyContent(); revealContent(); } } }catch(e){} }
 
 /* fallbacks captured from the original DOM so the site never goes blank */
 const contentFallback = {};
@@ -1461,10 +1583,11 @@ async function loadContent(){
   applyCachedContent();            // instant: last-saved text, no flash to defaults
   let data;
   try{ data = await JB.getContent(); }
-  catch(e){ return; }              // network failed: keep what we already showed
+  catch(e){ revealContent(); return; }   // network failed: show whatever we have
   contentMap = data || {};
   applyContent();
   cacheContent();                  // refresh cache from source of truth
+  revealContent();
 }
 
 /* ----- admin editor ----- */
@@ -1712,6 +1835,7 @@ function syncAdminEditUI(){
 /* ===== boot ===== */
 (async function boot(){
   captureFallbacks();
+  setTimeout(revealContent, 2500);
   await loadContent();
   await loadSettings();
   await loadProducts();
