@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v8.3" />
+<meta name="version" content="v8.4" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -225,6 +225,40 @@
   .pa-pin{font-size:11px;color:var(--gold-deep);font-weight:600;margin-inline-start:4px}
   .pa-left{font-size:11px;color:var(--soft);font-weight:500}
   .trash-note{font-size:11px;color:var(--soft);font-weight:500}
+  .pall-tools{display:flex;align-items:center;gap:12px}
+  .psel-btn{background:var(--card);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:all var(--t) var(--ease)}
+  .psel-btn:hover,.psel-btn.active{border-color:var(--accent);color:var(--accent)}
+  body:not(.is-admin) .psel-btn{display:none}
+  .pselect-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;margin-bottom:24px}
+  .psel-all{background:none;border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:8px;cursor:pointer;white-space:nowrap}
+  .psel-all:hover{background:var(--accent-soft)}
+  .psel-count{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--ink-2)}
+  .psel-actions{display:flex;gap:7px;flex-wrap:wrap}
+  .psel-actions button{background:none;border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:13px;padding:8px 13px;border-radius:8px;cursor:pointer;transition:all var(--t) var(--ease)}
+  .psel-actions button:not(:disabled):hover{border-color:var(--ink);color:var(--ink)}
+  .psel-actions button:disabled{opacity:.4;cursor:not-allowed}
+  .psel-actions button.del{color:#b00020;border-color:#e6b8be}
+  .psel-done{background:var(--ink);border:1px solid var(--ink);color:#fff;font-family:inherit;font-weight:600;font-size:13px;padding:8px 15px;border-radius:8px;cursor:pointer}
+  .pcard.selecting{cursor:pointer}
+  .psel-check{position:absolute;inset-block-start:10px;inset-inline-end:10px;width:27px;height:27px;border-radius:50%;border:2px solid #fff;background:rgba(20,18,14,.28);display:grid;place-items:center;z-index:4;box-shadow:0 1px 5px rgba(0,0,0,.3);transition:background var(--t) var(--ease)}
+  .psel-check svg{width:15px;height:15px;color:#fff;opacity:0;transition:opacity var(--t) var(--ease)}
+  .pcard.selected .psel-check{background:var(--accent);border-color:var(--accent)}
+  .pcard.selected .psel-check svg{opacity:1}
+  .pcard.selecting.selected{outline:3px solid var(--accent);outline-offset:2px}
+  .tr-item{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
+  .tr-item+.tr-item{margin-top:10px}
+  .tr-th{width:58px;height:58px;border-radius:10px;object-fit:cover;border:1px solid var(--line);flex:none;display:grid;place-items:center;color:var(--soft)}
+  .tr-th svg{width:24px;height:24px;stroke-width:1.4}
+  .tr-info{flex:1;min-width:0}
+  .tr-title{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tr-left{font-size:12px;color:var(--soft);font-weight:600;margin-top:3px}
+  .tr-acts{display:flex;gap:8px;flex:none}
+  .tr-acts button{font-family:inherit;font-weight:600;font-size:13px;padding:9px 14px;border-radius:9px;cursor:pointer;background:none;transition:all var(--t) var(--ease)}
+  .tr-restore{color:var(--accent);border:1px solid var(--accent)}
+  .tr-restore:hover{background:var(--accent-soft)}
+  .tr-del{color:#b00020;border:1px solid #e6b8be}
+  .tr-del:hover{background:#fbeaec}
+  @media(max-width:480px){ .tr-item{flex-wrap:wrap} .tr-acts{width:100%} .tr-acts button{flex:1} }
 
   .toast-wrap{position:fixed;inset-block-start:calc(20px + env(safe-area-inset-top));inset-inline:0;z-index:120;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;padding:0 16px}
   .toast{background:var(--ink);color:#fff;padding:13px 20px;border-radius:10px;font-weight:500;font-size:14.5px;box-shadow:0 18px 40px -16px rgba(0,0,0,.6);max-width:420px;animation:slide .38s var(--ease-out)}
@@ -573,15 +607,28 @@
     </div>
     <div class="pall-controls">
       <div class="pfilter" id="pfilter" role="group" aria-label="فیلتر جنسیت"></div>
-      <div class="psort-wrap">
-        <label for="psort" class="psort-lbl">مرتب‌سازی</label>
-        <select id="psort" class="psort" onchange="setSort(this.value)">
-          <option value="newest">جدیدترین</option>
-          <option value="oldest">قدیمی‌ترین</option>
-          <option value="cheapest">ارزان‌ترین</option>
-          <option value="expensive">گران‌ترین</option>
-        </select>
+      <div class="pall-tools">
+        <button class="psel-btn" id="pselBtn" onclick="toggleSelectMode()">انتخاب</button>
+        <div class="psort-wrap">
+          <label for="psort" class="psort-lbl">مرتب‌سازی</label>
+          <select id="psort" class="psort" onchange="setSort(this.value)">
+            <option value="newest">جدیدترین</option>
+            <option value="oldest">قدیمی‌ترین</option>
+            <option value="cheapest">ارزان‌ترین</option>
+            <option value="expensive">گران‌ترین</option>
+          </select>
+        </div>
       </div>
+    </div>
+    <div class="pselect-bar" id="pselectBar" hidden>
+      <button class="psel-all" id="pselAll" onclick="toggleSelectAllPage()">انتخاب همه</button>
+      <span class="psel-count" id="pselCount">محصولی انتخاب نشده</span>
+      <span class="psel-actions">
+        <button id="pselPin" disabled onclick="bulkPin(true)">سنجاق</button>
+        <button id="pselUnpin" disabled onclick="bulkPin(false)">حذف سنجاق</button>
+        <button id="pselDel" class="del" disabled onclick="bulkDelete()">حذف</button>
+      </span>
+      <button class="psel-done" onclick="toggleSelectMode()">پایان</button>
     </div>
     <div class="pgrid pgrid-lg" id="pgridAll"></div>
   </div>
@@ -664,7 +711,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.3</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.4</span></div>
     </div>
   </div>
 </footer>
@@ -748,6 +795,7 @@
 if (self !== top) { try { top.location = self.location; } catch (e) { document.documentElement.style.display = 'none'; } }
 
 const BOX='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>';
+const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
 
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 function val(id){ return document.getElementById(id).value; }
@@ -781,6 +829,8 @@ function toast(msg){
 let isAdminFlag=false;
 let productCache=[];
 let selectedProducts=new Set();
+let selectMode=false;
+let pageVisibleIds=[];
 const TRASH_KEY='jb_trash_v1';
 const TRASH_MS=2*24*60*60*1000;   // 2 days
 function loadTrash(){ try{ return JSON.parse(localStorage.getItem(TRASH_KEY))||{}; }catch(e){ return {}; } }
@@ -892,7 +942,16 @@ function matchesSearch(pr,q){
   return query.split(' ').every(w=>!w || hay.includes(w));
 }
 // reusable card builder (used by homepage top-4 grid AND the full all-products view)
-function productCardHTML(pr){
+function productCardHTML(pr, selectable){
+  if(selectable){
+    const sel=selectedProducts.has(pr.id);
+    return '<div class="pcard selecting'+(sel?' selected':'')+'" role="button" tabindex="0" data-id="'+pr.id+'" aria-pressed="'+sel+'" aria-label="'+esc(pr.title)+'" onclick="toggleCardSelect(\''+pr.id+'\')" onkeydown="cardSelKey(event,\''+pr.id+'\')">'
+      +'<div class="psel-check">'+CHECK+'</div>'
+      +cardMedia(pr)
+      +'<div class="pcap">'+esc(pr.title)+'</div>'
+      +cardTags(pr)
+      +'</div>';
+  }
   return '<div class="pcard reveal in" role="button" tabindex="0" aria-label="'+esc(pr.title)+'" onclick="openLightbox(\''+pr.id+'\',0)" onkeydown="cardKey(event,\''+pr.id+'\')">'
     +'<div class="card-admin">'
       +'<button onclick="event.stopPropagation();cardEdit(\''+pr.id+'\')" aria-label="ویرایش"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>'
@@ -916,7 +975,7 @@ function renderProducts(){
   }
   const pinned=productCache.filter(p=>p.pinned);
   const top=(pinned.length?pinned:productCache).slice(0,appSettings.home_count);
-  grid.innerHTML=top.length?top.map(productCardHTML).join(''):'<div class="empty-note" style="grid-column:1/-1">محصولی برای نمایش سنجاق نشده است.</div>';
+  grid.innerHTML=top.length?top.map(pr=>productCardHTML(pr,false)).join(''):'<div class="empty-note" style="grid-column:1/-1">محصولی برای نمایش سنجاق نشده است.</div>';
   markLoaded(grid);
   // always offer "view all" when there is at least one product
   if(moreWrap) moreWrap.style.display = productCache.length ? 'flex' : 'none';
@@ -940,16 +999,50 @@ function renderAllProducts(){
   const grid=document.getElementById('pgridAll'); if(!grid) return;
   if(!productCache.length){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">هنوز محصولی ثبت نشده است.</div>';
-    return;
+    pageVisibleIds=[]; if(selectMode) updatePageSelBar(); return;
   }
-  let list=productCache.filter(pr=>!pr.pinned && matchesSearch(pr,searchQuery) && (!genderFilter || (pr.gender||'')===genderFilter));
+  let list=productCache.filter(pr=>(selectMode || !pr.pinned) && matchesSearch(pr,searchQuery) && (!genderFilter || (pr.gender||'')===genderFilter));
   list=sortProducts(list);
   if(!list.length){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">محصولی با این فیلتر یافت نشد.</div>';
-    return;
+    pageVisibleIds=[]; if(selectMode) updatePageSelBar(); return;
   }
-  grid.innerHTML=list.map(productCardHTML).join('');
+  pageVisibleIds=list.map(p=>p.id);
+  grid.innerHTML=list.map(pr=>productCardHTML(pr, selectMode)).join('');
   markLoaded(grid);
+  if(selectMode) updatePageSelBar();
+}
+function toggleSelectMode(){
+  selectMode=!selectMode; selectedProducts.clear();
+  const bar=document.getElementById('pselectBar'); if(bar) bar.hidden=!selectMode;
+  const btn=document.getElementById('pselBtn'); if(btn){ btn.classList.toggle('active',selectMode); btn.textContent=selectMode?'لغو انتخاب':'انتخاب'; }
+  renderAllProducts();
+}
+function toggleCardSelect(id){
+  const on=!selectedProducts.has(id);
+  if(on) selectedProducts.add(id); else selectedProducts.delete(id);
+  const card=document.querySelector('#pgridAll .pcard[data-id="'+id+'"]');
+  if(card){ card.classList.toggle('selected',on); card.setAttribute('aria-pressed',on); }
+  updatePageSelBar();
+}
+function cardSelKey(e,id){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggleCardSelect(id); } }
+function toggleSelectAllPage(){
+  const ids=pageVisibleIds||[];
+  const allSel = ids.length>0 && ids.every(id=>selectedProducts.has(id));
+  ids.forEach(id=>{ if(allSel) selectedProducts.delete(id); else selectedProducts.add(id); });
+  document.querySelectorAll('#pgridAll .pcard').forEach(card=>{
+    const id=card.getAttribute('data-id'); const sel=selectedProducts.has(id);
+    card.classList.toggle('selected',sel); card.setAttribute('aria-pressed',sel);
+  });
+  updatePageSelBar();
+}
+function updatePageSelBar(){
+  const bar=document.getElementById('pselectBar'); if(!bar) return;
+  const n=selectedProducts.size;
+  const c=document.getElementById('pselCount'); if(c) c.textContent = n ? faNum(n)+' انتخاب‌شده' : 'محصولی انتخاب نشده';
+  ['pselPin','pselUnpin','pselDel'].forEach(id=>{ const b=document.getElementById(id); if(b) b.disabled=!n; });
+  const ids=pageVisibleIds||[]; const allSel=ids.length>0 && ids.every(id=>selectedProducts.has(id));
+  const a=document.getElementById('pselAll'); if(a) a.textContent = allSel ? 'لغو انتخاب همه' : 'انتخاب همه';
 }
 function setSort(mode){ sortMode=mode||'newest'; renderAllProducts(); }
 async function saveHomeCount(btn){
@@ -985,6 +1078,7 @@ function showAllProducts(focusSearch){
   if(focusSearch){ setTimeout(()=>{ const i=document.getElementById('searchInputAll'); if(i) i.focus(); },120); }
 }
 function hideAllProducts(){
+  if(selectMode){ selectMode=false; selectedProducts.clear(); const _b=document.getElementById('pselectBar'); if(_b) _b.hidden=true; const _sb=document.getElementById('pselBtn'); if(_sb){ _sb.classList.remove('active'); _sb.textContent='انتخاب'; } }
   const all=document.getElementById('products-all');
   all.hidden=true;
   document.body.classList.remove('viewing-all');
@@ -1298,12 +1392,14 @@ function renderTrashList(){
   if(sec) sec.style.display='';
   box.innerHTML=entries.map(e=>{
     const imgs=imgsOf(e.pr);
-    const th=imgs.length?'<img class="th" src="'+esc(imgs[0])+'" alt="">':'<div class="th">'+BOX+'</div>';
+    const th=imgs.length?'<img class="tr-th" src="'+esc(imgs[0])+'" alt="">':'<div class="tr-th">'+BOX+'</div>';
     const days=Math.max(1, Math.ceil((TRASH_MS-(Date.now()-e.ts))/86400000));
-    return '<div class="pa-item">'+th
-      +'<div class="t">'+esc(e.pr.title||'—')+' <span class="pa-left">('+faNum(days)+' روز مانده)</span></div>'
-      +'<button onclick="restoreProduct(\''+e.id+'\')">بازگردانی</button>'
-      +'<button class="del" onclick="purgeOne(\''+e.id+'\')">حذف دائمی</button></div>';
+    return '<div class="tr-item">'+th
+      +'<div class="tr-info"><div class="tr-title">'+esc(e.pr.title||'—')+'</div><div class="tr-left">'+faNum(days)+' روز تا حذف دائمی</div></div>'
+      +'<div class="tr-acts">'
+        +'<button class="tr-restore" onclick="restoreProduct(\''+e.id+'\')">بازگردانی</button>'
+        +'<button class="tr-del" onclick="purgeOne(\''+e.id+'\')">حذف دائمی</button>'
+      +'</div></div>';
   }).join('');
 }
 async function restoreProduct(id){
