@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v9.3" />
+<meta name="version" content="v9.5" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -266,6 +266,12 @@
   .social-link:hover{border-color:var(--accent);color:var(--accent)}
   .social-link svg{width:20px;height:20px;color:var(--accent);flex:none}
   .social-link .u{direction:ltr}
+  .socials-block{max-width:600px;margin:48px auto 0;padding-top:40px;border-top:1px solid var(--line);text-align:center}
+  .socials-block .eyebrow{justify-content:center;margin-bottom:12px}
+  .socials-title{font-size:clamp(22px,3.2vw,30px);font-weight:700;color:var(--ink);margin:0 0 22px;line-height:1.3}
+  .socials-block .socials{justify-content:center}
+  .soc-prev{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);flex:none}
+  .soc-prev svg{width:22px;height:22px;color:var(--accent)}
   .soc-add{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
   .soc-add select,.soc-add input{font-family:inherit;font-size:16px;padding:9px 11px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);color:var(--ink)}
   .soc-add input{flex:1;min-width:140px;direction:ltr;text-align:left}
@@ -727,11 +733,12 @@
           <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></div>
           <div><div class="k">ایمیل</div><div class="v" id="cEmail"><a href="mailto:jamebaf@gmail.com" class="ltr">jamebaf@gmail.com</a></div></div>
         </div>
-        <div class="info-row" id="cSocialsRow" style="display:none">
-          <div class="info-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
-          <div><div class="k">شبکه‌های اجتماعی</div><div class="socials" id="cSocials"></div></div>
-        </div>
       </div>
+    </div>
+    <div class="socials-block reveal" id="cSocialsRow" style="display:none">
+      <div class="eyebrow">ما را دنبال کنید</div>
+      <h3 class="socials-title">شبکه‌های اجتماعی</h3>
+      <div class="socials" id="cSocials"></div>
     </div>
   </div>
 </section>
@@ -751,7 +758,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.3</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.5</span></div>
     </div>
   </div>
 </footer>
@@ -819,6 +826,7 @@
           <button class="mgmt-back" onclick="showMgmt('mgmt-menu')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg> بازگشت به منو</button>
           <div class="block-label">تنظیمات صفحه اصلی</div>
           <div class="field"><label for="apHomeCount">تعداد محصولات صفحه اصلی</label><input id="apHomeCount" type="number" min="1" max="50" placeholder="4" /></div>
+          <div style="font-size:12px;color:var(--soft);margin:-4px 0 12px;line-height:1.8">فقط محصولات سنجاق‌شده در صفحه اصلی نمایش داده می‌شوند. این عدد حداکثر تعداد محصولی است که می‌توانید سنجاق کنید.</div>
           <button class="btn btn-solid" id="apHomeCountSave" onclick="saveHomeCount(this)">ذخیره تعداد</button>
         </div>
 
@@ -920,7 +928,8 @@ async function loadSettings(){
     appSettings.home_count = Math.max(1, parseInt(hc,10)||4);
     appSettings.gender_options = Array.isArray(go)?go:appSettings.gender_options;
     appSettings.model_options = Array.isArray(mo)?mo:appSettings.model_options;
-    const sc=await JB.getSetting('socials',[]);
+    let sc=await JB.getSetting('socials',[]);
+    if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
     socialsList = Array.isArray(sc) ? sc.filter(s=>s&&s.type&&s.value) : [];
   }catch(e){}
   fillOptionDatalists();
@@ -1033,6 +1042,7 @@ function productCardHTML(pr, selectable){
 function markLoaded(grid){ grid.querySelectorAll('img.pimg').forEach(img=>{ if(img.complete && img.naturalWidth>0) img.classList.add('loaded'); }); }
 
 // HOMEPAGE: newest 4 + a "view all" button
+function pinLimit(){ return Math.max(1, appSettings.home_count||1); }
 function renderProducts(){
   const grid=document.getElementById('pgrid'); if(!grid) return;
   const moreWrap=document.getElementById('pmoreWrap');
@@ -1041,13 +1051,11 @@ function renderProducts(){
     if(moreWrap) moreWrap.style.display='none';
     return;
   }
-  const pinned=productCache.filter(p=>p.pinned);
-  const rest=productCache.filter(p=>!p.pinned);
-  // featured (pinned) first, then newest non-pinned to fill up to home_count
-  const top=[...pinned, ...rest].slice(0,appSettings.home_count);
+  // homepage shows ONLY pinned (featured) products, capped at home_count; nothing if none pinned
+  const top=productCache.filter(p=>p.pinned).slice(0,appSettings.home_count);
   grid.innerHTML=top.map(pr=>productCardHTML(pr,false)).join('');
   markLoaded(grid);
-  // "view all" only when there are more products than the homepage shows
+  // "view all" whenever there are products not shown here (incl. when nothing is pinned)
   if(moreWrap) moreWrap.style.display = (productCache.length>top.length) ? 'flex' : 'none';
 }
 // sort comparator for the all-products view
@@ -1329,6 +1337,13 @@ async function setPinnedSafe(id, state){
 async function bulkPin(state){
   if(!isAdminFlag) return;
   const list=[...selectedProducts]; if(!list.length) return;
+  if(state){
+    const sel=new Set(list);
+    const outside=productCache.filter(p=>p.pinned && !sel.has(p.id)).length;
+    if(outside + list.length > pinLimit()){
+      toast('حداکثر '+faNum(pinLimit())+' محصول قابل سنجاق است؛ این انتخاب از حد مجاز فراتر می‌رود.'); return;
+    }
+  }
   productCache.forEach(p=>{ if(selectedProducts.has(p.id)) p.pinned=state; });
   renderAllProductViews(); renderAdminList();
   let fail=0;
@@ -1428,6 +1443,10 @@ async function saveProductUI(btn){
   if(gNew) await persistOption('gender_options', gNew);
   if(mNew) await persistOption('model_options', mNew);
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
+  if(pinned){
+    const cur=productCache.filter(p=>p.pinned && p.id!==editingId).length;
+    if(cur>=pinLimit()){ toast('حداکثر '+faNum(pinLimit())+' محصول قابل سنجاق است. ابتدا یکی را بردارید.'); const pn=document.getElementById('apPinned'); if(pn) pn.checked=false; return; }
+  }
   const label=editingId?'ذخیره تغییرات':'افزودن محصول';
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
   try{
@@ -1859,7 +1878,8 @@ function renderContentEditor(){
   html += '<details class="ce-group"><summary>شبکه‌های اجتماعی</summary><div class="ce-body">'
     +'<div id="socList"></div>'
     +'<div class="soc-add">'
-      +'<select id="socType">'+Object.keys(SOCIALS).map(k=>'<option value="'+k+'">'+esc(SOCIALS[k].label)+'</option>').join('')+'</select>'
+      +'<span id="socPrev" class="soc-prev"></span>'
+      +'<select id="socType" onchange="socPreview()">'+Object.keys(SOCIALS).map(k=>'<option value="'+k+'">'+esc(SOCIALS[k].label)+'</option>').join('')+'</select>'
       +'<input id="socVal" type="text" placeholder="نام کاربری یا لینک کامل">'
       +'<button type="button" class="xp-add" onclick="socAdd()">+ افزودن</button>'
     +'</div>'
@@ -2098,15 +2118,21 @@ function renderSocials(){
   if(!box) return;
   const items=(socialsList||[]).filter(s=>s&&s.type&&s.value);
   if(!items.length){ box.innerHTML=''; if(row) row.style.display='none'; return; }
-  if(row) row.style.display='';
+  if(row){ row.style.display=''; row.classList.add('in'); }
   box.innerHTML=items.map(s=>{
     const p=SOCIALS[s.type]||SOCIALS.website;
     return '<a class="social-link" href="'+esc(socUrl(s.type,s.value))+'" target="_blank" rel="noopener" aria-label="'+esc(p.label)+'">'+p.icon+'<span class="u">'+esc(socUser(s.type,s.value))+'</span></a>';
   }).join('');
 }
 // admin editor (rendered inside the content editor)
+function socPreview(){
+  const t=document.getElementById('socType'), p=document.getElementById('socPrev');
+  if(!t||!p) return;
+  const s=SOCIALS[t.value]||SOCIALS.website; p.innerHTML=s.icon;
+}
 function renderSocialsEditor(){
   const box=document.getElementById('socList'); if(!box) return;
+  socPreview();
   if(!socialsList.length){ box.innerHTML='<div class="empty-note" style="padding:6px 2px">هیچ شبکه‌ای اضافه نشده است.</div>'; return; }
   box.innerHTML=socialsList.map((s,i)=>{
     const p=SOCIALS[s.type]||SOCIALS.website;
@@ -2118,24 +2144,30 @@ async function socAdd(){
   if(!t||!v) return;
   const val=(v.value||'').trim();
   if(!val){ toast('نام کاربری یا لینک را وارد کنید.'); return; }
-  socialsList.push({ type:t.value, value:val });
+  const entry={ type:t.value, value:val };
+  socialsList.push(entry);
   v.value='';
   renderSocialsEditor(); renderSocials();
-  try{ await JB.saveSetting('socials', socialsList); toast('شبکه اجتماعی ذخیره شد.'); }
-  catch(e){ toast('خطا در ذخیره.'); }
+  try{ await JB.saveSetting('socials', socialsList); toast('شبکه اجتماعی ذخیره و نمایش داده شد.'); }
+  catch(e){ const i=socialsList.indexOf(entry); if(i>-1) socialsList.splice(i,1); renderSocialsEditor(); renderSocials(); toast('ذخیره نشد: '+((e&&e.message)?e.message:'خطای ناشناخته')); }
 }
 async function socRemove(i){
   i=parseInt(i,10); if(isNaN(i)||i<0||i>=socialsList.length) return;
+  const backup=socialsList.slice();
   socialsList.splice(i,1);
   renderSocialsEditor(); renderSocials();
   try{ await JB.saveSetting('socials', socialsList); }
-  catch(e){ toast('خطا در ذخیره.'); }
+  catch(e){ socialsList=backup; renderSocialsEditor(); renderSocials(); toast('حذف ذخیره نشد.'); }
 }
 // pin/unpin straight from a product card (optimistic, reverts on failure)
 async function cardTogglePin(id){
   if(!isAdminFlag) return;
   const pr=productCache.find(p=>p.id===id); if(!pr) return;
-  const next=!pr.pinned; pr.pinned=next;
+  const next=!pr.pinned;
+  if(next && productCache.filter(p=>p.pinned).length>=pinLimit()){
+    toast('حداکثر '+faNum(pinLimit())+' محصول قابل سنجاق است. ابتدا یکی را بردارید.'); return;
+  }
+  pr.pinned=next;
   renderAllProductViews(); renderAdminList();
   try{ await setPinnedSafe(id, next); toast(next?'به صفحه اصلی سنجاق شد.':'سنجاق برداشته شد.'); }
   catch(e){ pr.pinned=!next; renderAllProductViews(); renderAdminList(); toast('خطا در ذخیره سنجاق.'); }
