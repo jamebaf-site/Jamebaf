@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v9.8" />
+<meta name="version" content="v9.9" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -760,7 +760,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.8</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.9</span></div>
     </div>
   </div>
 </footer>
@@ -921,6 +921,7 @@ let genderFilter="";
 let sortMode="newest";
 let appSettings={ home_count:4, gender_options:["پسرانه","دخترانه","دیگران"], model_options:["بلوز","شلوار","نوزادی","پتو","ست بلوز و شلوار"] };
 let socialsList=[];
+const SOC_LS='jb_socials_v1';
 
 async function loadSettings(){
   try{
@@ -931,14 +932,9 @@ async function loadSettings(){
     appSettings.gender_options = Array.isArray(go)?go:appSettings.gender_options;
     appSettings.model_options = Array.isArray(mo)?mo:appSettings.model_options;
   }catch(e){}
-  // socials: per-key settings store (row seeded once via SQL so writes are UPDATEs)
-  try{
-    let sc=await JB.getSetting('socials',[]);
-    if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
-    socialsList = Array.isArray(sc) ? sc.filter(s=>s&&s.type&&s.value) : [];
-  }catch(e){ socialsList=[]; }
+  // socials: device cache + server merge (resilient even if the server write/read is flaky)
   fillOptionDatalists();
-  renderSocials();
+  await loadSocials();
 }
 function fillOptionDatalists(){
   const fill=(selId,opts,keep)=>{
@@ -2164,28 +2160,45 @@ function renderSocialsEditor(){
     return '<div class="soc-chip">'+p.icon+'<span class="sl">'+esc(p.label)+'</span><span class="su">'+esc(socUser(s.type,s.value))+'</span><button type="button" onclick="socRemove('+i+')" aria-label="حذف">×</button></div>';
   }).join('');
 }
+function socLocalGet(){
+  try{ const raw=localStorage.getItem(SOC_LS); if(raw){ const a=JSON.parse(raw); if(Array.isArray(a)) return a.filter(s=>s&&s.type&&s.value); } }catch(e){}
+  return [];
+}
+function socLocalSet(){ try{ localStorage.setItem(SOC_LS, JSON.stringify(socialsList)); }catch(e){} }
+async function loadSocials(){
+  let server=null;
+  try{
+    let sc=await JB.getSetting('socials',[]);
+    if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
+    if(Array.isArray(sc)) server=sc.filter(s=>s&&s.type&&s.value);
+  }catch(e){ server=null; }
+  const local=socLocalGet();
+  // prefer server when it actually returned links; otherwise fall back to this device's copy
+  socialsList = (server && server.length) ? server : local;
+  socLocalSet();
+  renderSocials();
+}
 async function socSave(){
-  await JB.saveSetting('socials', socialsList);
+  socLocalSet();                          // device copy first (always succeeds)
+  await JB.saveSetting('socials', socialsList);  // then server (may throw → caller keeps the local copy)
 }
 async function socAdd(){
   const t=document.getElementById('socType'), v=document.getElementById('socVal');
   if(!t||!v) return;
   const val=(v.value||'').trim();
   if(!val){ toast('نام کاربری یا لینک را وارد کنید.'); return; }
-  const entry={ type:t.value, value:val };
-  socialsList.push(entry);
+  socialsList.push({ type:t.value, value:val });
   v.value='';
-  renderSocialsEditor(); renderSocials();
-  try{ await socSave(); toast('شبکه اجتماعی ذخیره و نمایش داده شد.'); }
-  catch(e){ const i=socialsList.indexOf(entry); if(i>-1) socialsList.splice(i,1); renderSocialsEditor(); renderSocials(); toast('ذخیره نشد: '+((e&&e.message)?e.message:'خطای ناشناخته')); }
+  socLocalSet(); renderSocialsEditor(); renderSocials();   // shows immediately, stays
+  try{ await JB.saveSetting('socials', socialsList); toast('شبکه اجتماعی ذخیره شد.'); }
+  catch(e){ toast('روی این دستگاه ذخیره شد؛ همگام‌سازی با سرور ناموفق بود: '+((e&&e.message)?e.message:'خطای ناشناخته')); }
 }
 async function socRemove(i){
   i=parseInt(i,10); if(isNaN(i)||i<0||i>=socialsList.length) return;
-  const backup=socialsList.slice();
   socialsList.splice(i,1);
-  renderSocialsEditor(); renderSocials();
-  try{ await socSave(); }
-  catch(e){ socialsList=backup; renderSocialsEditor(); renderSocials(); toast('حذف ذخیره نشد.'); }
+  socLocalSet(); renderSocialsEditor(); renderSocials();
+  try{ await JB.saveSetting('socials', socialsList); }
+  catch(e){ toast('حذف روی این دستگاه انجام شد؛ همگام‌سازی با سرور ناموفق بود.'); }
 }
 // pin/unpin straight from a product card (optimistic, reverts on failure)
 async function cardTogglePin(id){
