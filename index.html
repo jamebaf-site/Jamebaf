@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v9.6" />
+<meta name="version" content="v9.7" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -226,6 +226,8 @@
   .pa-left{font-size:11px;color:var(--soft);font-weight:500}
   .trash-note{font-size:11px;color:var(--soft);font-weight:500}
   .mgmt-view[hidden]{display:none}
+  .mgmt-view:not([hidden]){animation:mgfade .26s var(--ease-out)}
+  @keyframes mgfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .mgmt-menu{display:flex;flex-direction:column;gap:10px;margin:8px 0 16px}
   .mgmt-menu>button{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--paper);border:1px solid var(--line-2);border-radius:13px;padding:15px 16px;font-family:inherit;cursor:pointer;transition:all var(--t) var(--ease)}
   .mgmt-menu>button:hover{border-color:var(--accent);background:var(--accent-soft)}
@@ -758,7 +760,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.6</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.7</span></div>
     </div>
   </div>
 </footer>
@@ -2161,8 +2163,8 @@ function renderSocialsEditor(){
   }).join('');
 }
 async function socSave(){
-  await JB.saveContentBatch([{ key:'socials', value: socialsList }]);
-  if(typeof contentMap!=='undefined'){ contentMap.socials = socialsList.slice(); cacheContent(); }
+  await JB.saveContentBatch([{ key:'socials', value: JSON.stringify(socialsList) }]);
+  if(typeof contentMap!=='undefined'){ contentMap.socials = JSON.stringify(socialsList); cacheContent(); }
 }
 async function socAdd(){
   const t=document.getElementById('socType'), v=document.getElementById('socVal');
