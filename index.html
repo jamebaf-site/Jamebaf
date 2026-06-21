@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.2" />
+<meta name="version" content="v1.0.3" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -760,7 +760,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.2</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.3</span></div>
     </div>
   </div>
 </footer>
@@ -2177,22 +2177,22 @@ async function socSave(){
 }
 // load: server content (read by ALL visitors) first, else this device's saved copy
 async function loadSocials(){
+  // instant paint from device cache — no delay/flicker
+  socialsList = socLocalGet();
+  renderSocials();
+  // then reconcile with server
   let server=[];
-  // explicit per-key read (returns arbitrary keys; works for anon via site_content read policy)
   try{
     let sc=await JB.getSetting('socials',[]);
     if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
     if(Array.isArray(sc)) server=sc.filter(s=>s&&s.type&&s.value);
   }catch(e){}
-  // fallback: content map (if the batch reader happened to include it)
   if(!server.length && typeof contentMap!=='undefined' && contentMap.socials){
     let raw=contentMap.socials;
     if(typeof raw==='string'){ try{ raw=JSON.parse(raw); }catch(e){ raw=null; } }
     if(Array.isArray(raw)) server=raw.filter(s=>s&&s.type&&s.value);
   }
-  socialsList = server.length ? server : socLocalGet();
-  socLocalSet();
-  renderSocials();
+  if(server.length){ socialsList=server; socLocalSet(); renderSocials(); }
 }
 async function socAdd(){
   const t=document.getElementById('socType'), v=document.getElementById('socVal');
@@ -2202,8 +2202,18 @@ async function socAdd(){
   socialsList.push({ type:t.value, value:val });
   v.value='';
   socLocalSet(); renderSocialsEditor(); renderSocials();   // shows immediately, stays
-  try{ await socSave(); toast('شبکه اجتماعی ذخیره شد.'); }
-  catch(e){ toast('روی این دستگاه ذخیره شد؛ همگام‌سازی با سرور ناموفق بود: '+((e&&e.message)?e.message:'خطای ناشناخته')); }
+  // ---- one-time diagnostic: run every save/read path and report what the server actually does ----
+  const payload = JSON.stringify(socialsList);
+  let r=[];
+  try{ await JB.saveSetting('socials', socialsList); r.push('saveSetting=OK'); }
+  catch(e){ r.push('saveSetting=ERR:'+((e&&e.message)?e.message:'?')); }
+  try{ await JB.saveContentBatch([{key:'socials', value:payload}]); if(typeof contentMap!=='undefined'){ contentMap.socials=payload; cacheContent(); } r.push('saveContent=OK'); }
+  catch(e){ r.push('saveContent=ERR:'+((e&&e.message)?e.message:'?')); }
+  try{ const s=await JB.getSetting('socials',null); r.push('getSetting=>'+JSON.stringify(s)); }
+  catch(e){ r.push('getSetting=ERR:'+((e&&e.message)?e.message:'?')); }
+  try{ const c=await JB.getContent(); r.push('getContent.socials=>'+JSON.stringify(c&&c.socials)); }
+  catch(e){ r.push('getContent=ERR:'+((e&&e.message)?e.message:'?')); }
+  try{ alert('تشخیص شبکه‌های اجتماعی (یک‌بار):\n\n'+r.join('\n')); }catch(e){}
 }
 async function socRemove(i){
   i=parseInt(i,10); if(isNaN(i)||i<0||i>=socialsList.length) return;
