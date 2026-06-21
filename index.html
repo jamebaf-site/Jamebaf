@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.1" />
+<meta name="version" content="v1.0.2" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -760,7 +760,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.1</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.2</span></div>
     </div>
   </div>
 </footer>
@@ -932,9 +932,9 @@ async function loadSettings(){
     appSettings.gender_options = Array.isArray(go)?go:appSettings.gender_options;
     appSettings.model_options = Array.isArray(mo)?mo:appSettings.model_options;
   }catch(e){}
-  // socials load via applyContent (content store, all visitors) + device cache
+  // socials: explicit per-key read (works for all visitors) + device cache
   fillOptionDatalists();
-  loadSocials();
+  await loadSocials();
 }
 function fillOptionDatalists(){
   const fill=(selId,opts,keep)=>{
@@ -1807,7 +1807,6 @@ function applyContent(){
   }
   // FAB + footer call buttons could be wired later; left as-is intentionally.
   applyExtraParas();
-  loadSocials();
 }
 
 /* admin-managed extra paragraphs, one array per section */
@@ -2168,14 +2167,29 @@ function socLocalGet(){
 function socLocalSet(){ try{ localStorage.setItem(SOC_LS, JSON.stringify(socialsList)); }catch(e){} }
 async function socSave(){
   socLocalSet();                                   // device copy first (always succeeds)
-  await JB.saveContentBatch([{ key:'socials', value: JSON.stringify(socialsList) }]);  // content store = read by ALL visitors
-  if(typeof contentMap!=='undefined'){ contentMap.socials = JSON.stringify(socialsList); cacheContent(); }
+  const payload = JSON.stringify(socialsList);
+  let ok=false, err=null;
+  // settings KV (read back by explicit key — works for arbitrary keys)
+  try{ await JB.saveSetting('socials', socialsList); ok=true; }catch(e){ err=e; }
+  // content store too (harmless if it ignores unknown keys); keeps local content cache fresh
+  try{ await JB.saveContentBatch([{ key:'socials', value: payload }]); if(typeof contentMap!=='undefined'){ contentMap.socials=payload; cacheContent(); } ok=true; }catch(e){ if(!err) err=e; }
+  if(!ok) throw (err||new Error('ذخیره ناموفق بود'));
 }
 // load: server content (read by ALL visitors) first, else this device's saved copy
-function loadSocials(){
-  let raw = (typeof contentMap!=='undefined') ? contentMap.socials : undefined;
-  if(typeof raw==='string'){ try{ raw=JSON.parse(raw); }catch(e){ raw=null; } }
-  const server = Array.isArray(raw) ? raw.filter(s=>s&&s.type&&s.value) : [];
+async function loadSocials(){
+  let server=[];
+  // explicit per-key read (returns arbitrary keys; works for anon via site_content read policy)
+  try{
+    let sc=await JB.getSetting('socials',[]);
+    if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
+    if(Array.isArray(sc)) server=sc.filter(s=>s&&s.type&&s.value);
+  }catch(e){}
+  // fallback: content map (if the batch reader happened to include it)
+  if(!server.length && typeof contentMap!=='undefined' && contentMap.socials){
+    let raw=contentMap.socials;
+    if(typeof raw==='string'){ try{ raw=JSON.parse(raw); }catch(e){ raw=null; } }
+    if(Array.isArray(raw)) server=raw.filter(s=>s&&s.type&&s.value);
+  }
   socialsList = server.length ? server : socLocalGet();
   socLocalSet();
   renderSocials();
