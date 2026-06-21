@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v9.5" />
+<meta name="version" content="v9.6" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -758,7 +758,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.5</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.6</span></div>
     </div>
   </div>
 </footer>
@@ -928,9 +928,16 @@ async function loadSettings(){
     appSettings.home_count = Math.max(1, parseInt(hc,10)||4);
     appSettings.gender_options = Array.isArray(go)?go:appSettings.gender_options;
     appSettings.model_options = Array.isArray(mo)?mo:appSettings.model_options;
-    let sc=await JB.getSetting('socials',[]);
-    if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
-    socialsList = Array.isArray(sc) ? sc.filter(s=>s&&s.type&&s.value) : [];
+  }catch(e){}
+  // socials now live in the content map (loaded via applyContent). Migrate any legacy
+  // copy saved under the old settings key if content has none yet.
+  try{
+    if(!socialsList.length){
+      let old=await JB.getSetting('socials',[]);
+      if(typeof old==='string'){ try{ old=JSON.parse(old); }catch(e){ old=[]; } }
+      old=Array.isArray(old)?old.filter(s=>s&&s.type&&s.value):[];
+      if(old.length){ socialsList=old; renderSocials(); try{ await socSave(); }catch(e){} }
+    }
   }catch(e){}
   fillOptionDatalists();
   renderSocials();
@@ -1128,6 +1135,12 @@ function updatePageSelBar(){
 function setSort(mode){ sortMode=mode||'newest'; renderAllProducts(); }
 async function saveHomeCount(btn){
   const v=Math.max(1, parseInt(document.getElementById('apHomeCount').value,10)||4);
+  const pinned=productCache.filter(p=>p.pinned).length;
+  if(pinned>v){
+    const excess=pinned-v;
+    toast(faNum(pinned)+' محصول سنجاق شده است که '+faNum(excess)+' عدد بیشتر از مقداری است که می‌خواهید. ابتدا '+faNum(excess)+' محصول را از سنجاق خارج کنید و دوباره تلاش کنید.');
+    return;
+  }
   if(btn){ btn.disabled=true; btn.textContent='در حال ذخیره…'; }
   try{ await JB.saveSetting('home_count', v); appSettings.home_count=v; renderProducts(); toast('تعداد ذخیره شد.'); }
   catch(e){ toast('خطا: '+((e&&e.message)?e.message:'ذخیره ناموفق')); }
@@ -1792,6 +1805,7 @@ function applyContent(){
   }
   // FAB + footer call buttons could be wired later; left as-is intentionally.
   applyExtraParas();
+  syncSocialsFromContent();
 }
 
 /* admin-managed extra paragraphs, one array per section */
@@ -2130,6 +2144,13 @@ function socPreview(){
   if(!t||!p) return;
   const s=SOCIALS[t.value]||SOCIALS.website; p.innerHTML=s.icon;
 }
+// socials live in the content map (server-backed for all visitors + localStorage-cached)
+function syncSocialsFromContent(){
+  let raw = (typeof contentMap!=='undefined') ? contentMap.socials : undefined;
+  if(typeof raw==='string'){ try{ raw=JSON.parse(raw); }catch(e){ raw=[]; } }
+  socialsList = Array.isArray(raw) ? raw.filter(s=>s&&s.type&&s.value) : [];
+  renderSocials();
+}
 function renderSocialsEditor(){
   const box=document.getElementById('socList'); if(!box) return;
   socPreview();
@@ -2138,6 +2159,10 @@ function renderSocialsEditor(){
     const p=SOCIALS[s.type]||SOCIALS.website;
     return '<div class="soc-chip">'+p.icon+'<span class="sl">'+esc(p.label)+'</span><span class="su">'+esc(socUser(s.type,s.value))+'</span><button type="button" onclick="socRemove('+i+')" aria-label="حذف">×</button></div>';
   }).join('');
+}
+async function socSave(){
+  await JB.saveContentBatch([{ key:'socials', value: socialsList }]);
+  if(typeof contentMap!=='undefined'){ contentMap.socials = socialsList.slice(); cacheContent(); }
 }
 async function socAdd(){
   const t=document.getElementById('socType'), v=document.getElementById('socVal');
@@ -2148,7 +2173,7 @@ async function socAdd(){
   socialsList.push(entry);
   v.value='';
   renderSocialsEditor(); renderSocials();
-  try{ await JB.saveSetting('socials', socialsList); toast('شبکه اجتماعی ذخیره و نمایش داده شد.'); }
+  try{ await socSave(); toast('شبکه اجتماعی ذخیره و نمایش داده شد.'); }
   catch(e){ const i=socialsList.indexOf(entry); if(i>-1) socialsList.splice(i,1); renderSocialsEditor(); renderSocials(); toast('ذخیره نشد: '+((e&&e.message)?e.message:'خطای ناشناخته')); }
 }
 async function socRemove(i){
@@ -2156,7 +2181,7 @@ async function socRemove(i){
   const backup=socialsList.slice();
   socialsList.splice(i,1);
   renderSocialsEditor(); renderSocials();
-  try{ await JB.saveSetting('socials', socialsList); }
+  try{ await socSave(); }
   catch(e){ socialsList=backup; renderSocialsEditor(); renderSocials(); toast('حذف ذخیره نشد.'); }
 }
 // pin/unpin straight from a product card (optimistic, reverts on failure)
