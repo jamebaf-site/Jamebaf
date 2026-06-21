@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v8.9" />
+<meta name="version" content="v9.0" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -242,7 +242,7 @@
   .pall-tools{display:flex;align-items:center;gap:12px}
   .psel-btn{background:var(--card);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:all var(--t) var(--ease)}
   .psel-btn:hover,.psel-btn.active{border-color:var(--accent);color:var(--accent)}
-  body:not(.is-admin) .psel-btn{display:none}
+  body:not(.is-admin) .psel-btn,body:not(.is-admin) .pselect-bar{display:none}
   .pselect-bar{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line-2);border-radius:14px;padding:14px;margin-bottom:24px}
   .psel-top{display:flex;align-items:center;gap:12px}
   .psel-all{background:none;border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;white-space:nowrap}
@@ -253,8 +253,6 @@
   .psel-actions button:hover{border-color:var(--ink);color:var(--ink)}
   .psel-actions button.del{color:#b00020;border-color:#e6b8be}
   .psel-actions button.del:hover{background:#fbeaec}
-  .psel-done{background:var(--mist);border:1px solid var(--line-2);color:var(--soft);font-family:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;border-radius:9px;cursor:not-allowed;white-space:nowrap;pointer-events:none;opacity:.7;transition:all var(--t) var(--ease)}
-  .psel-done.active{background:var(--ink);border-color:var(--ink);color:#fff;cursor:pointer;pointer-events:auto;opacity:1}
   .pcard.selecting{cursor:pointer}
   .psel-check{position:absolute;inset-block-start:10px;inset-inline-end:10px;width:27px;height:27px;border-radius:50%;border:2px solid #fff;background:rgba(20,18,14,.28);display:grid;place-items:center;z-index:4;box-shadow:0 1px 5px rgba(0,0,0,.3);transition:background var(--t) var(--ease)}
   .psel-check svg{width:15px;height:15px;color:#fff;opacity:0;transition:opacity var(--t) var(--ease)}
@@ -646,7 +644,6 @@
       <div class="psel-top">
         <button class="psel-all" id="pselAll" onclick="toggleSelectAllPage()">انتخاب همه</button>
         <span class="psel-count" id="pselCount">محصولی انتخاب نشده</span>
-        <button class="psel-done" id="pselDone" onclick="toggleSelectMode()">پایان</button>
       </div>
       <div class="psel-actions" id="pselActions" hidden>
         <button id="pselPin" onclick="bulkPin(true)">سنجاق</button>
@@ -735,7 +732,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v8.9</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.0</span></div>
     </div>
   </div>
 </footer>
@@ -1068,6 +1065,7 @@ function toggleSelectMode(){
   renderAllProducts();
 }
 function toggleCardSelect(id){
+  if(!isAdminFlag||!selectMode) return;
   const on=!selectedProducts.has(id);
   if(on) selectedProducts.add(id); else selectedProducts.delete(id);
   const card=document.querySelector('#pgridAll .pcard[data-id="'+id+'"]');
@@ -1090,7 +1088,6 @@ function updatePageSelBar(){
   const n=selectedProducts.size;
   const c=document.getElementById('pselCount'); if(c) c.textContent = n ? faNum(n)+' مورد انتخاب شد' : 'محصولی انتخاب نشده';
   const acts=document.getElementById('pselActions'); if(acts) acts.hidden = (n===0);
-  const done=document.getElementById('pselDone'); if(done) done.classList.toggle('active', n>0);
   const ids=pageVisibleIds||[]; const allSel=ids.length>0 && ids.every(id=>selectedProducts.has(id));
   const a=document.getElementById('pselAll'); if(a) a.textContent = allSel ? 'لغو انتخاب همه' : 'انتخاب همه';
 }
