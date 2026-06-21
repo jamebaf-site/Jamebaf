@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.3" />
+<meta name="version" content="v1.0.4" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -760,7 +760,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.3</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.4</span></div>
     </div>
   </div>
 </footer>
@@ -920,8 +920,6 @@ let searchQuery="";
 let genderFilter="";
 let sortMode="newest";
 let appSettings={ home_count:4, gender_options:["پسرانه","دخترانه","دیگران"], model_options:["بلوز","شلوار","نوزادی","پتو","ست بلوز و شلوار"] };
-let socialsList=[];
-const SOC_LS='jb_socials_v1';
 
 async function loadSettings(){
   try{
@@ -932,9 +930,9 @@ async function loadSettings(){
     appSettings.gender_options = Array.isArray(go)?go:appSettings.gender_options;
     appSettings.model_options = Array.isArray(mo)?mo:appSettings.model_options;
   }catch(e){}
-  // socials: explicit per-key read (works for all visitors) + device cache
+  // socials are regular content fields now (loaded via applyContent for all visitors)
   fillOptionDatalists();
-  await loadSocials();
+  renderSocials();
 }
 function fillOptionDatalists(){
   const fill=(selId,opts,keep)=>{
@@ -1720,6 +1718,16 @@ const CONTENT_SCHEMA = [
     ['contact_mobile','موبایل','ltr'],
     ['contact_email','ایمیل (خالی = نمایش داده نشود)','ltr'],
   ]},
+  { group:'شبکه‌های اجتماعی (خالی = نمایش داده نشود)', fields:[
+    ['social_instagram','اینستاگرام (نام کاربری یا لینک)','ltr'],
+    ['social_telegram','تلگرام (نام کاربری یا لینک)','ltr'],
+    ['social_whatsapp','واتساپ (شماره با کد کشور، مثل ۹۸۹۱۲...)','ltr'],
+    ['social_eitaa','ایتا (نام کاربری یا لینک)','ltr'],
+    ['social_aparat','آپارات (نام کاربری یا لینک)','ltr'],
+    ['social_youtube','یوتیوب (نام کاربری یا لینک)','ltr'],
+    ['social_x','ایکس / توییتر (نام کاربری یا لینک)','ltr'],
+    ['social_website','وب‌سایت (لینک کامل)','ltr'],
+  ]},
   { group:'فوتر', fields:[
     ['footer_tagline','شعار فوتر','text'],
   ]},
@@ -1807,6 +1815,7 @@ function applyContent(){
   }
   // FAB + footer call buttons could be wired later; left as-is intentionally.
   applyExtraParas();
+  renderSocials();
 }
 
 /* admin-managed extra paragraphs, one array per section */
@@ -1889,20 +1898,9 @@ function renderContentEditor(){
       +'<button type="button" class="xp-add" onclick="xpAdd(\''+sec.id+'\')">+ افزودن پاراگراف</button>'
       +'</div></details>';
   }).join('');
-  // social links editor
-  html += '<details class="ce-group"><summary>شبکه‌های اجتماعی</summary><div class="ce-body">'
-    +'<div id="socList"></div>'
-    +'<div class="soc-add">'
-      +'<span id="socPrev" class="soc-prev"></span>'
-      +'<select id="socType" onchange="socPreview()">'+Object.keys(SOCIALS).map(k=>'<option value="'+k+'">'+esc(SOCIALS[k].label)+'</option>').join('')+'</select>'
-      +'<input id="socVal" type="text" placeholder="نام کاربری یا لینک کامل">'
-      +'<button type="button" class="xp-add" onclick="socAdd()">+ افزودن</button>'
-    +'</div>'
-    +'</div></details>';
   box.innerHTML = html;
   // now render each draft list
   EXTRA_SECTIONS.forEach(sec=>xpRender(sec.id));
-  renderSocialsEditor();
 }
 async function saveContentUI(btn){
   const rows=[];
@@ -2132,10 +2130,11 @@ function socUser(type,val){
 function renderSocials(){
   const box=document.getElementById('cSocials'), row=document.getElementById('cSocialsRow');
   if(!box) return;
-  const items=(socialsList||[]).filter(s=>s&&s.type&&s.value);
+  const order=[['instagram','social_instagram'],['telegram','social_telegram'],['whatsapp','social_whatsapp'],['eitaa','social_eitaa'],['aparat','social_aparat'],['youtube','social_youtube'],['x','social_x'],['website','social_website']];
+  const items=order.map(([type,key])=>({type, value:(cval(key)||'').trim()})).filter(s=>s.value);
   const isAdmin = document.body.classList.contains('is-admin');
   if(!items.length){
-    box.innerHTML = isAdmin ? '<div class="empty-note" style="padding:4px 0">هنوز شبکه‌ای اضافه نشده — از پنل مدیریت ‹ محتوای سایت ‹ شبکه‌های اجتماعی اضافه کنید.</div>' : '';
+    box.innerHTML = isAdmin ? '<div class="empty-note" style="padding:4px 0">هنوز شبکه‌ای اضافه نشده — از پنل مدیریت ‹ محتوای سایت ‹ شبکه‌های اجتماعی پر کنید.</div>' : '';
     if(row){ row.style.display = isAdmin ? '' : 'none'; if(isAdmin) row.classList.add('in'); }
     return;
   }
@@ -2144,83 +2143,6 @@ function renderSocials(){
     const p=SOCIALS[s.type]||SOCIALS.website;
     return '<a class="social-link" href="'+esc(socUrl(s.type,s.value))+'" target="_blank" rel="noopener" aria-label="'+esc(p.label)+'">'+p.icon+'<span class="u">'+esc(socUser(s.type,s.value))+'</span></a>';
   }).join('');
-}
-// admin editor (rendered inside the content editor)
-function socPreview(){
-  const t=document.getElementById('socType'), p=document.getElementById('socPrev');
-  if(!t||!p) return;
-  const s=SOCIALS[t.value]||SOCIALS.website; p.innerHTML=s.icon;
-}
-function renderSocialsEditor(){
-  const box=document.getElementById('socList'); if(!box) return;
-  socPreview();
-  if(!socialsList.length){ box.innerHTML='<div class="empty-note" style="padding:6px 2px">هیچ شبکه‌ای اضافه نشده است.</div>'; return; }
-  box.innerHTML=socialsList.map((s,i)=>{
-    const p=SOCIALS[s.type]||SOCIALS.website;
-    return '<div class="soc-chip">'+p.icon+'<span class="sl">'+esc(p.label)+'</span><span class="su">'+esc(socUser(s.type,s.value))+'</span><button type="button" onclick="socRemove('+i+')" aria-label="حذف">×</button></div>';
-  }).join('');
-}
-function socLocalGet(){
-  try{ const raw=localStorage.getItem(SOC_LS); if(raw){ const a=JSON.parse(raw); if(Array.isArray(a)) return a.filter(s=>s&&s.type&&s.value); } }catch(e){}
-  return [];
-}
-function socLocalSet(){ try{ localStorage.setItem(SOC_LS, JSON.stringify(socialsList)); }catch(e){} }
-async function socSave(){
-  socLocalSet();                                   // device copy first (always succeeds)
-  const payload = JSON.stringify(socialsList);
-  let ok=false, err=null;
-  // settings KV (read back by explicit key — works for arbitrary keys)
-  try{ await JB.saveSetting('socials', socialsList); ok=true; }catch(e){ err=e; }
-  // content store too (harmless if it ignores unknown keys); keeps local content cache fresh
-  try{ await JB.saveContentBatch([{ key:'socials', value: payload }]); if(typeof contentMap!=='undefined'){ contentMap.socials=payload; cacheContent(); } ok=true; }catch(e){ if(!err) err=e; }
-  if(!ok) throw (err||new Error('ذخیره ناموفق بود'));
-}
-// load: server content (read by ALL visitors) first, else this device's saved copy
-async function loadSocials(){
-  // instant paint from device cache — no delay/flicker
-  socialsList = socLocalGet();
-  renderSocials();
-  // then reconcile with server
-  let server=[];
-  try{
-    let sc=await JB.getSetting('socials',[]);
-    if(typeof sc==='string'){ try{ sc=JSON.parse(sc); }catch(e){ sc=[]; } }
-    if(Array.isArray(sc)) server=sc.filter(s=>s&&s.type&&s.value);
-  }catch(e){}
-  if(!server.length && typeof contentMap!=='undefined' && contentMap.socials){
-    let raw=contentMap.socials;
-    if(typeof raw==='string'){ try{ raw=JSON.parse(raw); }catch(e){ raw=null; } }
-    if(Array.isArray(raw)) server=raw.filter(s=>s&&s.type&&s.value);
-  }
-  if(server.length){ socialsList=server; socLocalSet(); renderSocials(); }
-}
-async function socAdd(){
-  const t=document.getElementById('socType'), v=document.getElementById('socVal');
-  if(!t||!v) return;
-  const val=(v.value||'').trim();
-  if(!val){ toast('نام کاربری یا لینک را وارد کنید.'); return; }
-  socialsList.push({ type:t.value, value:val });
-  v.value='';
-  socLocalSet(); renderSocialsEditor(); renderSocials();   // shows immediately, stays
-  // ---- one-time diagnostic: run every save/read path and report what the server actually does ----
-  const payload = JSON.stringify(socialsList);
-  let r=[];
-  try{ await JB.saveSetting('socials', socialsList); r.push('saveSetting=OK'); }
-  catch(e){ r.push('saveSetting=ERR:'+((e&&e.message)?e.message:'?')); }
-  try{ await JB.saveContentBatch([{key:'socials', value:payload}]); if(typeof contentMap!=='undefined'){ contentMap.socials=payload; cacheContent(); } r.push('saveContent=OK'); }
-  catch(e){ r.push('saveContent=ERR:'+((e&&e.message)?e.message:'?')); }
-  try{ const s=await JB.getSetting('socials',null); r.push('getSetting=>'+JSON.stringify(s)); }
-  catch(e){ r.push('getSetting=ERR:'+((e&&e.message)?e.message:'?')); }
-  try{ const c=await JB.getContent(); r.push('getContent.socials=>'+JSON.stringify(c&&c.socials)); }
-  catch(e){ r.push('getContent=ERR:'+((e&&e.message)?e.message:'?')); }
-  try{ alert('تشخیص شبکه‌های اجتماعی (یک‌بار):\n\n'+r.join('\n')); }catch(e){}
-}
-async function socRemove(i){
-  i=parseInt(i,10); if(isNaN(i)||i<0||i>=socialsList.length) return;
-  socialsList.splice(i,1);
-  socLocalSet(); renderSocialsEditor(); renderSocials();
-  try{ await socSave(); }
-  catch(e){ toast('حذف روی این دستگاه انجام شد؛ همگام‌سازی با سرور ناموفق بود.'); }
 }
 // pin/unpin straight from a product card (optimistic, reverts on failure)
 async function cardTogglePin(id){
