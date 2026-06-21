@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v9.0" />
+<meta name="version" content="v9.1" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -243,7 +243,8 @@
   .psel-btn{background:var(--card);border:1px solid var(--line-2);color:var(--ink-2);font-family:inherit;font-weight:600;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;transition:all var(--t) var(--ease)}
   .psel-btn:hover,.psel-btn.active{border-color:var(--accent);color:var(--accent)}
   body:not(.is-admin) .psel-btn,body:not(.is-admin) .pselect-bar{display:none}
-  .pselect-bar{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line-2);border-radius:14px;padding:14px;margin-bottom:24px}
+  .pselect-bar{display:none;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line-2);border-radius:14px;padding:14px;margin-bottom:24px}
+  .pselect-bar.open{display:flex}
   .psel-top{display:flex;align-items:center;gap:12px}
   .psel-all{background:none;border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;font-size:14px;padding:9px 16px;border-radius:9px;cursor:pointer;white-space:nowrap}
   .psel-all:hover{background:var(--accent-soft)}
@@ -640,7 +641,7 @@
         </div>
       </div>
     </div>
-    <div class="pselect-bar" id="pselectBar" hidden>
+    <div class="pselect-bar" id="pselectBar">
       <div class="psel-top">
         <button class="psel-all" id="pselAll" onclick="toggleSelectAllPage()">انتخاب همه</button>
         <span class="psel-count" id="pselCount">محصولی انتخاب نشده</span>
@@ -732,7 +733,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.0</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v9.1</span></div>
     </div>
   </div>
 </footer>
@@ -1041,7 +1042,7 @@ function sortProducts(list){
 /* ===== full products view + search ===== */
 function renderAllProducts(){
   const grid=document.getElementById('pgridAll'); if(!grid) return;
-  if(!isAdminFlag && selectMode){ selectMode=false; const _b=document.getElementById('pselectBar'); if(_b) _b.hidden=true; const _x=document.getElementById('pselBtn'); if(_x){ _x.classList.remove('active'); _x.textContent='انتخاب'; } selectedProducts.clear(); }
+  if(!isAdminFlag && selectMode){ selectMode=false; const _b=document.getElementById('pselectBar'); if(_b) _b.classList.remove('open'); const _x=document.getElementById('pselBtn'); if(_x){ _x.classList.remove('active'); _x.textContent='انتخاب'; } selectedProducts.clear(); }
   if(!productCache.length){
     grid.innerHTML='<div class="empty-note" style="grid-column:1/-1">هنوز محصولی ثبت نشده است.</div>';
     pageVisibleIds=[]; if(selectMode) updatePageSelBar(); return;
@@ -1060,7 +1061,7 @@ function renderAllProducts(){
 function toggleSelectMode(){
   if(!isAdminFlag){ selectMode=false; return; }
   selectMode=!selectMode; selectedProducts.clear();
-  const bar=document.getElementById('pselectBar'); if(bar) bar.hidden=!selectMode;
+  const bar=document.getElementById('pselectBar'); if(bar) bar.classList.toggle('open', selectMode);
   const btn=document.getElementById('pselBtn'); if(btn){ btn.classList.toggle('active',selectMode); btn.textContent=selectMode?'لغو انتخاب':'انتخاب'; }
   renderAllProducts();
 }
@@ -1125,7 +1126,7 @@ function showAllProducts(focusSearch){
   if(focusSearch){ setTimeout(()=>{ const i=document.getElementById('searchInputAll'); if(i) i.focus(); },120); }
 }
 function hideAllProducts(){
-  if(selectMode){ selectMode=false; selectedProducts.clear(); const _b=document.getElementById('pselectBar'); if(_b) _b.hidden=true; const _sb=document.getElementById('pselBtn'); if(_sb){ _sb.classList.remove('active'); _sb.textContent='انتخاب'; } }
+  if(selectMode){ selectMode=false; selectedProducts.clear(); const _b=document.getElementById('pselectBar'); if(_b) _b.classList.remove('open'); const _sb=document.getElementById('pselBtn'); if(_sb){ _sb.classList.remove('active'); _sb.textContent='انتخاب'; } }
   const all=document.getElementById('products-all');
   all.hidden=true;
   document.body.classList.remove('viewing-all');
