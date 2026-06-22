@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.4" />
+<meta name="version" content="v1.0.5" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -760,7 +760,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.4</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.5</span></div>
     </div>
   </div>
 </footer>
@@ -1727,6 +1727,12 @@ const CONTENT_SCHEMA = [
     ['social_youtube','یوتیوب (نام کاربری یا لینک)','ltr'],
     ['social_x','ایکس / توییتر (نام کاربری یا لینک)','ltr'],
     ['social_website','وب‌سایت (لینک کامل)','ltr'],
+    ['social_custom1_label','شبکه دلخواه ۱ — نام','text'],
+    ['social_custom1_url','شبکه دلخواه ۱ — لینک کامل','ltr'],
+    ['social_custom2_label','شبکه دلخواه ۲ — نام','text'],
+    ['social_custom2_url','شبکه دلخواه ۲ — لینک کامل','ltr'],
+    ['social_custom3_label','شبکه دلخواه ۳ — نام','text'],
+    ['social_custom3_url','شبکه دلخواه ۳ — لینک کامل','ltr'],
   ]},
   { group:'فوتر', fields:[
     ['footer_tagline','شعار فوتر','text'],
@@ -2131,7 +2137,13 @@ function renderSocials(){
   const box=document.getElementById('cSocials'), row=document.getElementById('cSocialsRow');
   if(!box) return;
   const order=[['instagram','social_instagram'],['telegram','social_telegram'],['whatsapp','social_whatsapp'],['eitaa','social_eitaa'],['aparat','social_aparat'],['youtube','social_youtube'],['x','social_x'],['website','social_website']];
-  const items=order.map(([type,key])=>({type, value:(cval(key)||'').trim()})).filter(s=>s.value);
+  const items=[];
+  order.forEach(([type,key])=>{ const v=(cval(key)||'').trim(); if(v) items.push({type, value:v}); });
+  // custom slots: a name + a full link
+  [['social_custom1_label','social_custom1_url'],['social_custom2_label','social_custom2_url'],['social_custom3_label','social_custom3_url']].forEach(([lk,uk])=>{
+    const label=(cval(lk)||'').trim(), url=(cval(uk)||'').trim();
+    if(label && url) items.push({custom:true, label, url});
+  });
   const isAdmin = document.body.classList.contains('is-admin');
   if(!items.length){
     box.innerHTML = isAdmin ? '<div class="empty-note" style="padding:4px 0">هنوز شبکه‌ای اضافه نشده — از پنل مدیریت ‹ محتوای سایت ‹ شبکه‌های اجتماعی پر کنید.</div>' : '';
@@ -2140,6 +2152,10 @@ function renderSocials(){
   }
   if(row){ row.style.display=''; row.classList.add('in'); }
   box.innerHTML=items.map(s=>{
+    if(s.custom){
+      const href = /^https?:\/\//i.test(s.url) ? s.url : ('https://'+s.url);
+      return '<a class="social-link" href="'+esc(href)+'" target="_blank" rel="noopener" aria-label="'+esc(s.label)+'">'+SOCIALS.website.icon+'<span class="u">'+esc(s.label)+'</span></a>';
+    }
     const p=SOCIALS[s.type]||SOCIALS.website;
     return '<a class="social-link" href="'+esc(socUrl(s.type,s.value))+'" target="_blank" rel="noopener" aria-label="'+esc(p.label)+'">'+p.icon+'<span class="u">'+esc(socUser(s.type,s.value))+'</span></a>';
   }).join('');
