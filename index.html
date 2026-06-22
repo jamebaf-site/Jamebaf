@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.5" />
+<meta name="version" content="v1.0.6" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -223,7 +223,6 @@
   .pa-cb{flex:none;width:18px;height:18px;accent-color:var(--accent);cursor:pointer;margin:0}
   .pa-item.sel{border-color:var(--accent);background:var(--accent-soft)}
   .pa-pin{font-size:11px;color:var(--gold-deep);font-weight:600;margin-inline-start:4px}
-  .pa-left{font-size:11px;color:var(--soft);font-weight:500}
   .trash-note{font-size:11px;color:var(--soft);font-weight:500}
   .mgmt-view[hidden]{display:none}
   .mgmt-view:not([hidden]){animation:mgfade .26s var(--ease-out)}
@@ -272,15 +271,6 @@
   .socials-block .eyebrow{justify-content:center;margin-bottom:12px}
   .socials-title{font-size:clamp(22px,3.2vw,30px);font-weight:700;color:var(--ink);margin:0 0 22px;line-height:1.3}
   .socials-block .socials{justify-content:center}
-  .soc-prev{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);flex:none}
-  .soc-prev svg{width:22px;height:22px;color:var(--accent)}
-  .soc-add{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .soc-add select,.soc-add input{font-family:inherit;font-size:16px;padding:9px 11px;border:1px solid var(--line-2);border-radius:8px;background:var(--card);color:var(--ink)}
-  .soc-add input{flex:1;min-width:140px;direction:ltr;text-align:left}
-  .soc-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--line-2);border-radius:9px;margin:0 8px 8px 0}
-  .soc-chip svg{width:18px;height:18px;color:var(--accent);flex:none}
-  .soc-chip .su{direction:ltr;color:var(--soft);font-size:12.5px}
-  .soc-chip button{margin-inline-start:4px;width:22px;height:22px;border:none;background:var(--mist);color:var(--ink-2);border-radius:6px;cursor:pointer;font-size:15px;line-height:1}
   .pcard.selecting.selected{outline:3px solid var(--accent);outline-offset:2px}
   .tr-item{display:flex;align-items:center;gap:14px;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--card)}
   .tr-item+.tr-item{margin-top:10px}
@@ -512,7 +502,7 @@
     stroke-linejoin:round; stroke-linecap:round;
   }
   /* sharper logo/photo bitmaps on high-DPI screens */
-  .intro-logo img,.brand img,.hero-mark img,.foot-logo img,.modal-logo img{
+  .intro-logo img,.brand img,.hero-mark img{
     image-rendering:-webkit-optimize-contrast;
     image-rendering:auto;
     -webkit-backface-visibility:hidden; backface-visibility:hidden;
@@ -760,7 +750,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.5</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.6</span></div>
     </div>
   </div>
 </footer>
@@ -1786,7 +1776,7 @@ function cval(key){
   return v;
 }
 /* turn a display phone like "+98 912 246 5766" into a tel: href */
-function telHref(s){ return 'tel:'+String(s||'').replace(/[^\d+]/g,''); }
+function telHref(s){ return 'tel:'+toEnDigits(String(s||'')).replace(/[^\d+]/g,''); }
 
 function applyContent(){
   // simple [data-ck] text regions
@@ -2113,7 +2103,7 @@ function socUrl(type,val){
   val=String(val||'').trim();
   if(/^https?:\/\//i.test(val)) return val;            // full link pasted → use as-is
   const u=val.replace(/^@/,'').trim();
-  if(type==='whatsapp') return 'https://wa.me/'+u.replace(/[^\d]/g,'');
+  if(type==='whatsapp') return 'https://wa.me/'+toEnDigits(u).replace(/[^\d]/g,'');
   if(type==='website')  return 'https://'+u.replace(/^\/+/,'');
   const p=SOCIALS[type]; return (p&&p.base?p.base:'')+encodeURIComponent(u);
 }
