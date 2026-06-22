@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.6" />
+<meta name="version" content="v1.0.7" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -339,6 +339,9 @@
   .lb-info h3{font-size:19px;font-weight:700;margin:0 0 8px;color:var(--ink)}
   .lb-info p{font-size:14.5px;line-height:1.85;color:var(--soft);margin:0;max-height:24vh;overflow:auto}
   .lb-info .cnt{font-size:12px;color:var(--soft);margin-top:12px;letter-spacing:1px;text-align:center}
+  .lb-share{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-family:inherit;font-size:13px;font-weight:600;padding:10px 16px;border-radius:9px;cursor:pointer;border:1px solid var(--accent);background:transparent;color:var(--accent);transition:all var(--t) var(--ease)}
+  .lb-share:hover{background:var(--accent);color:#fff}
+  .lb-share svg{width:16px;height:16px;flex:none}
   .lb-actions{display:flex;gap:10px;margin-top:16px}
   .lb-actions button{flex:1;font-family:inherit;font-size:13px;font-weight:600;padding:11px;border-radius:9px;cursor:pointer;border:1px solid var(--line-2);background:var(--mist);color:var(--ink);transition:all var(--t) var(--ease)}
   .lb-actions button:hover{border-color:var(--ink)}
@@ -750,7 +753,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.6</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.7</span></div>
     </div>
   </div>
 </footer>
@@ -1180,6 +1183,13 @@ function openSearch(){ showAllProducts(true); }
 // react to hash (back button, shared link)
 window.addEventListener('popstate',()=>{ syncHashView(); });
 function syncHashView(){
+  const h=location.hash||'';
+  if(h.indexOf('#p=')===0){
+    const id=decodeURIComponent(h.slice(3));
+    if(productCache.find(p=>p.id===id)){ lbPrevHash='#products'; openLightbox(id,0); return; }
+    // product not found (deleted or not loaded) → fall back to products
+    try{ history.replaceState(null,'','#products'); }catch(e){}
+  }
   if(location.hash==='#products-all'){ showAllProducts(false); }
   else { const all=document.getElementById('products-all'); if(all && !all.hidden){ all.hidden=true; document.body.classList.remove('viewing-all'); } }
 }
@@ -1581,10 +1591,14 @@ function unlockScroll(){ if(_lk>0 && --_lk===0){
 } }
 
 /* ===== photo lightbox (gallery) ===== */
-let lbList=[], lbIdx=0, lbProduct=null;
+let lbList=[], lbIdx=0, lbProduct=null, lbPrevHash='#products';
 function openLightbox(pid, idx){
   const pr=productCache.find(p=>p.id===pid); if(!pr) return;
   lbProduct=pr; lbList=imgsOf(pr); lbIdx=Math.min(idx||0, Math.max(0,lbList.length-1));
+  // reflect the product in the URL so it can be shared/deep-linked
+  const h=location.hash||'';
+  if(h.indexOf('#p=')!==0) lbPrevHash = h || '#products';
+  try{ history.replaceState(null,'','#p='+encodeURIComponent(pid)); }catch(e){}
   document.getElementById('lightbox').classList.add('show'); lockScroll();
   renderLb();
   // warm the cache for the other photos so swiping is instant
@@ -1610,6 +1624,9 @@ function renderLb(){
     html+='<h3>'+esc(lbProduct.title)+'</h3>';
     if(lbProduct.description) html+='<p>'+esc(lbProduct.description)+'</p>';
     if(lbProduct.price) html+='<p class="lb-price">'+esc(lbProduct.price)+'</p>';
+    html+='<button type="button" class="lb-share" onclick="shareProduct(\''+lbProduct.id+'\')" aria-label="اشتراک‌گذاری محصول">'
+      +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'
+      +'<span>اشتراک‌گذاری</span></button>';
   }
   if(multi) html+='<div class="cnt">'+faNum(lbIdx+1)+' / '+faNum(lbList.length)+'</div>';
   if(isAdminFlag && lbProduct){
@@ -1621,7 +1638,22 @@ function renderLb(){
   document.getElementById('lbInfo').innerHTML=html;
 }
 function lbNav(d){ if(!lbList.length)return; lbIdx=(lbIdx+d+lbList.length)%lbList.length; renderLb(); }
-function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); unlockScroll(); }
+function productLink(id){ return location.origin + location.pathname + '#p=' + encodeURIComponent(id); }
+async function shareProduct(id){
+  const pr=productCache.find(p=>p.id===id);
+  const url=productLink(id);
+  const title=pr&&pr.title?pr.title:'جامه باف';
+  try{
+    if(navigator.share){ await navigator.share({ title, text:title, url }); return; }
+  }catch(e){ if(e && e.name==='AbortError') return; }
+  try{
+    await navigator.clipboard.writeText(url);
+    toast('لینک محصول کپی شد.');
+  }catch(e){
+    try{ window.prompt('لینک محصول (کپی کنید):', url); }catch(_){ toast('لینک: '+url); }
+  }
+}
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('show'); unlockScroll(); if((location.hash||'').indexOf('#p=')===0){ try{ history.replaceState(null,'', lbPrevHash||'#products'); }catch(e){} } }
 function editFromDetail(id){ closeLightbox(); if(!isAdminFlag) return; openAuth(); startEdit(id); }
 function deleteFromDetail(id){ if(!confirm('این محصول حذف شود؟')) return; closeLightbox(); delProductUI(id); }
 function cardEdit(id){ if(!isAdminFlag) return; openAuth(); startEdit(id); }
