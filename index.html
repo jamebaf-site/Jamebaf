@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.8" />
+<meta name="version" content="v1.0.9" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -758,7 +758,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.8</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.9</span></div>
     </div>
   </div>
 </footer>
@@ -958,6 +958,7 @@ async function loadProducts(){
   const tr=trashIds();
   if(tr.size) productCache=productCache.filter(p=>!tr.has(p.id));
   renderProducts(); renderAllProducts();
+  reconcilePins();   // no-op unless admin AND more pinned than the home page allows
 }
 function cardMedia(pr){
   const imgs=imgsOf(pr);
@@ -1038,6 +1039,27 @@ function markLoaded(grid){ grid.querySelectorAll('img.pimg').forEach(img=>{ if(i
 
 // HOMEPAGE: newest 4 + a "view all" button
 function pinLimit(){ return Math.max(1, appSettings.home_count||1); }
+let reconcilingPins=false;
+// Safety net for a legacy over-pinned state: if more products are pinned than the
+// home page can show, the home grid slices a too-long list — so which pinned appear
+// is unstable, and deleting a shown pinned item "promotes" a hidden one into view.
+// This quietly unpins the overflow (keeping the ones already shown) so the state is consistent.
+// Admin-only (only an admin can write pins; RLS blocks anon writes anyway). Self-heals on first run.
+async function reconcilePins(){
+  if(!isAdminFlag || reconcilingPins) return;
+  const limit=pinLimit();
+  const pinned=productCache.filter(p=>p.pinned);
+  if(pinned.length<=limit) return;
+  reconcilingPins=true;
+  const excess=pinned.slice(limit);            // keep the first `limit` (already shown); drop the rest
+  excess.forEach(p=>{ p.pinned=false; });
+  renderAllProductViews(); renderAdminList();
+  let fail=0;
+  for(const p of excess){ try{ await setPinnedSafe(p.id,false); }catch(e){ fail++; } }
+  reconcilingPins=false;
+  const fixed=excess.length-fail;
+  if(fixed>0) toast(faNum(fixed)+' محصول که بیش از ظرفیت صفحه اصلی سنجاق شده بود، از سنجاق خارج شد.');
+}
 function renderProducts(){
   const grid=document.getElementById('pgrid'); if(!grid) return;
   const moreWrap=document.getElementById('pmoreWrap');
@@ -2115,6 +2137,7 @@ function extraInlineOff(xs){
 function syncAdminEditUI(){
   document.body.classList.toggle('is-admin', !!isAdminFlag);
   if(typeof renderSocials==='function') renderSocials();
+  if(isAdminFlag && typeof reconcilePins==='function') reconcilePins();   // auth resolves after initial load; clean up any over-pinned state now
   // pencils/save/cancel visibility is pure CSS now (body.is-admin); nothing to toggle here
   if(!isAdminFlag){
     // hard reset: no edit state may survive for a non-admin / across loads
