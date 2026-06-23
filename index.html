@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.7" />
+<meta name="version" content="v1.0.8" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -485,6 +485,11 @@
   .pchip.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
   /* price in lightbox */
   #lbInfo .lb-price{font-size:18px;font-weight:700;color:var(--accent);margin:6px 0 0}
+  #lbInfo .lb-size{font-size:13.5px;color:var(--soft);margin:8px 0 0}
+  #lbInfo .lb-size .ltr{direction:ltr;display:inline-block}
+  .size-pick{display:flex;flex-wrap:wrap;gap:8px}
+  .sizchip{font-family:inherit;font-size:14px;font-weight:600;padding:9px 14px;border:1px solid var(--line-2);border-radius:9px;background:var(--card);color:var(--ink);cursor:pointer;transition:all var(--t) var(--ease);direction:ltr}
+  .sizchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
   /* admin pinned checkbox */
   .field-check{display:flex;align-items:center}
   .field-check .chk{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:15px;color:var(--ink-2);font-weight:500}
@@ -753,7 +758,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.7</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.8</span></div>
     </div>
   </div>
 </footer>
@@ -796,12 +801,10 @@
           <div class="field"><label for="apTitle">عنوان محصول</label><input id="apTitle" type="text" placeholder="مثلاً پلیور تریکو" /></div>
           <div class="field"><label for="apDesc">توضیحات</label><input id="apDesc" type="text" placeholder="توضیح کوتاه محصول" /></div>
           <div class="field"><label for="apGender">جنسیت</label>
-            <select id="apGender"><option value="">— انتخاب کنید —</option></select>
-            <input id="apGenderNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
+            <select id="apGender"><option value="">— انتخاب کنید —</option></select></div>
           <div class="field"><label for="apModel">مدل</label>
-            <select id="apModel"><option value="">— انتخاب کنید —</option></select>
-            <input id="apModelNew" type="text" placeholder="یا یک مورد جدید بنویسید" autocomplete="off" style="margin-top:8px" /></div>
-          <div class="field"><label for="apSize">سایز</label><input id="apSize" type="text" placeholder="مثلاً ۶۰/۶۵" /></div>
+            <select id="apModel"><option value="">— انتخاب کنید —</option></select></div>
+          <div class="field"><label for="apSizes">سایز (می‌توانید چند مورد انتخاب کنید)</label><div id="apSizes" class="size-pick"></div></div>
           <div class="field"><label for="apPrice">قیمت</label><input id="apPrice" type="text" placeholder="مثلاً ۲۵۰٬۰۰۰ تومان" /></div>
           <div class="field field-check"><label class="chk"><input id="apPinned" type="checkbox" /> <span>سنجاق به صفحه اصلی</span></label></div>
           <div class="field"><label for="apPhoto">تصاویر محصول</label><input id="apPhoto" type="file" accept="image/*" multiple onchange="onPickPhotos(this)" /><p class="hint" style="text-align:right;margin:8px 0 0">می‌توانید چند تصویر انتخاب کنید. با دکمه‌های ↑ ↓ ترتیب را تغییر دهید؛ تصویر بالا «کاور» می‌شود.</p><div class="ap-list" id="apPreview"></div></div>
@@ -913,6 +916,9 @@ let searchQuery="";
 let genderFilter="";
 let sortMode="newest";
 let appSettings={ home_count:4, gender_options:["پسرانه","دخترانه","دیگران"], model_options:["بلوز","شلوار","نوزادی","پتو","ست بلوز و شلوار"] };
+const GENDER_OPTS=['پسرانه','دخترانه','بچگانه'];
+const SIZE_OPTS=['30/35','35/40','40/45','45/50','50/55','55/60','60/65','65/70'];
+let apSizeSel=new Set();
 
 async function loadSettings(){
   try{
@@ -934,18 +940,15 @@ function fillOptionDatalists(){
     sel.innerHTML='<option value="">— انتخاب کنید —</option>'+(opts||[]).map(o=>'<option value="'+esc(o)+'"'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
     if(cur && !(opts||[]).includes(cur)){ sel.insertAdjacentHTML('beforeend','<option value="'+esc(cur)+'" selected>'+esc(cur)+'</option>'); }
   };
-  fill('apGender', appSettings.gender_options);
+  fill('apGender', GENDER_OPTS);
   fill('apModel', appSettings.model_options);
+  renderSizePicker();
 }
-// add a newly-typed option to its list and persist forever
-async function persistOption(key, value){
-  value=(value||'').trim(); if(!value) return;
-  const list=appSettings[key]||[];
-  if(list.includes(value)) return;
-  list.push(value); appSettings[key]=list;
-  try{ await JB.saveSetting(key, list); }catch(e){}
-  fillOptionDatalists();
+function renderSizePicker(){
+  const box=document.getElementById('apSizes'); if(!box) return;
+  box.innerHTML=SIZE_OPTS.map(s=>'<button type="button" class="sizchip'+(apSizeSel.has(s)?' on':'')+'" onclick="toggleSize(\''+s+'\')" aria-pressed="'+apSizeSel.has(s)+'">'+faNum(s)+'</button>').join('');
 }
+function toggleSize(s){ if(apSizeSel.has(s)) apSizeSel.delete(s); else apSizeSel.add(s); renderSizePicker(); }
 
 /* ===== products (public read) ===== */
 async function loadProducts(){
@@ -1402,9 +1405,9 @@ function clearPending(){
   pendingItems=[]; editingId=null; originalImages=[];
   const a=document.getElementById('apTitle'),b=document.getElementById('apDesc'),p=document.getElementById('apPhoto');
   if(a)a.value=''; if(b)b.value=''; if(p)p.value='';
-  const g=document.getElementById('apGender'),md=document.getElementById('apModel'),sz=document.getElementById('apSize'),pc=document.getElementById('apPrice'),pn=document.getElementById('apPinned');
-  const gn=document.getElementById('apGenderNew'),mn=document.getElementById('apModelNew'); if(gn)gn.value=''; if(mn)mn.value='';
-  if(g)g.value=''; if(md)md.value=''; if(sz)sz.value=''; if(pc)pc.value=''; if(pn)pn.checked=false;
+  const g=document.getElementById('apGender'),md=document.getElementById('apModel'),pc=document.getElementById('apPrice'),pn=document.getElementById('apPinned');
+  if(g)g.value=''; if(md)md.value=''; if(pc)pc.value=''; if(pn)pn.checked=false;
+  apSizeSel=new Set(); renderSizePicker();
   const h=document.getElementById('apHeading'),s=document.getElementById('apSave'),c=document.getElementById('apCancel');
   if(h)h.textContent='افزودن محصول'; if(s)s.textContent='افزودن محصول'; if(c)c.style.display='none';
   renderPreview();
@@ -1422,7 +1425,7 @@ function startEdit(id){
   gSel.value=pr.gender||'';
   const mSel=document.getElementById('apModel'); if(pr.model && !Array.from(mSel.options).some(o=>o.value===pr.model)) mSel.insertAdjacentHTML('beforeend','<option value="'+esc(pr.model)+'">'+esc(pr.model)+'</option>');
   mSel.value=pr.model||'';
-  document.getElementById('apSize').value=pr.size||'';
+  apSizeSel=new Set(); String(pr.size||'').split(/[،,]/).forEach(x=>{ const v=toEnDigits(x).trim(); if(SIZE_OPTS.includes(v)) apSizeSel.add(v); }); renderSizePicker();
   document.getElementById('apPrice').value=pr.price||'';
   document.getElementById('apPinned').checked=!!pr.pinned;
   document.getElementById('apHeading').textContent='ویرایش محصول';
@@ -1450,12 +1453,16 @@ function resizeFile(file,max){
 
 async function saveProductUI(btn){
   const title=val('apTitle').trim(), description=val('apDesc').trim();
-  const gNew=val('apGenderNew').trim(), mNew=val('apModelNew').trim();
-  const gender=(gNew||val('apGender').trim()), model=(mNew||val('apModel').trim());
-  const size=val('apSize').trim(), price=val('apPrice').trim(), pinned=document.getElementById('apPinned').checked;
-  if(gNew) await persistOption('gender_options', gNew);
-  if(mNew) await persistOption('model_options', mNew);
+  const gender=val('apGender').trim(), model=val('apModel').trim();
+  const size=SIZE_OPTS.filter(s=>apSizeSel.has(s)).join('، ');
+  const price=val('apPrice').trim(), pinned=document.getElementById('apPinned').checked;
   if(title.length<2){ toast('لطفاً عنوان محصول را وارد نمایید.'); return; }
+  if(!description){ toast('لطفاً توضیحات محصول را وارد نمایید.'); return; }
+  if(!gender){ toast('لطفاً جنسیت را انتخاب کنید.'); return; }
+  if(!model){ toast('لطفاً مدل را انتخاب کنید.'); return; }
+  if(!apSizeSel.size){ toast('لطفاً حداقل یک سایز را انتخاب کنید.'); return; }
+  if(!price){ toast('لطفاً قیمت را وارد نمایید.'); return; }
+  if(!pendingItems.length){ toast('لطفاً حداقل یک تصویر برای محصول انتخاب کنید.'); return; }
   if(pinned){
     const cur=productCache.filter(p=>p.pinned && p.id!==editingId).length;
     if(cur>=pinLimit()){ toast('حداکثر '+faNum(pinLimit())+' محصول قابل سنجاق است. ابتدا یکی را بردارید.'); const pn=document.getElementById('apPinned'); if(pn) pn.checked=false; return; }
@@ -1624,6 +1631,7 @@ function renderLb(){
     html+='<h3>'+esc(lbProduct.title)+'</h3>';
     if(lbProduct.description) html+='<p>'+esc(lbProduct.description)+'</p>';
     if(lbProduct.price) html+='<p class="lb-price">'+esc(lbProduct.price)+'</p>';
+    if(lbProduct.size) html+='<p class="lb-size">سایزهای موجود: <span class="ltr">'+esc(faNum(lbProduct.size))+'</span></p>';
     html+='<button type="button" class="lb-share" onclick="shareProduct(\''+lbProduct.id+'\')" aria-label="اشتراک‌گذاری محصول">'
       +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'
       +'<span>اشتراک‌گذاری</span></button>';
