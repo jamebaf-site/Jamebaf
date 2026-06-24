@@ -916,6 +916,7 @@ let searchQuery="";
 let genderFilter="";
 let sortMode="newest";
 let appSettings={ home_count:4, gender_options:["پسرانه","دخترانه","دیگران"], model_options:["بلوز","شلوار","نوزادی","پتو","ست بلوز و شلوار"] };
+const GENDER_OPTS=['پسرانه','دخترانه','بچگانه'];
 const SIZE_OPTS=['30/35','35/40','40/45','45/50','50/55','55/60','60/65','65/70'];
 let apSizeSel=new Set();
 
@@ -939,7 +940,7 @@ function fillOptionDatalists(){
     sel.innerHTML='<option value="">— انتخاب کنید —</option>'+(opts||[]).map(o=>'<option value="'+esc(o)+'"'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
     if(cur && !(opts||[]).includes(cur)){ sel.insertAdjacentHTML('beforeend','<option value="'+esc(cur)+'" selected>'+esc(cur)+'</option>'); }
   };
-  fill('apGender', appSettings.gender_options);
+  fill('apGender', GENDER_OPTS);
   fill('apModel', appSettings.model_options);
   renderSizePicker();
 }
@@ -1158,12 +1159,13 @@ async function saveHomeCount(btn){
 }
 function renderGenderChips(){
   const box=document.getElementById('pfilter'); if(!box) return;
-  const configured=(appSettings.gender_options||[]);
-  // include any gender actually present on a product but missing from the configured list,
-  // so no product is ever left without a matching filter chip (e.g. legacy values)
+  // base on the same intended gender list the add-product form uses (GENDER_OPTS),
+  // NOT appSettings.gender_options — the DB may still hold the retired «دیگران» value (see v1.0.8).
+  const configured=GENDER_OPTS;
+  // union any gender actually used by a product but missing from the list,
+  // so no product is ever left without a matching filter chip (e.g. legacy values).
   const present=[...new Set(productCache.map(p=>(p.gender||'').trim()).filter(Boolean))];
-  const extras=present.filter(g=>!configured.includes(g));
-  const opts=['',...configured,...extras];
+  const opts=['',...configured,...present.filter(g=>!configured.includes(g))];
   box.innerHTML=opts.map(o=>'<button class="pchip'+(o===genderFilter?' active':'')+'" data-g="'+esc(o)+'" onclick="setGenderFilter(\''+esc(o).replace(/'/g,"\\'")+'\',this)">'+(o===''?'همه':esc(o))+'</button>').join('');
 }
 function setGenderFilter(g,btn){
