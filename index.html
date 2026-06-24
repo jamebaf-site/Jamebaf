@@ -6,7 +6,7 @@
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#F4EEE0" />
-<meta name="version" content="v1.0.9" />
+<meta name="version" content="v1.0.10" />
 <script>try{if(sessionStorage.getItem('jb_seen'))document.documentElement.classList.add('introSeen')}catch(e){}</script>
 <title>جامه باف | اصالت در هر تار و پود</title>
 <meta name="description" content="جامه باف — عرضه‌کننده پوشاک و تریکو با کیفیت و طراحی اصیل." />
@@ -758,7 +758,7 @@
     </div>
     <div class="foot-bottom">
       <div class="creator">طراحی، توسعه و اجرای این وب‌سایت توسط <span class="keytrig" id="keyTrig" role="button" tabindex="0" aria-label="ورود مدیران"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M16.5 6.5l3 3"/><path d="M14.5 8.5l2.5 2.5"/></svg></span> <b>آروین جامه بزرگ</b></div>
-      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.9</span></div>
+      <div class="copy">© ۲۰۲۶ جامه باف — کلیه حقوق این وب‌سایت طبق قوانین مالکیت فکری جمهوری اسلامی ایران محفوظ است. <span class="ver">· v1.0.10</span></div>
     </div>
   </div>
 </footer>
@@ -916,7 +916,6 @@ let searchQuery="";
 let genderFilter="";
 let sortMode="newest";
 let appSettings={ home_count:4, gender_options:["پسرانه","دخترانه","دیگران"], model_options:["بلوز","شلوار","نوزادی","پتو","ست بلوز و شلوار"] };
-const GENDER_OPTS=['پسرانه','دخترانه','بچگانه'];
 const SIZE_OPTS=['30/35','35/40','40/45','45/50','50/55','55/60','60/65','65/70'];
 let apSizeSel=new Set();
 
@@ -940,7 +939,7 @@ function fillOptionDatalists(){
     sel.innerHTML='<option value="">— انتخاب کنید —</option>'+(opts||[]).map(o=>'<option value="'+esc(o)+'"'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
     if(cur && !(opts||[]).includes(cur)){ sel.insertAdjacentHTML('beforeend','<option value="'+esc(cur)+'" selected>'+esc(cur)+'</option>'); }
   };
-  fill('apGender', GENDER_OPTS);
+  fill('apGender', appSettings.gender_options);
   fill('apModel', appSettings.model_options);
   renderSizePicker();
 }
@@ -1159,7 +1158,12 @@ async function saveHomeCount(btn){
 }
 function renderGenderChips(){
   const box=document.getElementById('pfilter'); if(!box) return;
-  const opts=['',...(appSettings.gender_options||[])];
+  const configured=(appSettings.gender_options||[]);
+  // include any gender actually present on a product but missing from the configured list,
+  // so no product is ever left without a matching filter chip (e.g. legacy values)
+  const present=[...new Set(productCache.map(p=>(p.gender||'').trim()).filter(Boolean))];
+  const extras=present.filter(g=>!configured.includes(g));
+  const opts=['',...configured,...extras];
   box.innerHTML=opts.map(o=>'<button class="pchip'+(o===genderFilter?' active':'')+'" data-g="'+esc(o)+'" onclick="setGenderFilter(\''+esc(o).replace(/'/g,"\\'")+'\',this)">'+(o===''?'همه':esc(o))+'</button>').join('');
 }
 function setGenderFilter(g,btn){
